@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #000000;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #F19EDC;
+            border-radius: 8px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: none;
+            background-color: #f0f0f0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .nav-bar {
+            background-color: #ffffff;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: #F19EDC;
+        }
+
+        .nav-item:hover {
+            color: #F19EDC;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+            fill: currentColor;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(241, 158, 220, 0.2);
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Page content styles */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        /* Cart styles */
+        .cart-content {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 15px;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info h4 {
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .cart-total {
+            text-align: right;
+            padding-top: 20px;
+            border-top: 2px solid #F19EDC;
+        }
+
+        .cart-total h3 {
+            color: #F19EDC;
+            font-size: 20px;
+        }
+
+        /* Orders styles */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .order-item {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #F19EDC;
+        }
+
+        .order-info h4 {
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        .order-info p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        /* Category styles */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background-color: #F19EDC;
+            border-radius: 15px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(241, 158, 220, 0.4);
+        }
+
+        .category-name {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Notifications styles */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notification-item {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #F19EDC;
+        }
+
+        .notification-content h4 {
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .notification-content p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .notification-time {
+            color: #F19EDC;
+            font-size: 12px;
+        }
+
+        /* Promotions styles */
+        .promotions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .promotion-card {
+            background: linear-gradient(135deg, #F19EDC, #ff6b9d);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .promotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(241, 158, 220, 0.4);
+        }
+
+        .promotion-info h4 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .promotion-info p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-container {
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .nav-container {
+                padding: 0 20px;
+            }
+
+            .nav-item {
+                font-size: 11px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .promotions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path
+                        d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+            </div>
+            E-commerce
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Tìm kiếm sản phẩm...">
+            <button class="search-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#666">
+                    <path
+                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="profile-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#666">
+                <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+            </svg>
+        </div>
+    </header>
+
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="#" class="nav-item active" data-page="home">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+                Trang chủ
+            </a>
+
+            <a href="#" class="nav-item" data-page="cart">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+                Giỏ hàng
+            </a>
+
+            <a href="#" class="nav-item" data-page="orders">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z" />
+                </svg>
+                Đơn của bạn
+            </a>
+
+            <a href="#" class="nav-item" data-page="category">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M9 21h6v-2H9v2zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" />
+                </svg>
+                Danh mục
+            </a>
+
+            <a href="#" class="nav-item" data-page="notifications">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                Thông báo
+            </a>
+
+            <a href="#" class="nav-item" data-page="favorites">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+                Yêu thích
+            </a>
+
+            <a href="#" class="nav-item" data-page="promotions">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                Khuyến mãi
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div id="content-container">
+            <!-- Trang chủ -->
+            <div id="home-page" class="page-content active">
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 1</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 2</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 3</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 4</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 5</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 6</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 7</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm 8</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Giỏ hàng -->
+            <div id="cart-page" class="page-content">
+                <div class="page-header">
+                    <h2>Giỏ hàng của bạn</h2>
+                </div>
+                <div class="cart-content">
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h4>Sản phẩm A</h4>
+                            <p>Giá: 299,000 VND</p>
+                            <p>Số lượng: 1</p>
+                        </div>
+                    </div>
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h4>Sản phẩm B</h4>
+                            <p>Giá: 199,000 VND</p>
+                            <p>Số lượng: 2</p>
+                        </div>
+                    </div>
+                    <div class="cart-total">
+                        <h3>Tổng cộng: 697,000 VND</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đơn hàng -->
+            <div id="orders-page" class="page-content">
+                <div class="page-header">
+                    <h2>Đơn hàng của bạn</h2>
+                </div>
+                <div class="orders-list">
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h4>Đơn hàng #001</h4>
+                            <p>Ngày đặt: 10/07/2025</p>
+                            <p>Trạng thái: Đang giao</p>
+                            <p>Tổng tiền: 299,000 VND</p>
+                        </div>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h4>Đơn hàng #002</h4>
+                            <p>Ngày đặt: 08/07/2025</p>
+                            <p>Trạng thái: Đã giao</p>
+                            <p>Tổng tiền: 199,000 VND</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danh mục -->
+            <div id="category-page" class="page-content">
+                <div class="page-header">
+                    <h2>Danh mục sản phẩm</h2>
+                </div>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <div class="category-name">Điện thoại</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-name">Laptop</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-name">Thời trang</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-name">Gia dụng</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-name">Sách</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-name">Thể thao</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông báo -->
+            <div id="notifications-page" class="page-content">
+                <div class="page-header">
+                    <h2>Thông báo</h2>
+                </div>
+                <div class="notifications-list">
+                    <div class="notification-item">
+                        <div class="notification-content">
+                            <h4>Đơn hàng đã được giao</h4>
+                            <p>Đơn hàng #001 đã được giao thành công</p>
+                            <span class="notification-time">2 giờ trước</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-content">
+                            <h4>Khuyến mãi mới</h4>
+                            <p>Giảm giá 20% cho tất cả sản phẩm điện tử</p>
+                            <span class="notification-time">1 ngày trước</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yêu thích -->
+            <div id="favorites-page" class="page-content">
+                <div class="page-header">
+                    <h2>Sản phẩm yêu thích</h2>
+                </div>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm yêu thích 1</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm yêu thích 2</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm yêu thích 3</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="placeholder-text">Sản phẩm yêu thích 4</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khuyến mãi -->
+            <div id="promotions-page" class="page-content">
+                <div class="page-header">
+                    <h2>Khuyến mãi hot</h2>
+                </div>
+                <div class="promotions-grid">
+                    <div class="promotion-card">
+                        <div class="promotion-info">
+                            <h4>Giảm 50%</h4>
+                            <p>Áp dụng cho tất cả sản phẩm thời trang</p>
+                        </div>
+                    </div>
+                    <div class="promotion-card">
+                        <div class="promotion-info">
+                            <h4>Mua 1 tặng 1</h4>
+                            <p>Chương trình áp dụng cho sách</p>
+                        </div>
+                    </div>
+                    <div class="promotion-card">
+                        <div class="promotion-info">
+                            <h4>Freeship</h4>
+                            <p>Miễn phí vận chuyển đơn từ 200k</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // TypeScript sẽ được thêm vào đây
+        document.addEventListener('DOMContentLoaded', function () {
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page-content');
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-btn');
+
+            // Navigation handling - SPA routing
+            function showPage(pageId) {
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+
+                // Show selected page
+                const targetPage = document.getElementById(pageId + '-page');
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+            }
+
+            // Navigation click handling
+            navItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Remove active class from all nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+
+                    // Add active class to clicked item
+                    this.classList.add('active');
+
+                    // Get page id from data attribute
+                    const pageId = this.getAttribute('data-page');
+
+                    // Show corresponding page
+                    showPage(pageId);
+
+                    console.log('Navigated to:', pageId);
+                });
+            });
+
+            // Product card interactions
+            document.addEventListener('click', function (e) {
+                if (e.target.closest('.product-card')) {
+                    console.log('Product card clicked');
+                    // Add your product click logic here
+                }
+
+                if (e.target.closest('.category-card')) {
+                    console.log('Category card clicked');
+                    // Add category navigation logic here
+                }
+
+                if (e.target.closest('.promotion-card')) {
+                    console.log('Promotion card clicked');
+                    // Add promotion details logic here
+                }
+            });
+
+            // Search functionality
+            function performSearch() {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    console.log('Searching for:', searchTerm);
+                    // Add your search logic here
+                    // You can filter products or navigate to search results
+                }
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // Initialize - show home page by default
+            showPage('home');
+        });
+    </script>
+</body>
+
+</html>
