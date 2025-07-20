@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/san-pham', sanPhamRoutes);
+app.use('/api/san-pham', sanPhamRoutes); //Sử dụng api từ sanPhamRoutes cho /api/san-pham
 app.use('/api', danhGiaSPRoutes);
 app.use('/api', nguoiDungRoutes);
 

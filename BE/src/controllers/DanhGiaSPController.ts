@@ -5,7 +5,7 @@ import { DanhGiaSPModel } from '../models/DanhGiaSPModel';
 export class DanhGiaSPController {
     static async update(req: Request, res: Response) {
         try {
-            const reviewId = Number(req.params.id);
+            const reviewId: number = Number(req.params.id);
             const { noi_dung_danh_gia, diem_danh_gia } = req.body;
             const updatedReview = await DanhGiaSPService.update(reviewId, noi_dung_danh_gia, diem_danh_gia);
             if (updatedReview) {
@@ -30,8 +30,8 @@ export class DanhGiaSPController {
 
     static async create(req: Request, res: Response) {
         try {
-            const danhGia = new DanhGiaSPModel(req.body);
-            const createdReview = await DanhGiaSPService.create(danhGia);
+            const danhGia: DanhGiaSPModel = new DanhGiaSPModel(req.body);
+            const createdReview: DanhGiaSPModel = await DanhGiaSPService.create(danhGia);
             res.status(201).json(createdReview);
         } catch (err) {
             console.error('Lỗi khi tạo đánh giá:', err);
@@ -41,8 +41,8 @@ export class DanhGiaSPController {
 
     static async delete(req: Request, res: Response) {
         try {
-            const reviewId = Number(req.params.id);
-            const deleted = await DanhGiaSPService.delete(reviewId);
+            const reviewId: number = Number(req.params.id);
+            const deleted: boolean = await DanhGiaSPService.delete(reviewId);
             if (deleted) {
                 res.status(200).json({ message: 'Xóa đánh giá thành công!' });
             } else {

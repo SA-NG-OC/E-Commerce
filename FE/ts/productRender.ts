@@ -116,3 +116,13 @@ async function renderProducts() {
 document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
 });
+
+//Phần menu
+fetch('/FE/HTML/NavBar.html')
+    .then(res => res.text())
+    .then(html => {
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            navbar.innerHTML = html;
+        }
+    });

@@ -129,3 +129,12 @@ function renderProducts() {
 document.addEventListener('DOMContentLoaded', function () {
     renderProducts();
 });
+//Phần menu
+fetch('/FE/HTML/NavBar.html')
+    .then(function (res) { return res.text(); })
+    .then(function (html) {
+    var navbar = document.getElementById('navbar');
+    if (navbar) {
+        navbar.innerHTML = html;
+    }
+});

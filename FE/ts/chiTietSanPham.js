@@ -498,3 +498,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 document.addEventListener('DOMContentLoaded', renderChiTietSanPham);
+// Tải NavBar vào #navbar
+// Tải NavBar vào #navbar
+fetch('/FE/HTML/NavBar.html')
+    .then(function (res) { return res.text(); })
+    .then(function (html) {
+    var navbar = document.getElementById('navbar');
+    if (navbar) {
+        navbar.innerHTML = html;
+    }
+});

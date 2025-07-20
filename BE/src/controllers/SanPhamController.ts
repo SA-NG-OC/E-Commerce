@@ -5,7 +5,7 @@ import { SanPham } from '../models/SanPhamModel';
 export class SanPhamController {
     static async getById(req: Request, res: Response) {
         try {
-            const sanPham = await SanPhamService.getById(req.params.id);
+            const sanPham: SanPham | null = await SanPhamService.getById(req.params.id);
             if (!sanPham) return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
             res.json(sanPham);
         } catch (err) {
@@ -15,7 +15,7 @@ export class SanPhamController {
     }
     static async getAllWithImages(req: Request, res: Response) {
         try {
-            const danhSach = await SanPhamService.getAllWithImages();
+            const danhSach: SanPham[] = await SanPhamService.getAllWithImages();
             res.json(danhSach);
         } catch (err) {
             console.error('Lỗi khi lấy danh sách sản phẩm:', err);
