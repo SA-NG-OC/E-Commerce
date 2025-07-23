@@ -102,7 +102,10 @@ body {
     transition: color 0.3s;
 }
 
-.nav-item.active,
+.nav-item.active {
+    color: #F19EDC;
+}
+
 .nav-item:hover {
     color: #F19EDC;
 }
