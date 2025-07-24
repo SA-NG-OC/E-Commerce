@@ -60,23 +60,64 @@ function updateSelection() {
 }
 function updateQuantity(button, change) {
     var input = button.parentElement.querySelector('.quantity-input');
+    var maxQuantity = parseInt(input.getAttribute('max') || '999');
     var newValue = parseInt(input.value) + change;
     if (newValue < 1)
         newValue = 1;
+    if (newValue > maxQuantity)
+        newValue = maxQuantity;
     input.value = newValue.toString();
     calculateTotal();
 }
 function removeItem(button) {
     var item = button.closest('.cart-item');
-    if (item)
+    if (item) {
+        var bienTheId = item.getAttribute('data-bien-the-id');
+        var gioHangId = getCurrentCartId();
+        var confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+        if (!confirmDelete)
+            return;
+        if (bienTheId && gioHangId) {
+            // Gọi API xóa sản phẩm
+            removeItemFromCart(gioHangId, bienTheId);
+        }
         item.remove();
-    // Cập nhật số lượng item
-    var totalItems = document.querySelectorAll('.cart-item').length;
-    var itemCount = document.getElementById('itemCount');
-    if (itemCount)
-        itemCount.textContent = totalItems.toString();
-    updateSelection();
-    checkEmptyCart();
+        // Cập nhật số lượng item
+        var totalItems = document.querySelectorAll('.cart-item').length;
+        var itemCount = document.getElementById('itemCount');
+        if (itemCount)
+            itemCount.textContent = totalItems.toString();
+        updateSelection();
+        checkEmptyCart();
+    }
+}
+function removeItemFromCart(gioHangId, bienTheId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(gioHangId, "/bien-the/").concat(bienTheId), {
+                            method: 'DELETE'
+                        })];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        throw new Error('Không thể xóa sản phẩm');
+                    }
+                    console.log('Đã xóa sản phẩm khỏi giỏ hàng');
+                    alert('Đã xóa sản phẩm khỏi giỏ hàng');
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error('Lỗi khi xóa sản phẩm:', error_1);
+                    alert('Có lỗi xảy ra khi xóa sản phẩm');
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
 }
 function checkout() {
     var checkedItems = document.querySelectorAll('.item-check:checked');
@@ -86,11 +127,12 @@ function checkout() {
     }
     var selectedProducts = [];
     checkedItems.forEach(function (checkbox) {
-        var _a, _b;
+        var _a, _b, _c;
         var item = checkbox.closest('.cart-item');
         var productName = (_a = item === null || item === void 0 ? void 0 : item.querySelector('.product-name')) === null || _a === void 0 ? void 0 : _a.textContent;
         var quantity = (_b = item === null || item === void 0 ? void 0 : item.querySelector('.quantity-input')) === null || _b === void 0 ? void 0 : _b.value;
-        selectedProducts.push("".concat(productName, " (x").concat(quantity, ")"));
+        var variantInfo = (_c = item === null || item === void 0 ? void 0 : item.querySelector('.variant-info')) === null || _c === void 0 ? void 0 : _c.textContent;
+        selectedProducts.push("".concat(productName, " ").concat(variantInfo || '', " (x").concat(quantity, ")"));
     });
     alert('Sản phẩm được chọn:\n' + selectedProducts.join('\n') + '\n\nChuyển đến trang thanh toán...');
 }
@@ -105,6 +147,7 @@ function checkEmptyCart() {
 }
 // File: gioHang.ts
 // Yêu cầu: Load giỏ hàng từ API và render ra HTML, thay thế dữ liệu mặc định
+var currentCartData = null; // Lưu trữ dữ liệu giỏ hàng hiện tại
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
     var userId, cartContent, res, gioHang, err_1;
     return __generator(this, function (_a) {
@@ -122,17 +165,19 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId))];
             case 2:
                 res = _a.sent();
-                console.log(userId);
+                console.log('User ID:', userId);
                 if (!res.ok)
                     throw new Error('Không thể lấy dữ liệu giỏ hàng');
                 return [4 /*yield*/, res.json()];
             case 3:
                 gioHang = _a.sent();
+                currentCartData = gioHang; // Lưu trữ dữ liệu giỏ hàng
                 renderCart(gioHang);
                 return [3 /*break*/, 5];
             case 4:
                 err_1 = _a.sent();
-                cartContent.innerHTML = "<div class=\"empty-cart\"><div class=\"empty-cart-icon\">\uD83D\uDED2</div><h2>L\u1ED7i t\u1EA3i gi\u1ECF h\u00E0ng</h2><p>".concat(err_1, "</p></div>");
+                console.error('Lỗi tải giỏ hàng:', err_1);
+                cartContent.innerHTML = "\n            <div class=\"empty-cart\">\n                <div class=\"empty-cart-icon\">\uD83D\uDED2</div>\n                <h2>L\u1ED7i t\u1EA3i gi\u1ECF h\u00E0ng</h2>\n                <p>".concat(err_1, "</p>\n            </div>\n        ");
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
@@ -142,29 +187,40 @@ function renderCart(gioHang) {
     var cartContent = document.getElementById('cartContent');
     if (!cartContent)
         return;
+    // Kiểm tra giỏ hàng rỗng
     if (!gioHang || !gioHang._san_pham || gioHang._san_pham.length === 0) {
-        cartContent.innerHTML = "<div class=\"empty-cart\"><div class=\"empty-cart-icon\">\uD83D\uDED2</div><h2>Gi\u1ECF h\u00E0ng tr\u1ED1ng</h2><p>Ch\u01B0a c\u00F3 s\u1EA3n ph\u1EA9m n\u00E0o trong gi\u1ECF h\u00E0ng c\u1EE7a b\u1EA1n</p></div>";
+        cartContent.innerHTML = "\n            <div class=\"empty-cart\">\n                <div class=\"empty-cart-icon\">\uD83D\uDED2</div>\n                <h2>Gi\u1ECF h\u00E0ng tr\u1ED1ng</h2>\n                <p>Ch\u01B0a c\u00F3 s\u1EA3n ph\u1EA9m n\u00E0o trong gi\u1ECF h\u00E0ng c\u1EE7a b\u1EA1n</p>\n            </div>\n        ";
         return;
     }
     var html = "\n        <div class=\"select-all\">\n            <input type=\"checkbox\" id=\"selectAll\" onchange=\"selectAllItems()\">\n            <label for=\"selectAll\">Ch\u1ECDn t\u1EA5t c\u1EA3 (<span id=\"itemCount\">".concat(gioHang._san_pham.length, "</span> s\u1EA3n ph\u1EA9m)</label>\n        </div>\n    ");
+    // Render từng item trong giỏ hàng
     for (var _i = 0, _a = gioHang._san_pham; _i < _a.length; _i++) {
         var item = _a[_i];
-        var sp = item.san_pham;
-        var so_luong = item.so_luong;
-        var price = sp._gia_ban;
-        var img = (sp._danh_sach_hinh_anh && sp._danh_sach_hinh_anh.length > 0) ? sp._danh_sach_hinh_anh[0]._duong_dan_hinh_anh : '';
-        var so_luong_max = sp._so_luong_ton_kho;
-        html += "\n        <div class=\"cart-item\" data-product-id=\"".concat(sp._id, "\" data-price=\"").concat(price, "\">\n            <div class=\"item-checkbox\">\n                <input type=\"checkbox\" class=\"item-check\" onchange=\"updateSelection()\">\n            </div>\n            <div class=\"product-image\">").concat(img ? "<img src=\"".concat(img, "\" alt=\"").concat(sp._ten_san_pham, "\" class=\"cart-img\">") : '🛒', "</div>\n            <div class=\"product-info\">\n                <div class=\"product-name\">").concat(sp._ten_san_pham, "</div>\n                <div class=\"product-price\">").concat(formatPriceCart(price), " </div>\n            </div>\n            <div class=\"quantity-controls\">\n                <button class=\"quantity-btn\" onclick=\"updateQuantity(this, -1)\">-</button>\n                <input type=\"number\" class=\"quantity-input\" value=\"").concat(so_luong, "\" min=\"1\"  max=\"").concat(so_luong_max, "\" onchange=\"calculateTotal()\">\n                <button class=\"quantity-btn\" onclick=\"updateQuantity(this, 1)\">+</button>\n            </div>\n            <button class=\"remove-btn\" onclick=\"removeItem(this)\">X\u00F3a</button>\n        </div>\n        ");
+        // Lấy thông tin sản phẩm
+        var productId = item.id_san_pham;
+        var productName = item.ten_san_pham;
+        var price = item.gia_ban;
+        var soLuong = item.so_luong;
+        var maxQuantity = item.so_luong_ton;
+        var img = item.hinh_anh_bien_the || '';
+        var productColor = item.mau_sac || '';
+        var productSize = item.kich_co || '';
+        var bienTheID = item.id_bien_the;
+        // Tạo thông tin biến thể (màu sắc, kích cỡ)
+        var variantInfo = "M\u00E0u: ".concat(productColor, " - Size: ").concat(productSize);
+        html += "\n            <div class=\"cart-item\" \n                 data-product-id=\"".concat(productId, "\" \n                 data-bien-the-id=\"").concat(bienTheID, "\" \n                 data-price=\"").concat(price, "\">\n                <div class=\"item-checkbox\">\n                    <input type=\"checkbox\" class=\"item-check\" onchange=\"updateSelection()\">\n                </div>\n                <div class=\"product-image\">\n                    ").concat(img ? "<img src=\"".concat(img, "\" alt=\"").concat(productName, "\" class=\"cart-img\">") : '🛒', "\n                </div>\n                <div class=\"product-info\">\n                    <div class=\"product-name\">").concat(productName, "</div>\n                    <div class=\"variant-info\" style=\"font-size: 12px; color: #666; margin: 4px 0;\">").concat(variantInfo, "</div>\n                    <div class=\"product-price\">").concat(formatPriceCart(price), "</div>\n                </div>\n                <div class=\"quantity-group\">\n                    <div class=\"quantity-controls\">\n                        <button class=\"quantity-btn\" onclick=\"updateQuantity(this, -1)\">-</button>\n                        <input type=\"number\" \n                            class=\"quantity-input\" \n                            value=\"").concat(soLuong, "\" \n                            min=\"1\" \n                            max=\"").concat(maxQuantity, "\" \n                            onchange=\"calculateTotal()\">\n                        <button class=\"quantity-btn\" onclick=\"updateQuantity(this, 1)\">+</button>\n                    </div>\n                    <div class=\"stock-info\">C\u00F2n ").concat(maxQuantity, " s\u1EA3n ph\u1EA9m</div>\n                </div>\n\n                <button class=\"remove-btn\" onclick=\"removeItem(this)\">X\u00F3a</button>\n            </div>\n        ");
     }
-    html += "<button id=\"saveButton\">L\u01B0u thay \u0111\u1ED5i</button>";
-    html += "\n        <div class=\"cart-summary\">\n            <div class=\"selected-items\" id=\"selectedItems\">\u0110\u00E3 ch\u1ECDn 0 s\u1EA3n ph\u1EA9m</div>\n            <div class=\"summary-row\"><span>T\u1EA1m t\u00EDnh:</span><span id=\"subtotal\">0 \u20AB</span></div>\n            <div class=\"summary-row\"><span>Ph\u00ED v\u1EADn chuy\u1EC3n:</span><span id=\"shipping\">0 \u20AB</span></div>\n            <div class=\"summary-row total\"><span>T\u1ED5ng c\u1ED9ng:</span><span id=\"total\">0 \u20AB</span></div>\n            <button class=\"checkout-btn\" id=\"checkoutBtn\" onclick=\"checkout()\" disabled>Thanh to\u00E1n (<span id=\"selectedCount\">0</span>)</button>\n        </div>\n    ";
+    // Nút lưu thay đổi
+    html += "<button id=\"saveButton\" class=\"save-changes-btn\">L\u01B0u thay \u0111\u1ED5i</button>";
+    // Phần tổng kết đơn hàng
+    html += "\n        <div class=\"cart-summary\">\n            <div class=\"selected-items\" id=\"selectedItems\">\u0110\u00E3 ch\u1ECDn 0 s\u1EA3n ph\u1EA9m</div>\n            <div class=\"summary-row\">\n                <span>T\u1EA1m t\u00EDnh:</span>\n                <span id=\"subtotal\">0 \u20AB</span>\n            </div>\n            <div class=\"summary-row\">\n                <span>Ph\u00ED v\u1EADn chuy\u1EC3n:</span>\n                <span id=\"shipping\">0 \u20AB</span>\n            </div>\n            <div class=\"summary-row total\">\n                <span>T\u1ED5ng c\u1ED9ng:</span>\n                <span id=\"total\">0 \u20AB</span>\n            </div>\n            <button class=\"checkout-btn\" id=\"checkoutBtn\" onclick=\"checkout()\" disabled>\n                Thanh to\u00E1n (<span id=\"selectedCount\">0</span>)\n            </button>\n        </div>\n    ";
     cartContent.innerHTML = html;
-    //Nút Lưu thay đổi
+    // Xử lý nút "Lưu thay đổi"
     var saveAllBtn = document.getElementById('saveButton');
     if (saveAllBtn) {
         saveAllBtn.onclick = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var cartId, items, _i, items_1, item, productId, quantityInput, so_luong, response, error_1;
+                var cartId, items, _i, items_1, item, bienTheId, quantityInput, soLuong, response, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -178,18 +234,19 @@ function renderCart(gioHang) {
                         case 1:
                             if (!(_i < items_1.length)) return [3 /*break*/, 4];
                             item = items_1[_i];
-                            productId = item.getAttribute('data-product-id');
+                            bienTheId = item.getAttribute('data-bien-the-id');
                             quantityInput = item.querySelector('.quantity-input');
-                            so_luong = quantityInput ? parseInt(quantityInput.value) : 1;
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/san-pham/").concat(productId), {
+                            soLuong = quantityInput ? parseInt(quantityInput.value) : 1;
+                            if (!bienTheId) return [3 /*break*/, 3];
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
                                     method: 'PUT',
                                     headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ so_luong: so_luong })
+                                    body: JSON.stringify({ so_luong: soLuong })
                                 })];
                         case 2:
                             response = _a.sent();
                             if (!response.ok) {
-                                throw new Error("L\u1ED7i khi c\u1EADp nh\u1EADt s\u1EA3n ph\u1EA9m ".concat(productId));
+                                throw new Error("L\u1ED7i khi c\u1EADp nh\u1EADt bi\u1EBFn th\u1EC3 ".concat(bienTheId));
                             }
                             _a.label = 3;
                         case 3:
@@ -199,14 +256,14 @@ function renderCart(gioHang) {
                             alert('✅ Đã lưu tất cả thay đổi!');
                             return [3 /*break*/, 7];
                         case 5:
-                            error_1 = _a.sent();
-                            console.error('Lỗi khi lưu giỏ hàng:', error_1);
+                            error_2 = _a.sent();
+                            console.error('Lỗi khi lưu giỏ hàng:', error_2);
                             alert('❌ Có lỗi xảy ra khi lưu giỏ hàng. Vui lòng thử lại.');
                             return [3 /*break*/, 7];
                         case 6:
                             // Khôi phục trạng thái button
                             saveAllBtn.disabled = false;
-                            saveAllBtn.textContent = "L\u01B0u thay \u0111\u1ED5i";
+                            saveAllBtn.textContent = 'Lưu thay đổi';
                             return [7 /*endfinally*/];
                         case 7: return [2 /*return*/];
                     }
@@ -224,7 +281,7 @@ function calculateTotal() {
         var item = checkbox.closest('.cart-item');
         if (!item)
             return;
-        var price = parseInt((item.dataset.price || '0'));
+        var price = parseInt(item.dataset.price || '0');
         var quantityInput = item.querySelector('.quantity-input');
         var quantity = quantityInput ? parseInt(quantityInput.value) : 1;
         subtotal += price * quantity;
@@ -232,6 +289,7 @@ function calculateTotal() {
     });
     var shipping = selectedCount > 0 ? 30000 : 0;
     var total = subtotal + shipping;
+    // Cập nhật UI
     var subtotalEl = document.getElementById('subtotal');
     if (subtotalEl)
         subtotalEl.textContent = formatPriceCart(subtotal);
@@ -252,11 +310,22 @@ function calculateTotal() {
         checkoutBtn.disabled = selectedCount === 0;
 }
 function getCurrentUserId() {
-    var userContext = localStorage.getItem('usercontext');
-    var user = JSON.parse(userContext || '{}');
-    var user_id = user._id;
-    return user_id || null;
+    try {
+        var userContext = localStorage.getItem('usercontext');
+        if (!userContext)
+            return null;
+        var user = JSON.parse(userContext);
+        return user._id || null;
+    }
+    catch (error) {
+        console.error('Lỗi khi lấy user ID:', error);
+        return null;
+    }
 }
+function getCurrentCartId() {
+    return currentCartData ? currentCartData._id : null;
+}
+// Load navbar
 fetch('/FE/HTML/NavBar.html')
     .then(function (res) { return res.text(); })
     .then(function (html) {
@@ -264,4 +333,7 @@ fetch('/FE/HTML/NavBar.html')
     if (navbar) {
         navbar.innerHTML = html;
     }
+})
+    .catch(function (error) {
+    console.error('Lỗi khi load navbar:', error);
 });

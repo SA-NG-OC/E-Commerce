@@ -1,19 +1,22 @@
-export class HinhAnhSPModel {
+export class BienTheSPModel {
     private _id: string;
     private _san_pham_id: string;
     private _mau_sac_id: string;
-    private _duong_dan_hinh_anh: string;
+    private _kich_co_id: string;
+    private _so_luong_ton_kho: number;
 
     constructor(data: {
         id?: string;
         san_pham_id: string;
         mau_sac_id: string;
-        duong_dan_hinh_anh: string;
+        kich_co_id: string;
+        so_luong_ton_kho: number;
     }) {
         this._id = data.id ?? '';
         this._san_pham_id = data.san_pham_id;
         this._mau_sac_id = data.mau_sac_id;
-        this._duong_dan_hinh_anh = data.duong_dan_hinh_anh;
+        this._kich_co_id = data.kich_co_id;
+        this._so_luong_ton_kho = data.so_luong_ton_kho;
     }
 
     get id(): string {
@@ -37,10 +40,17 @@ export class HinhAnhSPModel {
         this._mau_sac_id = value;
     }
 
-    get duong_dan_hinh_anh(): string {
-        return this._duong_dan_hinh_anh;
+    get kich_co_id(): string {
+        return this._kich_co_id;
     }
-    set duong_dan_hinh_anh(value: string) {
-        this._duong_dan_hinh_anh = value;
+    set kich_co_id(value: string) {
+        this._kich_co_id = value;
+    }
+
+    get so_luong_ton_kho(): number {
+        return this._so_luong_ton_kho;
+    }
+    set so_luong_ton_kho(value: number) {
+        this._so_luong_ton_kho = value;
     }
 }

@@ -85,8 +85,8 @@ function renderProducts() {
                             danh_muc: (_a = p._danh_muc) !== null && _a !== void 0 ? _a : null,
                             thuong_hieu: (_b = p._thuong_hieu) !== null && _b !== void 0 ? _b : null,
                             danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map(function (img) { return ({
-                                id: img._id,
-                                san_pham_id: img._san_pham_id,
+                                id: String(img._id),
+                                san_pham_id: String(img._san_pham_id),
                                 duong_dan_hinh_anh: img._duong_dan_hinh_anh,
                             }); })
                         });

@@ -5,8 +5,9 @@ import { DanhGiaSPModel } from '../models/DanhGiaSPModel';
 export class DanhGiaSPController {
     static async update(req: Request, res: Response) {
         try {
-            const reviewId: number = Number(req.params.id);
+            const reviewId: string = req.params.id;
             const { noi_dung_danh_gia, diem_danh_gia } = req.body;
+
             const updatedReview = await DanhGiaSPService.update(reviewId, noi_dung_danh_gia, diem_danh_gia);
             if (updatedReview) {
                 res.status(200).json(updatedReview);
@@ -18,9 +19,11 @@ export class DanhGiaSPController {
             res.status(500).json({ message: 'Server error' });
         }
     }
+
     static async getBySanPhamId(req: Request, res: Response) {
         try {
-            const reviews = await DanhGiaSPService.getBySanPhamId(Number(req.params.san_pham_id));
+            const sanPhamId: string = req.params.san_pham_id;
+            const reviews = await DanhGiaSPService.getBySanPhamId(sanPhamId);
             res.json(reviews);
         } catch (err) {
             console.error('Lỗi khi tải review:', err);
@@ -31,6 +34,8 @@ export class DanhGiaSPController {
     static async create(req: Request, res: Response) {
         try {
             const danhGia: DanhGiaSPModel = new DanhGiaSPModel(req.body);
+            const newId = await DanhGiaSPService.generateNewId();
+            danhGia.id = newId;
             const createdReview: DanhGiaSPModel = await DanhGiaSPService.create(danhGia);
             res.status(201).json(createdReview);
         } catch (err) {
@@ -41,7 +46,7 @@ export class DanhGiaSPController {
 
     static async delete(req: Request, res: Response) {
         try {
-            const reviewId: number = Number(req.params.id);
+            const reviewId: string = req.params.id;
             const deleted: boolean = await DanhGiaSPService.delete(reviewId);
             if (deleted) {
                 res.status(200).json({ message: 'Xóa đánh giá thành công!' });

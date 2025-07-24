@@ -1,13 +1,13 @@
 interface HinhAnhSPModel {
-    id: number;
-    san_pham_id: number;
+    id: string;
+    san_pham_id: string;
     duong_dan_hinh_anh: string;
 }
 
 interface DanhGiaSPModel {
-    id: number;
-    san_pham_id: number;
-    nguoi_dung_id: number;
+    id: string;
+    san_pham_id: string;
+    nguoi_dung_id: string;
     diem_danh_gia: number;
     noi_dung_danh_gia: string;
     ngay_tao: string;
@@ -47,8 +47,8 @@ async function fetchSanPhamById(id: string): Promise<SanPham | null> {
             danh_muc: p._danh_muc ?? '',
             thuong_hieu: p._thuong_hieu ?? '',
             danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map((img: any) => ({
-                id: img._id,
-                san_pham_id: img._san_pham_id,
+                id: String(img._id),
+                san_pham_id: String(img._san_pham_id),
                 duong_dan_hinh_anh: img._duong_dan_hinh_anh,
             }))
         };
@@ -66,9 +66,9 @@ async function fetchDanhGiaBySanPhamId(id: string): Promise<DanhGiaSPModel[]> {
         const data = await res.json();
         // Map lại field cho đúng interface
         return data.map((r: any) => ({
-            id: r._id,
-            san_pham_id: r._san_pham_id,
-            nguoi_dung_id: r._nguoi_dung_id,
+            id: String(r._id),
+            san_pham_id: String(r._san_pham_id),
+            nguoi_dung_id: String(r._nguoi_dung_id),
             diem_danh_gia: r._diem_danh_gia,
             noi_dung_danh_gia: r._noi_dung_danh_gia,
             ngay_tao: r._ngay_tao,
@@ -92,7 +92,7 @@ function filterReviewByStar(reviews: DanhGiaSPModel[], star: string | number): D
 }
 
 // Hàm tạo và hiển thị dialog quản lý comment
-function showCommentDialog(reviewId: number, currentContent: string, currentRating: number) {
+function showCommentDialog(reviewId: string, currentContent: string, currentRating: number) {
     // Tạo overlay
     const overlay = document.createElement('div');
     overlay.className = 'comment-dialog-overlay';
@@ -389,7 +389,7 @@ function attachReviewClickEvents() {
     const userReviews = document.querySelectorAll('.review-item.user-review.clickable');
     userReviews.forEach(reviewEl => {
         reviewEl.addEventListener('click', function () {
-            const reviewId = Number((reviewEl as HTMLElement).getAttribute('data-review-id'));
+            const reviewId = (reviewEl as HTMLElement).getAttribute('data-review-id') || '';
             const reviewContent = (reviewEl as HTMLElement).getAttribute('data-review-content') || '';
             const reviewRating = Number((reviewEl as HTMLElement).getAttribute('data-review-rating')) || 1;
 
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        san_pham_id: Number(sanPhamId),
+                        san_pham_id: sanPhamId, // Giữ nguyên string thay vì Number()
                         nguoi_dung_id: user._id,
                         diem_danh_gia: selectedRating,
                         noi_dung_danh_gia: reviewContent

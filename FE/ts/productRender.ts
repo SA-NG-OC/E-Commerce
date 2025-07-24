@@ -1,6 +1,6 @@
 interface HinhAnhSPModel {
-    id: number;
-    san_pham_id: number;
+    id: string;
+    san_pham_id: string;
     duong_dan_hinh_anh: string;
 }
 
@@ -71,8 +71,8 @@ async function renderProducts() {
             danh_muc: p._danh_muc ?? null,
             thuong_hieu: p._thuong_hieu ?? null,
             danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map((img: any) => ({
-                id: img._id,
-                san_pham_id: img._san_pham_id,
+                id: String(img._id),
+                san_pham_id: String(img._san_pham_id),
                 duong_dan_hinh_anh: img._duong_dan_hinh_anh,
             }))
         }));

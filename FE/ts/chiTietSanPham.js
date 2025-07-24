@@ -65,8 +65,8 @@ function fetchSanPhamById(id) {
                             danh_muc: (_c = p._danh_muc) !== null && _c !== void 0 ? _c : '',
                             thuong_hieu: (_d = p._thuong_hieu) !== null && _d !== void 0 ? _d : '',
                             danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map(function (img) { return ({
-                                id: img._id,
-                                san_pham_id: img._san_pham_id,
+                                id: String(img._id),
+                                san_pham_id: String(img._san_pham_id),
                                 duong_dan_hinh_anh: img._duong_dan_hinh_anh,
                             }); })
                         }];
@@ -96,9 +96,9 @@ function fetchDanhGiaBySanPhamId(id) {
                     data = _b.sent();
                     // Map lại field cho đúng interface
                     return [2 /*return*/, data.map(function (r) { return ({
-                            id: r._id,
-                            san_pham_id: r._san_pham_id,
-                            nguoi_dung_id: r._nguoi_dung_id,
+                            id: String(r._id),
+                            san_pham_id: String(r._san_pham_id),
+                            nguoi_dung_id: String(r._nguoi_dung_id),
                             diem_danh_gia: r._diem_danh_gia,
                             noi_dung_danh_gia: r._noi_dung_danh_gia,
                             ngay_tao: r._ngay_tao,
@@ -393,7 +393,7 @@ function attachReviewClickEvents() {
     var userReviews = document.querySelectorAll('.review-item.user-review.clickable');
     userReviews.forEach(function (reviewEl) {
         reviewEl.addEventListener('click', function () {
-            var reviewId = Number(reviewEl.getAttribute('data-review-id'));
+            var reviewId = reviewEl.getAttribute('data-review-id') || '';
             var reviewContent = reviewEl.getAttribute('data-review-content') || '';
             var reviewRating = Number(reviewEl.getAttribute('data-review-rating')) || 1;
             showCommentDialog(reviewId, reviewContent, reviewRating);
@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        san_pham_id: Number(sanPhamId),
+                                        san_pham_id: sanPhamId, // Giữ nguyên string thay vì Number()
                                         nguoi_dung_id: user._id,
                                         diem_danh_gia: selectedRating,
                                         noi_dung_danh_gia: reviewContent

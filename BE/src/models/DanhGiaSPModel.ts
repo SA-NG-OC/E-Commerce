@@ -1,16 +1,16 @@
 export class DanhGiaSPModel {
-    private _id: number;
-    private _san_pham_id: number;
-    private _nguoi_dung_id: number;
+    private _id: string;
+    private _san_pham_id: string;
+    private _nguoi_dung_id: string;
     private _diem_danh_gia: number;
     private _noi_dung_danh_gia: string;
     private _ngay_tao: Date;
     private _ho_ten_nguoi_dung?: string;
 
     constructor(data: {
-        id: number;
-        san_pham_id: number;
-        nguoi_dung_id: number;
+        id: string;
+        san_pham_id: string;
+        nguoi_dung_id: string;
         diem_danh_gia: number;
         noi_dung_danh_gia: string;
         ngay_tao: Date | string;
@@ -25,14 +25,14 @@ export class DanhGiaSPModel {
         this._ho_ten_nguoi_dung = data.ho_ten_nguoi_dung;
     }
 
-    get id(): number { return this._id; }
-    set id(value: number) { this._id = value; }
+    get id(): string { return this._id; }
+    set id(value: string) { this._id = value; }
 
-    get san_pham_id(): number { return this._san_pham_id; }
-    set san_pham_id(value: number) { this._san_pham_id = value; }
+    get san_pham_id(): string { return this._san_pham_id; }
+    set san_pham_id(value: string) { this._san_pham_id = value; }
 
-    get nguoi_dung_id(): number { return this._nguoi_dung_id; }
-    set nguoi_dung_id(value: number) { this._nguoi_dung_id = value; }
+    get nguoi_dung_id(): string { return this._nguoi_dung_id; }
+    set nguoi_dung_id(value: string) { this._nguoi_dung_id = value; }
 
     get diem_danh_gia(): number { return this._diem_danh_gia; }
     set diem_danh_gia(value: number) { this._diem_danh_gia = value; }
