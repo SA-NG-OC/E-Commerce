@@ -4,97 +4,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iPhone 15 Pro Max - TechStore</title>
+    <title>Chi tiết sản phẩm - TechStore</title>
     <link rel="stylesheet" href="/FE/CSS/ChiTietSanPham.css">
+    <link rel="stylesheet" href="/FE/CSS/NavBar.css">
 </head>
 
 <body>
     <div id="navbar"></div>
-    <div class="container">
-        <!-- Product Main Section -->
-        <div class="product-container">
-            <div class="product-images">
-                <img src="" alt="Ảnh sản phẩm" class="main-image" id="mainImage">
-                <div class="image-thumbnails" id="imageThumbnails"></div>
-            </div>
 
-            <div class="product-info">
-                <h1 class="product-title"></h1>
-                <div class="product-code"></div>
-                <div class="brand-tag"></div>
-                <div class="rating" id="ratingSection"></div>
-                <div class="price-section">
-                    <div class="current-price" id="currentPrice"></div>
-                    <div>
-                        <span class="original-price"></span>
-                        <span class="discount-badge" id="discountBadge"></span>
-                    </div>
-                </div>
-                <div class="stock-status"></div>
-
-                <div class="quantity-selector">
-                    <label>Số lượng:</label>
-                    <div class="quantity-input">
-                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                        <input type="number" class="quantity-number" value="1" min="1" max="15" id="quantity">
-                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
-                    </div>
+    <!-- ✅ Thêm lớp bọc main-content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Product Main Section -->
+            <div class="product-container">
+                <div class="product-images">
+                    <img src="" alt="Ảnh sản phẩm" class="main-image" id="mainImage">
+                    <div class="image-thumbnails" id="imageThumbnails"></div>
                 </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="addToCart()">Thêm vào giỏ hàng</button>
-                    <button class="btn btn-secondary" onclick="buyNow()">Mua ngay</button>
+                <div class="product-info">
+                    <h1 class="product-title"></h1>
+                    <div class="product-code"></div>
+                    <div class="brand-tag"></div>
+                    <div class="rating" id="ratingSection"></div>
+                    <div class="price-section">
+                        <div class="current-price" id="currentPrice"></div>
+                        <div>
+                            <span class="original-price"></span>
+                            <span class="discount-badge" id="discountBadge"></span>
+                        </div>
+                    </div>
+                    <div class="stock-status"></div>
+
+                    <div class="quantity-selector">
+                        <label>Số lượng:</label>
+                        <div class="quantity-input">
+                            <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                            <input type="number" class="quantity-number" value="1" min="1" max="15" id="quantity">
+                            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="addToCart()">Thêm vào giỏ hàng</button>
+                        <button class="btn btn-secondary" onclick="buyNow()">Mua ngay</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Product Description -->
-        <div class="product-description">
-            <h2 class="section-title">Mô tả sản phẩm</h2>
-            <p id="moTaSanPham"></p>
-        </div>
-
-        <!-- Reviews Section -->
-        <div class="reviews-section">
-            <h2 class="section-title">Đánh giá sản phẩm</h2>
-            <div class="review-filter">
-                <label for="filterStar" style="font-weight:500;margin-right:8px;">Lọc theo bình luận:</label>
-                <select id="filterStar" style="padding:6px 12px;border-radius:6px;border:1px solid #F19EDC;">
-                    <option value="all">Tất cả</option>
-                    <option value="1">1 sao</option>
-                    <option value="2">2 sao</option>
-                    <option value="3">3 sao</option>
-                    <option value="4">4 sao</option>
-                    <option value="5">5 sao</option>
-                    <option value="user">Đánh giá của bạn</option>
-                </select>
+            <!-- Product Description -->
+            <div class="product-description">
+                <h2 class="section-title">Mô tả sản phẩm</h2>
+                <p id="moTaSanPham"></p>
             </div>
-            <div id="reviewSummary"></div>
-            <div id="reviewList"></div>
-            <div class="review-form">
-                <h3>Viết đánh giá của bạn</h3>
-                <form id="userReviewForm">
-                    <div class="star-rating">
-                        <label>Chọn số sao:</label>
-                        <span id="starRating">
-                            <span class="star" data-value="1">&#9734;</span>
-                            <span class="star" data-value="2">&#9734;</span>
-                            <span class="star" data-value="3">&#9734;</span>
-                            <span class="star" data-value="4">&#9734;</span>
-                            <span class="star" data-value="5">&#9734;</span>
-                        </span>
-                    </div>
-                    <textarea id="reviewContent" rows="4" placeholder="Viết nhận xét của bạn..." required
-                        style="width:100%;margin:10px 0;padding:10px;border-radius:8px;border:1px solid #F19EDC;"></textarea>
-                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-                </form>
-                <div id="reviewFormMessage" style="margin-top:8px;color:#e74c3c;"></div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h2 class="section-title">Đánh giá sản phẩm</h2>
+                <div class="review-filter">
+                    <label for="filterStar" style="font-weight:500;margin-right:8px;">Lọc theo bình luận:</label>
+                    <select id="filterStar" style="padding:6px 12px;border-radius:6px;border:1px solid #F19EDC;">
+                        <option value="all">Tất cả</option>
+                        <option value="1">1 sao</option>
+                        <option value="2">2 sao</option>
+                        <option value="3">3 sao</option>
+                        <option value="4">4 sao</option>
+                        <option value="5">5 sao</option>
+                        <option value="user">Đánh giá của bạn</option>
+                    </select>
+                </div>
+                <div id="reviewSummary"></div>
+                <div id="reviewList"></div>
+                <div class="review-form">
+                    <h3>Viết đánh giá của bạn</h3>
+                    <form id="userReviewForm">
+                        <div class="star-rating">
+                            <label>Chọn số sao:</label>
+                            <div id="starRating">
+                                <span class="star" data-value="1">&#9734;</span>
+                                <span class="star" data-value="2">&#9734;</span>
+                                <span class="star" data-value="3">&#9734;</span>
+                                <span class="star" data-value="4">&#9734;</span>
+                                <span class="star" data-value="5">&#9734;</span>
+                            </div>
+
+                        </div>
+                        <textarea id="reviewContent" rows="4" placeholder="Viết nhận xét của bạn..." required
+                            style="width:100%;margin:10px 0;padding:10px;border-radius:8px;border:1px solid #F19EDC;"></textarea>
+                        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                    </form>
+                    <div id="reviewFormMessage" style="margin-top:8px;color:#e74c3c;"></div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- ✅ Scripts cho smooth router -->
+    <script src="/FE/ts/navBar.js"></script>
     <script src="/FE/ts/chiTietSanPham.js"></script>
     <script>
+        // ✅ Các function cơ bản cho quantity và actions
         function decreaseQuantity() {
             const quantityInput = document.getElementById('quantity');
             const currentValue = parseInt(quantityInput.value);
@@ -102,6 +111,7 @@
                 quantityInput.value = currentValue - 1;
             }
         }
+
         function increaseQuantity() {
             const quantityInput = document.getElementById('quantity');
             const currentValue = parseInt(quantityInput.value);
@@ -110,10 +120,12 @@
                 quantityInput.value = currentValue + 1;
             }
         }
+
         function addToCart() {
             const quantity = document.getElementById('quantity').value;
             alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
         }
+
         function buyNow() {
             const quantity = document.getElementById('quantity').value;
             alert(`Mua ngay ${quantity} sản phẩm!`);

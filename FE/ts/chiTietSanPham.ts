@@ -28,9 +28,16 @@ interface SanPham {
 
 //Sản phẩm//
 function getSanPhamIdFromUrl(): string | null {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('id');
-    //
+    // ✅ Kiểm tra cả URL params và history state
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('id');
+
+    // Kiểm tra trong history state (cho smooth router)
+    if (history.state && history.state.params && history.state.params.id) {
+        return history.state.params.id;
+    }
+
+    return urlId;
 }
 
 async function fetchSanPhamById(id: string): Promise<SanPham | null> {
@@ -57,7 +64,6 @@ async function fetchSanPhamById(id: string): Promise<SanPham | null> {
     }
 }
 
-
 //Review//
 async function fetchDanhGiaBySanPhamId(id: string): Promise<DanhGiaSPModel[]> {
     try {
@@ -74,6 +80,7 @@ async function fetchDanhGiaBySanPhamId(id: string): Promise<DanhGiaSPModel[]> {
             ngay_tao: r._ngay_tao,
             ho_ten_nguoi_dung: r._ho_ten_nguoi_dung
         }));
+
     } catch {
         return [];
     }
@@ -389,7 +396,7 @@ function attachReviewClickEvents() {
     const userReviews = document.querySelectorAll('.review-item.user-review.clickable');
     userReviews.forEach(reviewEl => {
         reviewEl.addEventListener('click', function () {
-            const reviewId = (reviewEl as HTMLElement).getAttribute('data-review-id') || '';
+            const reviewId = (reviewEl as HTMLElement).getAttribute('data-review-id')!;
             const reviewContent = (reviewEl as HTMLElement).getAttribute('data-review-content') || '';
             const reviewRating = Number((reviewEl as HTMLElement).getAttribute('data-review-rating')) || 1;
 
@@ -398,12 +405,11 @@ function attachReviewClickEvents() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderChiTietSanPham();
-
-    // Star rating interaction
+// ✅ Hàm khởi tạo star rating
+function initStarRating() {
     const stars = document.querySelectorAll('#starRating .star');
     let selectedRating = 0;
+
     stars.forEach((star, idx) => {
         star.addEventListener('mouseover', function () {
             highlightStars(idx + 1);
@@ -416,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             highlightStars(selectedRating);
         });
     });
+
     function highlightStars(rating: number) {
         stars.forEach((star, i) => {
             if (i < rating) {
@@ -427,29 +434,64 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // Prevent submit if chưa chọn số sao
+
+    return selectedRating;
+}
+
+// ✅ Hàm khởi tạo form review
+function initReviewForm() {
     const reviewForm = document.getElementById('userReviewForm') as HTMLFormElement;
+    const stars = document.querySelectorAll('#starRating .star');
+    let selectedRating = 0;
+
+    // Khởi tạo star rating
+    stars.forEach((star, idx) => {
+        star.addEventListener('mouseover', function () {
+            highlightStars(idx + 1);
+        });
+        star.addEventListener('mouseout', function () {
+            highlightStars(selectedRating);
+        });
+        star.addEventListener('click', function () {
+            selectedRating = idx + 1;
+            highlightStars(selectedRating);
+        });
+    });
+
+    function highlightStars(rating: number) {
+        stars.forEach((star, i) => {
+            if (i < rating) {
+                star.classList.add('selected');
+                star.innerHTML = '★';
+            } else {
+                star.classList.remove('selected');
+                star.innerHTML = '☆';
+            }
+        });
+    }
+
     if (reviewForm) {
         reviewForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
             if (selectedRating === 0) {
-                e.preventDefault();
                 document.getElementById('reviewFormMessage')!.textContent = 'Vui lòng chọn số sao trước khi gửi đánh giá!';
                 return;
             }
+
             document.getElementById('reviewFormMessage')!.textContent = '';
-            e.preventDefault();
+
             // Lấy user từ localStorage
             const userStr = localStorage.getItem('usercontext');
             if (!userStr) {
                 document.getElementById('reviewFormMessage')!.textContent = 'Bạn cần đăng nhập để gửi đánh giá!';
                 return;
             }
+
             const user = JSON.parse(userStr);
-            console.log('User:', user);
-            console.log('nguoi_dung_id:', user._id);
             const sanPhamId = getSanPhamIdFromUrl();
             const reviewContent = (document.getElementById('reviewContent') as HTMLTextAreaElement).value;
-            // Gọi API tạo mới đánh giá
+
             try {
                 const res = await fetch(`http://localhost:3000/api/san-pham/${sanPhamId}/danh-gia`, {
                     method: 'POST',
@@ -457,18 +499,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        san_pham_id: sanPhamId, // Giữ nguyên string thay vì Number()
+                        san_pham_id: sanPhamId,
                         nguoi_dung_id: user._id,
                         diem_danh_gia: selectedRating,
                         noi_dung_danh_gia: reviewContent
                     })
                 });
+
                 if (res.ok) {
                     document.getElementById('reviewFormMessage')!.textContent = 'Gửi đánh giá thành công!';
                     reviewForm.reset();
                     highlightStars(0);
                     selectedRating = 0;
-                    // Reload lại danh sách đánh giá
                     renderChiTietSanPham();
                 } else {
                     const err = await res.json();
@@ -479,17 +521,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+}
+
+// ✅ Hàm khởi tạo chính - sẽ được gọi bởi smooth router
+function initChiTietSanPham() {
+    console.log('initChiTietSanPham called');
+    renderChiTietSanPham();
+    initReviewForm();
+}
+
+// ✅ Export functions to window để smooth router có thể gọi
+(window as any).initChiTietSanPham = initChiTietSanPham;
+(window as any).renderChiTietSanPham = renderChiTietSanPham;
+
+// ✅ Chỉ khởi tạo khi trang được load trực tiếp (không phải qua smooth router)
+document.addEventListener('DOMContentLoaded', () => {
+    // Kiểm tra xem có đang trong smooth router hay không
+    if (!history.state || !history.state.page) {
+        // Đang load trực tiếp, không qua smooth router
+        initChiTietSanPham();
+
+        // Load NavBar nếu cần
+        /*const navbar = document.getElementById('navbar');
+        if (navbar && !navbar.innerHTML.trim()) {
+            fetch('/FE/HTML/NavBar.html')
+                .then(res => res.text())
+                .then(html => {
+                    navbar.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Không thể load navbar:', error);
+                });
+        }*/
+    }
 });
-
-document.addEventListener('DOMContentLoaded', renderChiTietSanPham);
-
-// Tải NavBar vào #navbar
-// Tải NavBar vào #navbar
-fetch('/FE/HTML/NavBar.html')
-    .then(res => res.text())
-    .then(html => {
-        const navbar = document.getElementById('navbar');
-        if (navbar) {
-            navbar.innerHTML = html;
-        }
-    });

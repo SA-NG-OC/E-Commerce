@@ -10,13 +10,19 @@
 
 <body>
     <div id="navbar"></div>
-    <div class="container">
-        <div class="cart-content" id="cartContent">
-            <!-- Nội dung giỏ hàng sẽ được render bằng JS -->
-        </div>
-    </div>
 
-    <!-- Script xử lý giỏ hàng đã được chuyển sang FE/ts/gioHang.ts -->
+    <!-- Bọc toàn bộ phần nội dung chính bằng main-content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="cart-content" id="cartContent">
+                <!-- Nội dung giỏ hàng sẽ được render bằng JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Script xử lý giỏ hàng -->
+    <script src="/FE/ts/router.js"></script>
+    <script src="/FE/ts/navBar.js"></script>
     <script src="/FE/ts/gioHang.js"></script>
 </body>
 

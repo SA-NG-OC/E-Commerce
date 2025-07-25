@@ -35,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
 function selectAllItems() {
     var selectAllCheckbox = document.getElementById('selectAll');
     var itemCheckboxes = document.querySelectorAll('.item-check');
@@ -148,41 +147,43 @@ function checkEmptyCart() {
 // File: gioHang.ts
 // Yêu cầu: Load giỏ hàng từ API và render ra HTML, thay thế dữ liệu mặc định
 var currentCartData = null; // Lưu trữ dữ liệu giỏ hàng hiện tại
-document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
-    var userId, cartContent, res, gioHang, err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                userId = getCurrentUserId();
-                if (!userId)
-                    return [2 /*return*/];
-                cartContent = document.getElementById('cartContent');
-                if (!cartContent)
-                    return [2 /*return*/];
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId))];
-            case 2:
-                res = _a.sent();
-                console.log('User ID:', userId);
-                if (!res.ok)
-                    throw new Error('Không thể lấy dữ liệu giỏ hàng');
-                return [4 /*yield*/, res.json()];
-            case 3:
-                gioHang = _a.sent();
-                currentCartData = gioHang; // Lưu trữ dữ liệu giỏ hàng
-                renderCart(gioHang);
-                return [3 /*break*/, 5];
-            case 4:
-                err_1 = _a.sent();
-                console.error('Lỗi tải giỏ hàng:', err_1);
-                cartContent.innerHTML = "\n            <div class=\"empty-cart\">\n                <div class=\"empty-cart-icon\">\uD83D\uDED2</div>\n                <h2>L\u1ED7i t\u1EA3i gi\u1ECF h\u00E0ng</h2>\n                <p>".concat(err_1, "</p>\n            </div>\n        ");
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
-        }
+function loadGioHang() {
+    return __awaiter(this, void 0, void 0, function () {
+        var userId, cartContent, res, gioHang, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    userId = getCurrentUserId();
+                    if (!userId)
+                        return [2 /*return*/];
+                    cartContent = document.getElementById('cartContent');
+                    if (!cartContent)
+                        return [2 /*return*/];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId))];
+                case 2:
+                    res = _a.sent();
+                    console.log('User ID:', userId);
+                    if (!res.ok)
+                        throw new Error('Không thể lấy dữ liệu giỏ hàng');
+                    return [4 /*yield*/, res.json()];
+                case 3:
+                    gioHang = _a.sent();
+                    currentCartData = gioHang; // Lưu trữ dữ liệu giỏ hàng
+                    renderCart(gioHang);
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_1 = _a.sent();
+                    console.error('Lỗi tải giỏ hàng:', err_1);
+                    cartContent.innerHTML = "\n            <div class=\"empty-cart\">\n                <div class=\"empty-cart-icon\">\uD83D\uDED2</div>\n                <h2>L\u1ED7i t\u1EA3i gi\u1ECF h\u00E0ng</h2>\n                <p>".concat(err_1, "</p>\n            </div>\n        ");
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
+        });
     });
-}); });
+}
 function renderCart(gioHang) {
     var cartContent = document.getElementById('cartContent');
     if (!cartContent)
@@ -325,15 +326,27 @@ function getCurrentUserId() {
 function getCurrentCartId() {
     return currentCartData ? currentCartData._id : null;
 }
-// Load navbar
-fetch('/FE/HTML/NavBar.html')
-    .then(function (res) { return res.text(); })
-    .then(function (html) {
-    var navbar = document.getElementById('navbar');
-    if (navbar) {
-        navbar.innerHTML = html;
-    }
-})
-    .catch(function (error) {
-    console.error('Lỗi khi load navbar:', error);
-});
+// Hàm khởi tạo giỏ hàng
+function initGioHang() {
+    console.log('Initializing Gio Hang...');
+    loadGioHang();
+}
+// Expose functions globally để router có thể gọi
+window.loadGioHang = loadGioHang;
+window.initGioHang = initGioHang;
+window.selectAllItems = selectAllItems;
+window.updateSelection = updateSelection;
+window.updateQuantity = updateQuantity;
+window.removeItem = removeItem;
+window.checkout = checkout;
+window.calculateTotal = calculateTotal;
+// Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
+document.addEventListener('DOMContentLoaded', initGioHang);
+// QUAN TRỌNG: Chạy luôn nếu DOM đã ready (cho router)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGioHang);
+}
+else {
+    // DOM đã ready, chạy luôn
+    initGioHang();
+}

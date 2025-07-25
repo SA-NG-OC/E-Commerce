@@ -119,7 +119,7 @@ function checkEmptyCart() {
 
 let currentCartData: any = null; // Lưu trữ dữ liệu giỏ hàng hiện tại
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function loadGioHang() {
     const userId = getCurrentUserId();
     if (!userId) return;
 
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
     }
-});
+}
 
 function renderCart(gioHang: any) {
     const cartContent = document.getElementById('cartContent');
@@ -351,15 +351,29 @@ function getCurrentCartId(): string | null {
     return currentCartData ? currentCartData._id : null;
 }
 
-// Load navbar
-fetch('/FE/HTML/NavBar.html')
-    .then(res => res.text())
-    .then(html => {
-        const navbar = document.getElementById('navbar');
-        if (navbar) {
-            navbar.innerHTML = html;
-        }
-    })
-    .catch(error => {
-        console.error('Lỗi khi load navbar:', error);
-    });
+// Hàm khởi tạo giỏ hàng
+function initGioHang() {
+    console.log('Initializing Gio Hang...');
+    loadGioHang();
+}
+
+// Expose functions globally để router có thể gọi
+(window as any).loadGioHang = loadGioHang;
+(window as any).initGioHang = initGioHang;
+(window as any).selectAllItems = selectAllItems;
+(window as any).updateSelection = updateSelection;
+(window as any).updateQuantity = updateQuantity;
+(window as any).removeItem = removeItem;
+(window as any).checkout = checkout;
+(window as any).calculateTotal = calculateTotal;
+
+// Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
+document.addEventListener('DOMContentLoaded', initGioHang);
+
+// QUAN TRỌNG: Chạy luôn nếu DOM đã ready (cho router)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGioHang);
+} else {
+    // DOM đã ready, chạy luôn
+    initGioHang();
+}

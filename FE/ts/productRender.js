@@ -99,10 +99,18 @@ function renderProducts() {
                     grid.innerHTML = products.map(createProductCard).join('');
                     grid.style.display = 'grid';
                     // Gán sự kiện click cho từng card
+                    // Trong productRender.js hoặc nơi bạn render product cards
                     grid.querySelectorAll('.product-card').forEach(function (card) {
                         card.addEventListener('click', function () {
                             var id = card.getAttribute('data-id');
-                            window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                            // Sử dụng smooth router thay vì window.location
+                            if (window.smoothRouter) {
+                                window.smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
+                            }
+                            else {
+                                // Fallback nếu router chưa sẵn sàng
+                                window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                            }
                         });
                     });
                     // Thêm fade-in effect
@@ -126,15 +134,32 @@ function renderProducts() {
         });
     });
 }
-document.addEventListener('DOMContentLoaded', function () {
+// Hàm khởi tạo trang chủ
+function initTrangChu() {
+    console.log('Initializing Trang Chu...');
     renderProducts();
-});
+}
+// Expose functions globally để router có thể gọi
+window.renderProducts = renderProducts;
+window.initTrangChu = initTrangChu;
+// Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
+document.addEventListener('DOMContentLoaded', initTrangChu);
+// QUAN TRỌNG: Chạy luôn nếu DOM đã ready (cho router)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTrangChu);
+}
+else {
+    // DOM đã ready, chạy luôn
+    initTrangChu();
+}
 //Phần menu
+/*
 fetch('/FE/HTML/NavBar.html')
-    .then(function (res) { return res.text(); })
-    .then(function (html) {
-    var navbar = document.getElementById('navbar');
-    if (navbar) {
-        navbar.innerHTML = html;
-    }
-});
+    .then(res => res.text())
+    .then(html => {
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            navbar.innerHTML = html;
+        }
+    });
+*/ 

@@ -36,9 +36,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 //Sản phẩm//
 function getSanPhamIdFromUrl() {
-    var params = new URLSearchParams(window.location.search);
-    return params.get('id');
-    //
+    // ✅ Kiểm tra cả URL params và history state
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlId = urlParams.get('id');
+    // Kiểm tra trong history state (cho smooth router)
+    if (history.state && history.state.params && history.state.params.id) {
+        return history.state.params.id;
+    }
+    return urlId;
 }
 function fetchSanPhamById(id) {
     return __awaiter(this, void 0, void 0, function () {
@@ -393,16 +398,15 @@ function attachReviewClickEvents() {
     var userReviews = document.querySelectorAll('.review-item.user-review.clickable');
     userReviews.forEach(function (reviewEl) {
         reviewEl.addEventListener('click', function () {
-            var reviewId = reviewEl.getAttribute('data-review-id') || '';
+            var reviewId = reviewEl.getAttribute('data-review-id');
             var reviewContent = reviewEl.getAttribute('data-review-content') || '';
             var reviewRating = Number(reviewEl.getAttribute('data-review-rating')) || 1;
             showCommentDialog(reviewId, reviewContent, reviewRating);
         });
     });
 }
-document.addEventListener('DOMContentLoaded', function () {
-    renderChiTietSanPham();
-    // Star rating interaction
+// ✅ Hàm khởi tạo star rating
+function initStarRating() {
     var stars = document.querySelectorAll('#starRating .star');
     var selectedRating = 0;
     stars.forEach(function (star, idx) {
@@ -429,8 +433,38 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    // Prevent submit if chưa chọn số sao
+    return selectedRating;
+}
+// ✅ Hàm khởi tạo form review
+function initReviewForm() {
     var reviewForm = document.getElementById('userReviewForm');
+    var stars = document.querySelectorAll('#starRating .star');
+    var selectedRating = 0;
+    // Khởi tạo star rating
+    stars.forEach(function (star, idx) {
+        star.addEventListener('mouseover', function () {
+            highlightStars(idx + 1);
+        });
+        star.addEventListener('mouseout', function () {
+            highlightStars(selectedRating);
+        });
+        star.addEventListener('click', function () {
+            selectedRating = idx + 1;
+            highlightStars(selectedRating);
+        });
+    });
+    function highlightStars(rating) {
+        stars.forEach(function (star, i) {
+            if (i < rating) {
+                star.classList.add('selected');
+                star.innerHTML = '★';
+            }
+            else {
+                star.classList.remove('selected');
+                star.innerHTML = '☆';
+            }
+        });
+    }
     if (reviewForm) {
         reviewForm.addEventListener('submit', function (e) {
             return __awaiter(this, void 0, void 0, function () {
@@ -438,21 +472,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
+                            e.preventDefault();
                             if (selectedRating === 0) {
-                                e.preventDefault();
                                 document.getElementById('reviewFormMessage').textContent = 'Vui lòng chọn số sao trước khi gửi đánh giá!';
                                 return [2 /*return*/];
                             }
                             document.getElementById('reviewFormMessage').textContent = '';
-                            e.preventDefault();
                             userStr = localStorage.getItem('usercontext');
                             if (!userStr) {
                                 document.getElementById('reviewFormMessage').textContent = 'Bạn cần đăng nhập để gửi đánh giá!';
                                 return [2 /*return*/];
                             }
                             user = JSON.parse(userStr);
-                            console.log('User:', user);
-                            console.log('nguoi_dung_id:', user._id);
                             sanPhamId = getSanPhamIdFromUrl();
                             reviewContent = document.getElementById('reviewContent').value;
                             _b.label = 1;
@@ -464,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        san_pham_id: sanPhamId, // Giữ nguyên string thay vì Number()
+                                        san_pham_id: sanPhamId,
                                         nguoi_dung_id: user._id,
                                         diem_danh_gia: selectedRating,
                                         noi_dung_danh_gia: reviewContent
@@ -477,7 +508,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             reviewForm.reset();
                             highlightStars(0);
                             selectedRating = 0;
-                            // Reload lại danh sách đánh giá
                             renderChiTietSanPham();
                             return [3 /*break*/, 5];
                         case 3: return [4 /*yield*/, res.json()];
@@ -496,15 +526,33 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-});
-document.addEventListener('DOMContentLoaded', renderChiTietSanPham);
-// Tải NavBar vào #navbar
-// Tải NavBar vào #navbar
-fetch('/FE/HTML/NavBar.html')
-    .then(function (res) { return res.text(); })
-    .then(function (html) {
-    var navbar = document.getElementById('navbar');
-    if (navbar) {
-        navbar.innerHTML = html;
+}
+// ✅ Hàm khởi tạo chính - sẽ được gọi bởi smooth router
+function initChiTietSanPham() {
+    console.log('initChiTietSanPham called');
+    renderChiTietSanPham();
+    initReviewForm();
+}
+// ✅ Export functions to window để smooth router có thể gọi
+window.initChiTietSanPham = initChiTietSanPham;
+window.renderChiTietSanPham = renderChiTietSanPham;
+// ✅ Chỉ khởi tạo khi trang được load trực tiếp (không phải qua smooth router)
+document.addEventListener('DOMContentLoaded', function () {
+    // Kiểm tra xem có đang trong smooth router hay không
+    if (!history.state || !history.state.page) {
+        // Đang load trực tiếp, không qua smooth router
+        initChiTietSanPham();
+        // Load NavBar nếu cần
+        /*const navbar = document.getElementById('navbar');
+        if (navbar && !navbar.innerHTML.trim()) {
+            fetch('/FE/HTML/NavBar.html')
+                .then(res => res.text())
+                .then(html => {
+                    navbar.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Không thể load navbar:', error);
+                });
+        }*/
     }
 });
