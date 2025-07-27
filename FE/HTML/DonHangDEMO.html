@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn Hàng Của Tôi - Shoe Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#F19EDC',
+                        'primary-dark': '#E085C7',
+                        'primary-light': '#F5B8E4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .order-card {
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 158, 220, 0.3);
+        }
+
+        .status-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b-2 border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-primary">👟 Shoe Store</h1>
+                    </div>
+                </div>
+                <nav class="flex space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-primary transition-colors">Trang chủ</a>
+                    <a href="#" class="text-primary font-medium">Đơn hàng</a>
+                    <a href="#" class="text-gray-600 hover:text-primary transition-colors">Tài khoản</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Title -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Đơn Hàng Của Tôi</h2>
+            <p class="text-gray-600">Theo dõi và quản lý các đơn hàng của bạn</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8">
+                    <button
+                        class="filter-tab active border-primary text-primary border-b-2 py-2 px-1 text-sm font-medium"
+                        data-status="all">
+                        Tất cả đơn hàng
+                    </button>
+                    <button
+                        class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium"
+                        data-status="cho_xac_nhan">
+                        Chờ xác nhận
+                    </button>
+                    <button
+                        class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium"
+                        data-status="da_xac_nhan">
+                        Đã xác nhận
+                    </button>
+                    <button
+                        class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium"
+                        data-status="dang_giao">
+                        Đang giao
+                    </button>
+                    <button
+                        class="filter-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium"
+                        data-status="da_giao">
+                        Đã giao
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div class="space-y-6" id="orders-container">
+            <!-- Order 1 -->
+            <div class="order-card bg-white rounded-lg shadow-md p-6 border-l-4 border-primary"
+                data-status="cho_xac_nhan">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Đơn hàng #DH001</h3>
+                        <p class="text-sm text-gray-500">Ngày đặt: 15/12/2024 - 14:30</p>
+                    </div>
+                    <span class="status-badge bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                        Chờ xác nhận
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Product 1 -->
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-light rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">👟</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">Nike Air Max 270</h4>
+                            <p class="text-sm text-gray-600">Màu: Đen | Size: 42</p>
+                            <p class="text-sm text-gray-600">Số lượng: 1</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-primary">2,500,000₫</p>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-light rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">👟</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">Adidas Ultraboost 22</h4>
+                            <p class="text-sm text-gray-600">Màu: Trắng | Size: 41</p>
+                            <p class="text-sm text-gray-600">Số lượng: 1</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-primary">3,200,000₫</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold text-gray-900">Tổng thanh toán:</span>
+                        <span class="text-xl font-bold text-primary">5,700,000₫</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex space-x-3">
+                    <button class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors">
+                        Xem chi tiết
+                    </button>
+                    <button
+                        class="border border-red-300 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors">
+                        Hủy đơn hàng
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 2 -->
+            <div class="order-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500"
+                data-status="dang_giao">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Đơn hàng #DH002</h3>
+                        <p class="text-sm text-gray-500">Ngày đặt: 12/12/2024 - 09:15</p>
+                    </div>
+                    <span class="status-badge bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        Đang giao
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-light rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">👟</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">Converse Chuck Taylor All Star</h4>
+                            <p class="text-sm text-gray-600">Màu: Đỏ | Size: 39</p>
+                            <p class="text-sm text-gray-600">Số lượng: 2</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-primary">1,800,000₫</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold text-gray-900">Tổng thanh toán:</span>
+                        <span class="text-xl font-bold text-primary">1,800,000₫</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex space-x-3">
+                    <button class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors">
+                        Theo dõi đơn hàng
+                    </button>
+                    <button
+                        class="border border-gray-300 text-gray-600 hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors">
+                        Liên hệ hỗ trợ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Order 3 -->
+            <div class="order-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500" data-status="da_giao">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Đơn hàng #DH003</h3>
+                        <p class="text-sm text-gray-500">Ngày đặt: 08/12/2024 - 16:45</p>
+                    </div>
+                    <span class="status-badge bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                        Đã giao
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="w-16 h-16 bg-primary-light rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">👟</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">Vans Old Skool</h4>
+                            <p class="text-sm text-gray-600">Màu: Đen/Trắng | Size: 43</p>
+                            <p class="text-sm text-gray-600">Số lượng: 1</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-primary">1,650,000₫</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-semibold text-gray-900">Tổng thanh toán:</span>
+                        <span class="text-xl font-bold text-primary">1,650,000₫</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex space-x-3">
+                    <button class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors">
+                        Đánh giá sản phẩm
+                    </button>
+                    <button
+                        class="border border-primary text-primary hover:bg-primary-light px-4 py-2 rounded-lg transition-colors">
+                        Mua lại
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="empty-state" class="text-center py-12 hidden">
+            <div class="w-24 h-24 mx-auto mb-4 bg-primary-light rounded-full flex items-center justify-center">
+                <span class="text-4xl">📦</span>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Không có đơn hàng nào</h3>
+            <p class="text-gray-600 mb-6">Bạn chưa có đơn hàng nào trong trạng thái này</p>
+            <button class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors">
+                Tiếp tục mua sắm
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Filter functionality
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const orderCards = document.querySelectorAll('.order-card');
+        const emptyState = document.getElementById('empty-state');
+        const ordersContainer = document.getElementById('orders-container');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                filterTabs.forEach(t => {
+                    t.classList.remove('active', 'border-primary', 'text-primary');
+                    t.classList.add('border-transparent', 'text-gray-500');
+                });
+
+                // Add active class to clicked tab
+                tab.classList.add('active', 'border-primary', 'text-primary');
+                tab.classList.remove('border-transparent', 'text-gray-500');
+
+                const status = tab.dataset.status;
+                let visibleCount = 0;
+
+                // Filter orders
+                orderCards.forEach(card => {
+                    if (status === 'all' || card.dataset.status === status) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide empty state
+                if (visibleCount === 0) {
+                    ordersContainer.style.display = 'none';
+                    emptyState.classList.remove('hidden');
+                } else {
+                    ordersContainer.style.display = 'block';
+                    emptyState.classList.add('hidden');
+                }
+            });
+        });
+
+        // Order actions
+        document.addEventListener('click', (e) => {
+            if (e.target.textContent === 'Xem chi tiết') {
+                alert('Chuyển đến trang chi tiết đơn hàng');
+            } else if (e.target.textContent === 'Hủy đơn hàng') {
+                if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+                    alert('Đơn hàng đã được hủy');
+                }
+            } else if (e.target.textContent === 'Theo dõi đơn hàng') {
+                alert('Chuyển đến trang theo dõi đơn hàng');
+            } else if (e.target.textContent === 'Đánh giá sản phẩm') {
+                alert('Chuyển đến trang đánh giá sản phẩm');
+            } else if (e.target.textContent === 'Mua lại') {
+                alert('Thêm sản phẩm vào giỏ hàng');
+            } else if (e.target.textContent === 'Tiếp tục mua sắm') {
+                alert('Chuyển đến trang sản phẩm');
+            }
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9654a5a361c1515c',t:'MTc1MzU0MDc3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

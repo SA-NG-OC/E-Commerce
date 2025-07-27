@@ -39,10 +39,8 @@ var SmoothRouter = /** @class */ (function () {
         var _this = this;
         this.isNavigating = false;
         this.currentPage = '';
-        console.log('SmoothRouter initialized');
         window.addEventListener('popstate', function (e) {
             var _a;
-            console.log('Popstate event:', e.state);
             if ((_a = e.state) === null || _a === void 0 ? void 0 : _a.page) {
                 _this.navigateToPage(e.state.page, false, e.state.params);
             }
@@ -54,34 +52,21 @@ var SmoothRouter = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log('NavigateTo called:', page, params);
-                        console.log('Current isNavigating:', this.isNavigating);
-                        console.log('Current page:', this.currentPage);
-                        if (this.isNavigating) {
-                            console.log('Already navigating, skipping...');
+                        if (this.isNavigating)
                             return [2 /*return*/];
-                        }
-                        // Bỏ check currentPage để luôn cho phép navigate đến ChiTietSanPham
-                        // if (this.currentPage === page && !params) return;
                         this.isNavigating = true;
-                        console.log('Starting navigation...');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, 5, 6]);
-                        console.log('Starting fadeOut...');
                         return [4 /*yield*/, this.fadeOut()];
                     case 2:
                         _a.sent();
-                        console.log('FadeOut completed, starting navigateToPage...');
                         return [4 /*yield*/, this.navigateToPage(page, true, params)];
                     case 3:
                         _a.sent();
-                        console.log('Navigation completed successfully');
                         return [3 /*break*/, 6];
                     case 4:
                         error_1 = _a.sent();
-                        console.error('Navigation error:', error_1);
-                        // Fallback về cách cũ nếu có lỗi
                         if (params) {
                             queryString = new URLSearchParams(params).toString();
                             window.location.href = "/FE/HTML/".concat(page).concat(queryString ? '?' + queryString : '');
@@ -92,7 +77,6 @@ var SmoothRouter = /** @class */ (function () {
                         return [3 /*break*/, 6];
                     case 5:
                         this.isNavigating = false;
-                        console.log('Navigation finished, isNavigating set to false');
                         return [7 /*endfinally*/];
                     case 6: return [2 /*return*/];
                 }
@@ -107,70 +91,50 @@ var SmoothRouter = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        console.log('NavigateToPage called:', page, updateHistory, params);
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 9, , 10]);
-                        console.log('Fetching page:', "/FE/HTML/".concat(page));
+                        _b.trys.push([0, 8, , 9]);
                         return [4 /*yield*/, fetch("/FE/HTML/".concat(page))];
-                    case 2:
+                    case 1:
                         response = _b.sent();
-                        console.log('Fetch response:', response.ok, response.status);
-                        if (!response.ok) {
+                        if (!response.ok)
                             throw new Error("HTTP ".concat(response.status, ": ").concat(response.statusText));
-                        }
                         return [4 /*yield*/, response.text()];
-                    case 3:
+                    case 2:
                         html = _b.sent();
-                        console.log('HTML fetched, length:', html.length);
                         parser = new DOMParser();
                         doc = parser.parseFromString(html, 'text/html');
                         newMainContent = doc.querySelector('main, .main-content, .content');
                         newTitle = ((_a = doc.querySelector('title')) === null || _a === void 0 ? void 0 : _a.textContent) || 'E-commerce';
-                        console.log('Parsed content:', {
-                            hasMainContent: !!newMainContent,
-                            title: newTitle
-                        });
-                        if (!newMainContent) return [3 /*break*/, 7];
+                        if (!newMainContent) return [3 /*break*/, 6];
                         currentMain = document.querySelector('main, .main-content, .content');
-                        console.log('Current main element found:', !!currentMain);
                         if (currentMain) {
                             currentMain.innerHTML = newMainContent.innerHTML;
                             currentMain.className = newMainContent.className;
-                            console.log('Content replaced successfully');
                         }
                         document.title = newTitle;
-                        console.log('Loading page styles...');
                         return [4 /*yield*/, this.loadPageStyles(page)];
+                    case 3:
+                        _b.sent();
+                        return [4 /*yield*/, this.loadPageScript(page, params)];
                     case 4:
                         _b.sent();
-                        console.log('Loading page scripts...');
-                        return [4 /*yield*/, this.loadPageScript(page, params)];
-                    case 5:
-                        _b.sent(); // ✅ Pass params to loadPageScript
-                        console.log('Updating active nav item...');
                         this.updateActiveNavItem(page);
                         if (updateHistory) {
                             url = params ?
                                 "/FE/HTML/".concat(page, "?").concat(new URLSearchParams(params).toString()) :
                                 "/FE/HTML/".concat(page);
-                            console.log('Updating history:', url, { page: page, params: params });
                             history.pushState({ page: page, params: params }, '', url);
                         }
                         this.currentPage = page;
-                        console.log('Starting fadeIn...');
                         return [4 /*yield*/, this.fadeIn()];
-                    case 6:
+                    case 5:
                         _b.sent();
-                        console.log('FadeIn completed');
-                        return [3 /*break*/, 8];
-                    case 7: throw new Error('No main content found in the page');
-                    case 8: return [3 /*break*/, 10];
-                    case 9:
+                        return [3 /*break*/, 7];
+                    case 6: throw new Error('No main content found in the page');
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         error_2 = _b.sent();
-                        console.error('Error in navigateToPage:', error_2);
                         throw error_2;
-                    case 10: return [2 /*return*/];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
@@ -179,7 +143,6 @@ var SmoothRouter = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var styleMap, stylePath, existingStyles, link;
             return __generator(this, function (_a) {
-                console.log('Loading styles for:', page);
                 styleMap = {
                     'TrangChu.html': '/FE/CSS/TrangChu.css',
                     'GioHang.html': '/FE/CSS/GioHang.css',
@@ -191,28 +154,23 @@ var SmoothRouter = /** @class */ (function () {
                     'ChiTietSanPham.html': '/FE/CSS/ChiTietSanPham.css'
                 };
                 stylePath = styleMap[page];
-                console.log('Style path:', stylePath);
                 if (stylePath) {
                     existingStyles = document.querySelectorAll('link[rel="stylesheet"]:not([href*="NavBar"])');
-                    console.log('Removing existing styles:', existingStyles.length);
                     existingStyles.forEach(function (style) { return style.remove(); });
                     link = document.createElement('link');
                     link.rel = 'stylesheet';
                     link.href = stylePath;
                     document.head.appendChild(link);
-                    console.log('New style added:', stylePath);
                 }
                 return [2 /*return*/];
             });
         });
     };
-    // ✅ Modified to accept params and wait for functions to be available
     SmoothRouter.prototype.loadPageScript = function (page, params) {
         return __awaiter(this, void 0, void 0, function () {
             var scriptMap, scriptPath, existingScripts;
             var _this = this;
             return __generator(this, function (_a) {
-                console.log('Loading script for:', page);
                 scriptMap = {
                     'TrangChu.html': '/FE/ts/productRender.js',
                     'GioHang.html': '/FE/ts/gioHang.js',
@@ -224,10 +182,8 @@ var SmoothRouter = /** @class */ (function () {
                     'ChiTietSanPham.html': '/FE/ts/chiTietSanPham.js'
                 };
                 scriptPath = scriptMap[page];
-                console.log('Script path:', scriptPath);
                 if (scriptPath) {
                     existingScripts = document.querySelectorAll('script[src]:not([src*="navBar"]):not([src*="router"])');
-                    console.log('Removing existing scripts:', existingScripts.length);
                     existingScripts.forEach(function (script) { return script.remove(); });
                     return [2 /*return*/, new Promise(function (resolve) {
                             var script = document.createElement('script');
@@ -235,40 +191,27 @@ var SmoothRouter = /** @class */ (function () {
                             script.onload = function () { return __awaiter(_this, void 0, void 0, function () {
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0:
-                                            console.log('Script loaded successfully:', scriptPath);
-                                            // ✅ Wait for functions to be available before executing
-                                            return [4 /*yield*/, this.waitForFunctionsAndExecute(page, params)];
+                                        case 0: return [4 /*yield*/, this.waitForFunctionsAndExecute(page, params)];
                                         case 1:
-                                            // ✅ Wait for functions to be available before executing
                                             _a.sent();
                                             resolve();
                                             return [2 /*return*/];
                                     }
                                 });
                             }); };
-                            script.onerror = function (e) {
-                                console.error("Cannot load script:", scriptPath, e);
-                                resolve(); // Vẫn resolve để không block
-                            };
+                            script.onerror = function () { return resolve(); };
                             document.head.appendChild(script);
-                            console.log('Script tag added to head');
                         })];
-                }
-                else {
-                    console.log('No script mapping found for page:', page);
                 }
                 return [2 /*return*/];
             });
         });
     };
-    // ✅ New method to wait for functions to be available
     SmoothRouter.prototype.waitForFunctionsAndExecute = function (page, params) {
         return __awaiter(this, void 0, void 0, function () {
             var maxWaitTime, checkInterval, elapsedTime, checkFunctions;
             var _this = this;
             return __generator(this, function (_a) {
-                console.log('Waiting for functions to be available for:', page);
                 maxWaitTime = 2000;
                 checkInterval = 50;
                 elapsedTime = 0;
@@ -287,15 +230,17 @@ var SmoothRouter = /** @class */ (function () {
                             return typeof window.initDanhMuc === 'function';
                         case 'YeuThich.html':
                             return typeof window.initYeuThich === 'function';
+                        case 'DonHang.html':
+                            return typeof window.initDonHang === 'function' ||
+                                typeof window.loadDonHangData === 'function';
                         default:
-                            return true; // For pages without specific functions
+                            return true;
                     }
                 };
                 return [2 /*return*/, new Promise(function (resolve) {
                         var intervalId = setInterval(function () {
                             if (checkFunctions() || elapsedTime >= maxWaitTime) {
                                 clearInterval(intervalId);
-                                console.log("Functions available for ".concat(page, " after ").concat(elapsedTime, "ms"));
                                 _this.executePageScript(page, params);
                                 resolve();
                             }
@@ -305,13 +250,10 @@ var SmoothRouter = /** @class */ (function () {
             });
         });
     };
-    // ✅ Modified to accept params
     SmoothRouter.prototype.executePageScript = function (page, params) {
-        console.log('Executing page script for:', page, 'with params:', params);
         try {
             switch (page) {
                 case 'TrangChu.html':
-                    console.log('Executing TrangChu script...');
                     if (window.initTrangChu) {
                         window.initTrangChu();
                     }
@@ -320,7 +262,6 @@ var SmoothRouter = /** @class */ (function () {
                     }
                     break;
                 case 'GioHang.html':
-                    console.log('Executing GioHang script...');
                     if (window.initGioHang) {
                         window.initGioHang();
                     }
@@ -329,12 +270,6 @@ var SmoothRouter = /** @class */ (function () {
                     }
                     break;
                 case 'ChiTietSanPham.html':
-                    console.log('Executing ChiTietSanPham script...');
-                    console.log('Available functions:', {
-                        initChiTietSanPham: typeof window.initChiTietSanPham,
-                        renderChiTietSanPham: typeof window.renderChiTietSanPham
-                    });
-                    // ✅ Store params in history state for ChiTietSanPham
                     if (params) {
                         history.replaceState({ page: page, params: params }, '', window.location.href);
                     }
@@ -344,77 +279,61 @@ var SmoothRouter = /** @class */ (function () {
                     else if (window.renderChiTietSanPham) {
                         window.renderChiTietSanPham();
                     }
-                    else {
-                        console.warn('No ChiTietSanPham functions available');
-                    }
                     break;
                 case 'DanhMuc.html':
-                    console.log('Executing DanhMuc script...');
                     if (window.initDanhMuc) {
                         window.initDanhMuc();
                     }
                     break;
                 case 'YeuThich.html':
-                    console.log('Executing YeuThich script...');
                     if (window.initYeuThich) {
                         window.initYeuThich();
                     }
                     break;
-                default:
-                    console.log('No specific script execution for:', page);
+                case 'DonHang.html':
+                    if (window.initDonHang) {
+                        window.initDonHang();
+                    }
+                    else if (window.loadDonHangData) {
+                        window.loadDonHangData();
+                    }
+                    break;
             }
         }
-        catch (error) {
-            console.error('Error executing page script:', error);
-        }
+        catch (_) { }
     };
     SmoothRouter.prototype.fadeOut = function () {
-        console.log('FadeOut started');
         return new Promise(function (resolve) {
             var mainContent = document.querySelector('main, .main-content, .content');
-            console.log('Main content for fadeOut:', !!mainContent);
             if (mainContent) {
                 mainContent.style.transition = 'opacity 0.2s ease-out';
                 mainContent.style.opacity = '0.3';
-                setTimeout(function () {
-                    console.log('FadeOut completed');
-                    resolve();
-                }, 200);
+                setTimeout(resolve, 200);
             }
             else {
-                console.log('No main content found for fadeOut');
                 resolve();
             }
         });
     };
     SmoothRouter.prototype.fadeIn = function () {
-        console.log('FadeIn started');
         return new Promise(function (resolve) {
             var mainContent = document.querySelector('main, .main-content, .content');
-            console.log('Main content for fadeIn:', !!mainContent);
             if (mainContent) {
                 mainContent.style.transition = 'opacity 0.3s ease-in';
                 mainContent.style.opacity = '1';
-                setTimeout(function () {
-                    console.log('FadeIn completed');
-                    resolve();
-                }, 300);
+                setTimeout(resolve, 300);
             }
             else {
-                console.log('No main content found for fadeIn');
                 resolve();
             }
         });
     };
     SmoothRouter.prototype.updateActiveNavItem = function (page) {
-        console.log('Updating active nav item for:', page);
         var navItems = document.querySelectorAll('.nav-bar .nav-item');
-        console.log('Nav items found:', navItems.length);
         navItems.forEach(function (item) {
             var itemPage = item.getAttribute('data-page');
             if (itemPage === page) {
                 item.classList.add('active');
-                console.log('Added active class to:', itemPage);
             }
             else {
                 item.classList.remove('active');
@@ -422,14 +341,10 @@ var SmoothRouter = /** @class */ (function () {
         });
     };
     SmoothRouter.prototype.init = function () {
-        console.log('Router init called');
         var currentPage = window.location.pathname.split('/').pop() || 'TrangChu.html';
-        console.log('Current page detected:', currentPage);
         this.currentPage = currentPage;
         this.updateActiveNavItem(currentPage);
     };
     return SmoothRouter;
 }());
-// Khởi tạo router
-console.log('Creating SmoothRouter instance');
 window.smoothRouter = new SmoothRouter();

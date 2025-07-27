@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn Hàng Của Tôi - Shoe Store</title>
+    <link rel="stylesheet" href="/FE/CSS/DonHang.css">
+    <link rel="stylesheet" href="/FE/CSS/NavBar.css">
+</head>
+
+<body>
+    <!-- Loading Container -->
+    <div id="loadingContainer"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="loading-spinner"
+            style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;">
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Page Title -->
+
+
+        <!-- Filter Tabs -->
+        <div class="filter-section">
+            <div class="filter-border">
+                <nav class="filter-nav">
+                    <button class="filter-tab active" data-status="all">
+                        Tất cả đơn hàng
+                    </button>
+                    <button class="filter-tab" data-status="cho_xac_nhan">
+                        Chờ xác nhận
+                    </button>
+                    <button class="filter-tab" data-status="da_xac_nhan">
+                        Đã xác nhận
+                    </button>
+                    <button class="filter-tab" data-status="dang_giao">
+                        Đang giao
+                    </button>
+                    <button class="filter-tab" data-status="da_giao">
+                        Đã giao
+                    </button>
+                    <button class="filter-tab" data-status="da_huy">
+                        Đã hủy
+                    </button>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders" id="orders-container">
+            <!-- Dữ liệu sẽ được load từ TypeScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+            <div class="empty-icon">
+                <span class="package-icon">📦</span>
+            </div>
+            <h3 class="empty-title">Không có đơn hàng nào</h3>
+            <p class="empty-text">Bạn chưa có đơn hàng nào trong trạng thái này</p>
+            <button class="btn primary">
+                Tiếp tục mua sắm
+            </button>
+        </div>
+    </main>
+
+    <script src="/FE/ts/router.js"></script>
+    <script src="/FE/ts/navBar.js"></script>
+    <script src="/FE/ts/DonHang.js"></script>
+
+    <style>
+
+    </style>
+</body>
+
+</html>
