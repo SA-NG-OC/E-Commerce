@@ -1,31 +1,56 @@
-<!-- DanhMuc.html -->
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8" />
-    <title>Danh mục sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danh Mục Giày - Shoe Store</title>
+    <link rel="stylesheet" href="/FE/css/DanhMuc.css" />
+    <link rel="stylesheet" href="/FE/css/NavBar.css" />
 </head>
 
 <body>
-    <!-- Wrapper nội dung chính -->
-    <div id="navbar"></div>
-    <main class="main-content">
-        <h2>Danh mục sản phẩm</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <div class="placeholder-text">Áo sơ mi</div>
-            </div>
-            <div class="product-card">
-                <div class="placeholder-text">Quần jeans</div>
+    <div class="main-content">
+        <button class="back-btn" style="display: none;" id="backBtn">← Quay lại</button>
+
+        <!-- Brand Filter ComboBox -->
+        <div class="filter-section" id="filterSection">
+            <label class="filter-label">Lọc theo thương hiệu:</label>
+            <div class="combobox-container">
+                <input type="text" class="combobox-input" id="brandCombobox" placeholder="Tìm kiếm thương hiệu..." />
+                <div class="combobox-arrow" id="comboboxArrow">▼</div>
+                <div class="combobox-dropdown" id="brandDropdown">
+                    <!-- Brands will be loaded dynamically -->
+                </div>
             </div>
         </div>
-    </main>
 
-    <!-- Các script cần thiết -->
+        <!-- Loading Container -->
+        <div id="loadingContainer" class="loading" style="display: none;">
+            Đang tải dữ liệu...
+        </div>
+
+        <!-- Categories Grid -->
+        <div id="categoriesView">
+            <h2 class="section-title">Danh Mục Giày</h2>
+            <div class="category-grid" id="categoryGrid">
+                <!-- Categories will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsView" style="display: none;">
+            <h2 class="section-title" id="productTitle">Sản Phẩm</h2>
+            <div class="product-grid active" id="productGrid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Load TypeScript compiled to JavaScript -->
+    <script src="/FE/ts/router.js"></script>
     <script src="/FE/ts/navBar.js"></script>
     <script src="/FE/ts/danhMuc.js"></script>
-    <script src="/FE/ts/router.js"></script>
 </body>
 
 </html>

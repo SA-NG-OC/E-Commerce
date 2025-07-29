@@ -84,7 +84,7 @@ function formatDate(dateString) {
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
 }
-function showError(message) {
+function showError2(message) {
     var container = document.getElementById('orders-container');
     if (container) {
         container.innerHTML = "\n            <div class=\"error-message\">\n                <p style=\"text-align: center; color: #e74c3c; padding: 20px;\">\n                    ".concat(message, "\n                </p>\n            </div>\n        ");
@@ -112,7 +112,7 @@ function hideEmptyState() {
 }
 // Render
 function renderProductsOrder(sanPhams) {
-    return sanPhams.map(function (sp) { return "\n        <div class=\"product\">\n            <div class=\"product-img\">\n                ".concat(sp.hinh_anh_bien_the ?
+    return sanPhams.map(function (sp) { return "\n        <div class=\"product\" data-id=\"".concat(sp.id_san_pham, "\" style=\"cursor: pointer;\">\n            <div class=\"product-img\">\n                ").concat(sp.hinh_anh_bien_the ?
         "<img src=\"".concat(sp.hinh_anh_bien_the, "\" alt=\"").concat(sp.ten_san_pham, "\" \n                  style=\"width: 60px; height: 60px; object-fit: cover; border-radius: 8px;\"\n                  onerror=\"this.style.display='none'; this.nextElementSibling.style.display='flex';\" />\n                  <span class=\"shoe-icon\" style=\"display: none;\">\uD83D\uDC5F</span>") :
         '<span class="shoe-icon">👟</span>', "\n            </div>\n            <div class=\"product-info\">\n                <h4 class=\"product-name\">").concat(sp.ten_san_pham, "</h4>\n                <p class=\"product-variant\">M\u00E0u: ").concat(sp.mau_sac, " | Size: ").concat(sp.kich_co, "</p>\n                <p class=\"product-qty\">S\u1ED1 l\u01B0\u1EE3ng: ").concat(sp.so_luong, "</p>\n            </div>\n            <div class=\"product-price\">\n                <p class=\"price\">").concat(formatCurrency(sp.gia_ban * sp.so_luong), "</p>\n            </div>\n        </div>\n    "); }).join('');
 }
@@ -129,6 +129,25 @@ function renderOrderActions(trangThai, orderId) {
 function createOrderCard(order) {
     var trangThaiInfo = TRANG_THAI_MAP[order._trang_thai] || { text: 'Không xác định', class: 'unknown' };
     return "\n        <div class=\"order-card\" data-status=\"".concat(order._trang_thai, "\">\n            <div class=\"order-header\">\n                <div class=\"order-info\">\n                    <h3 class=\"order-id\">\u0110\u01A1n h\u00E0ng #").concat(order._id, "</h3>\n                    <p class=\"order-date\">Ng\u00E0y \u0111\u1EB7t: ").concat(formatDate(order._ngay_tao), "</p>\n                </div>\n                <span class=\"status ").concat(trangThaiInfo.class, "\">").concat(trangThaiInfo.text, "</span>\n            </div>\n            <div class=\"products\">").concat(renderProductsOrder(order._san_pham), "</div>\n            <div class=\"order-total\">\n                <div class=\"total-row\">\n                    <span class=\"total-label\">T\u1ED5ng thanh to\u00E1n:</span>\n                    <span class=\"total-amount\">").concat(formatCurrency(order._tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">").concat(renderOrderActions(order._trang_thai, order._id), "</div>\n        </div>\n    ");
+}
+// Thêm function để setup event listeners cho products
+function setupProductClickEvents() {
+    var products = document.querySelectorAll('.product');
+    products.forEach(function (product) {
+        product.addEventListener('click', function () {
+            var id = product.getAttribute('data-id');
+            if (id) {
+                // Sử dụng smooth router thay vì window.location
+                if (window.smoothRouter) {
+                    window.smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
+                }
+                else {
+                    // Fallback nếu router chưa sẵn sàng
+                    window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                }
+            }
+        });
+    });
 }
 function loadDonHangData() {
     return __awaiter(this, void 0, void 0, function () {
@@ -152,7 +171,7 @@ function loadDonHangData() {
                     if (!currentUserId) {
                         if (loadingContainer)
                             loadingContainer.style.display = 'none';
-                        return [2 /*return*/, showError('Không tìm thấy thông tin người dùng')];
+                        return [2 /*return*/, showError2('Không tìm thấy thông tin người dùng')];
                     }
                     _a.label = 1;
                 case 1:
@@ -189,7 +208,7 @@ function loadDonHangData() {
                     console.error('Lỗi khi tải dữ liệu đơn hàng:', error_1);
                     if (loadingContainer)
                         loadingContainer.style.display = 'none';
-                    showError('Không thể tải dữ liệu đơn hàng: ');
+                    showError2('Không thể tải dữ liệu đơn hàng: ');
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
@@ -213,6 +232,8 @@ function renderOrders(orders) {
     container.innerHTML = ordersHtml;
     container.style.display = 'block';
     hideEmptyState();
+    // Setup product click events sau khi render xong
+    setupProductClickEvents();
     // Animation effect
     setTimeout(function () {
         container.style.opacity = '0';
@@ -291,7 +312,7 @@ function danhGiaSanPham(orderId) {
     }
 }
 function muaLai(orderId) {
-    alert('Đã thêm sản phẩm vào giỏ hàng');
+    window.location.href = "/FE/HTML/ThanhToan.html?orderId=".concat(orderId);
 }
 function tiepTucMuaSam() {
     if (window.smoothRouter) {
@@ -301,7 +322,7 @@ function tiepTucMuaSam() {
         window.location.href = '/FE/HTML/TrangChu.html';
     }
 }
-function setupEventListeners() {
+function setupEventListeners2() {
     var filterTabs = document.querySelectorAll('.filter-tab');
     filterTabs.forEach(function (tab) {
         tab.addEventListener('click', function (e) {
@@ -331,11 +352,13 @@ function filterOrders(status) {
         }
     });
     visibleCount === 0 ? showEmptyState() : hideEmptyState();
+    // Setup lại product click events sau khi filter
+    setupProductClickEvents();
 }
 // Init
 function initDonHang() {
     console.log('Initializing DonHang...');
-    setupEventListeners();
+    setupEventListeners2();
     loadDonHangData();
     var continueBtn = document.querySelector('#empty-state .btn.primary');
     if (continueBtn) {
@@ -352,6 +375,7 @@ window.lienHeHoTro = lienHeHoTro;
 window.danhGiaSanPham = danhGiaSanPham;
 window.muaLai = muaLai;
 window.tiepTucMuaSam = tiepTucMuaSam;
+window.setupProductClickEvents = setupProductClickEvents;
 document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', initDonHang)
     : initDonHang();

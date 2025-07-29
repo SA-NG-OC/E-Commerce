@@ -70,7 +70,7 @@ function formatCurrency(amount: number): string {
     return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
 }
 
-function showError(message: string): void {
+function showError2(message: string): void {
     const container = document.getElementById('orders-container');
     if (container) {
         container.innerHTML = `
@@ -106,7 +106,7 @@ function hideEmptyState(): void {
 // Render
 function renderProductsOrder(sanPhams: SanPhamDonHang[]): string {
     return sanPhams.map(sp => `
-        <div class="product">
+        <div class="product" data-id="${sp.id_san_pham}" style="cursor: pointer;">
             <div class="product-img">
                 ${sp.hinh_anh_bien_the ?
             `<img src="${sp.hinh_anh_bien_the}" alt="${sp.ten_san_pham}" 
@@ -166,6 +166,25 @@ function createOrderCard(order: DonHangData): string {
     `;
 }
 
+// Thêm function để setup event listeners cho products
+function setupProductClickEvents(): void {
+    const products = document.querySelectorAll('.product');
+    products.forEach(product => {
+        product.addEventListener('click', function () {
+            const id = product.getAttribute('data-id');
+            if (id) {
+                // Sử dụng smooth router thay vì window.location
+                if ((window as any).smoothRouter) {
+                    (window as any).smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
+                } else {
+                    // Fallback nếu router chưa sẵn sàng
+                    window.location.href = `/FE/HTML/ChiTietSanPham.html?id=${id}`;
+                }
+            }
+        });
+    });
+}
+
 async function loadDonHangData(): Promise<void> {
     const API_BASE_URL = 'http://localhost:3000/api';
     const loadingContainer = document.getElementById('loadingContainer');
@@ -186,7 +205,7 @@ async function loadDonHangData(): Promise<void> {
 
     if (!currentUserId) {
         if (loadingContainer) loadingContainer.style.display = 'none';
-        return showError('Không tìm thấy thông tin người dùng');
+        return showError2('Không tìm thấy thông tin người dùng');
     }
 
     try {
@@ -218,7 +237,7 @@ async function loadDonHangData(): Promise<void> {
     } catch (error) {
         console.error('Lỗi khi tải dữ liệu đơn hàng:', error);
         if (loadingContainer) loadingContainer.style.display = 'none';
-        showError('Không thể tải dữ liệu đơn hàng: ');
+        showError2('Không thể tải dữ liệu đơn hàng: ');
     }
 }
 
@@ -243,6 +262,9 @@ function renderOrders(orders: DonHangData[]): void {
     container.innerHTML = ordersHtml;
     container.style.display = 'block';
     hideEmptyState();
+
+    // Setup product click events sau khi render xong
+    setupProductClickEvents();
 
     // Animation effect
     setTimeout(() => {
@@ -321,7 +343,7 @@ function tiepTucMuaSam() {
     }
 }
 
-function setupEventListeners(): void {
+function setupEventListeners2(): void {
     const filterTabs = document.querySelectorAll('.filter-tab');
     filterTabs.forEach(tab => {
         tab.addEventListener('click', e => {
@@ -352,14 +374,15 @@ function filterOrders(status: string): void {
         }
     });
     visibleCount === 0 ? showEmptyState() : hideEmptyState();
+
+    // Setup lại product click events sau khi filter
+    setupProductClickEvents();
 }
-
-
 
 // Init
 function initDonHang(): void {
     console.log('Initializing DonHang...');
-    setupEventListeners();
+    setupEventListeners2();
     loadDonHangData();
 
     const continueBtn = document.querySelector('#empty-state .btn.primary');
@@ -378,7 +401,8 @@ function initDonHang(): void {
 (window as any).danhGiaSanPham = danhGiaSanPham;
 (window as any).muaLai = muaLai;
 (window as any).tiepTucMuaSam = tiepTucMuaSam;
+(window as any).setupProductClickEvents = setupProductClickEvents;
 
 document.readyState === 'loading'
     ? document.addEventListener('DOMContentLoaded', initDonHang)
-    : initDonHang();
+    : initDonHang();    
