@@ -25,7 +25,7 @@ export class SanPhamController {
 
     static async getByDanhMuc_ThuongHieu(req: Request, res: Response) {
         try {
-            const { danhMucId, thuongHieuId } = req.params; // 👈 đổi từ query sang params
+            const { danhMucId, thuongHieuId } = req.params;
             const sanPhams: SanPham[] = await SanPhamService.filterByDanhMucAndThuongHieu(danhMucId, thuongHieuId);
             res.json(sanPhams);
         } catch (err) {

@@ -1,3 +1,185 @@
+.color-selector {
+    margin-bottom: 25px;
+}
+
+.selector-label {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.color-options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.color-option {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.color-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-option:hover .color-circle {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.color-option.selected .color-circle {
+    border-color: #F19EDC;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #F19EDC;
+}
+
+.color-name {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+    color: #666;
+    white-space: nowrap;
+}
+
+.color-option.selected .color-name {
+    color: #F19EDC;
+    font-weight: 600;
+}
+
+/* Animation cho màu được chọn */
+@keyframes pulse {
+    0% {
+        transform: scale(1.15);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.15);
+    }
+}
+
+.color-option.selected .color-circle {
+    animation: pulse 0.6s ease-in-out;
+}
+
+/* ========================================
+   SIZE SELECTOR STYLES
+======================================== */
+
+.size-selector {
+    margin-bottom: 25px;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.size-option {
+    padding: 12px 18px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 55px;
+    text-align: center;
+    background: white;
+}
+
+.size-option:hover {
+    border-color: #F19EDC;
+    background: #f8e6f3;
+    transform: translateY(-2px);
+}
+
+.size-option.selected {
+    border-color: #F19EDC;
+    background: #F19EDC;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(241, 158, 220, 0.3);
+}
+
+/* Style cho size hết hàng */
+.size-option.unavailable {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.size-option.unavailable:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: #999;
+    transform: translateY(-50%);
+}
+
+.size-option.unavailable:hover {
+    border-color: #ddd;
+    background: #f5f5f5;
+    transform: none;
+}
+
+/* ========================================
+   SELECTION INFO STYLES
+======================================== */
+
+.selection-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #F19EDC;
+}
+
+.selection-info h4 {
+    color: #F19EDC;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.selected-options {
+    display: flex;
+    gap: 20px;
+    font-size: 0.95em;
+}
+
+.selected-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selected-color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #ddd;
+}
+
 .review-filter {
     display: flex;
     align-items: center;
@@ -499,6 +681,26 @@ body {
 
     .action-buttons {
         flex-direction: column;
+    }
+
+    .color-options,
+    .size-options {
+        justify-content: flex-start;
+    }
+
+    .selected-options {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .color-circle {
+        width: 40px;
+        height: 40px;
+    }
+
+    .size-option {
+        padding: 10px 15px;
+        min-width: 50px;
     }
 }
 

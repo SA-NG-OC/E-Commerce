@@ -35,19 +35,55 @@
                         </div>
                     </div>
                     <div class="stock-status"></div>
+                    <!-- Color Selector -->
+                    <div class="color-selector">
+                        <label class="selector-label">Chọn màu sắc:</label>
+                        <div class="color-options">
+                            <!-- Các màu sắc sẽ được thêm vào đây thông qua TypeScript -->
+                        </div>
+                    </div>
+
+                    <!-- Size Selector -->
+                    <div class="size-selector">
+                        <label class="selector-label">Chọn kích cỡ:</label>
+                        <div class="size-options">
+                            <!-- Các kích cỡ sẽ được thêm vào đây thông qua TypeScript -->
+                        </div>
+                    </div>
+
+                    <!-- Selection Info -->
+                    <div class="selection-info">
+                        <h4>Lựa chọn của bạn:</h4>
+                        <div class="selected-options">
+                            <div class="selected-option">
+                                <span>Màu:</span>
+                                <div class="selected-color-preview" id="selectedColorPreview"
+                                    style="background: linear-gradient(135deg, #2c3e50, #000)"></div>
+                                <span id="selectedColorName">Đen</span>
+                            </div>
+                            <div class="selected-option">
+                                <span>Size:</span>
+                                <strong id="selectedSizeName">40</strong>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="quantity-selector">
                         <label>Số lượng:</label>
                         <div class="quantity-input">
-                            <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                            <input type="number" class="quantity-number" value="1" min="1" max="15" id="quantity">
-                            <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                            <button class="quantity-btn">-</button>
+                            <input type="number" class="quantity-number" value="1" min="1" max="15" id="quantity"
+                                readonly>
+                            <button class="quantity-btn">+</button>
                         </div>
+                    </div>
+                    <div class="quantity">
+
                     </div>
 
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="addToCart()">Thêm vào giỏ hàng</button>
-                        <button class="btn btn-secondary" onclick="buyNow()">Mua ngay</button>
+                        <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+                        <button class="btn btn-secondary">Mua ngay</button>
                     </div>
                 </div>
             </div>
@@ -102,35 +138,6 @@
     <!-- ✅ Scripts cho smooth router -->
     <script src="/FE/ts/navBar.js"></script>
     <script src="/FE/ts/chiTietSanPham.js"></script>
-    <script>
-        // ✅ Các function cơ bản cho quantity và actions
-        function decreaseQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            const currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-            }
-        }
-
-        function increaseQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            const currentValue = parseInt(quantityInput.value);
-            const maxValue = parseInt(quantityInput.max);
-            if (currentValue < maxValue) {
-                quantityInput.value = currentValue + 1;
-            }
-        }
-
-        function addToCart() {
-            const quantity = document.getElementById('quantity').value;
-            alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
-        }
-
-        function buyNow() {
-            const quantity = document.getElementById('quantity').value;
-            alert(`Mua ngay ${quantity} sản phẩm!`);
-        }
-    </script>
 </body>
 
 </html>

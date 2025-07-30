@@ -9,6 +9,9 @@ router.get('/:nguoi_dung_id', GioHangController.getGioHang);
 // Tạo giỏ hàng mới
 router.post('/create/:nguoi_dung_id', GioHangController.createGioHang);
 
+// Thêm sản phẩm vào giỏ hàng
+router.post('/them', GioHangController.themSanPhamVaoGioHang);
+
 // Xóa sản phẩm theo biến thể khỏi giỏ hàng
 router.delete('/:gio_hang_id/bien-the/:bien_the_id', GioHangController.xoaSanPham);
 

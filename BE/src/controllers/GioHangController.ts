@@ -24,6 +24,25 @@ export class GioHangController {
         }
     }
 
+    // POST /api/gio-hang/them
+    static async themSanPhamVaoGioHang(req: Request, res: Response): Promise<void> {
+        try {
+            const { nguoi_dung_id, bien_the_id, so_luong } = req.body;
+
+            // Kiểm tra dữ liệu đầu vào
+            if (!nguoi_dung_id || !bien_the_id || !so_luong || isNaN(so_luong) || so_luong <= 0) {
+                res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
+                return;
+            }
+
+            await GioHangService.addSanPhamToGioHang(nguoi_dung_id, bien_the_id, so_luong);
+            res.status(201).json({ message: 'Thêm sản phẩm vào giỏ hàng thành công' });
+        } catch (err) {
+            res.status(500).json({ message: 'Lỗi server khi thêm sản phẩm vào giỏ hàng', error: err });
+        }
+    }
+
+
     // DELETE /api/gio-hang/:gio_hang_id/bien-the/:bien_the_id
     static async xoaSanPham(req: Request, res: Response): Promise<void> {
         try {
