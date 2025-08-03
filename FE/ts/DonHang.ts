@@ -38,7 +38,7 @@ const TRANG_THAI_MAP: Record<string, { text: string; class: string }> = {
 };
 
 // Utility functions
-function getUserId(): string | null {
+function getId(): string | null {
     try {
         const userContext = localStorage.getItem('usercontext');
         if (!userContext) return null;
@@ -66,7 +66,7 @@ function formatDate(dateString: string): string {
     }
 }
 
-function formatCurrency(amount: number): string {
+function formatCurrency2(amount: number): string {
     return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
 }
 
@@ -121,7 +121,7 @@ function renderProductsOrder(sanPhams: SanPhamDonHang[]): string {
                 <p class="product-qty">Số lượng: ${sp.so_luong}</p>
             </div>
             <div class="product-price">
-                <p class="price">${formatCurrency(sp.gia_ban * sp.so_luong)}</p>
+                <p class="price">${formatCurrency2(sp.gia_ban * sp.so_luong)}</p>
             </div>
         </div>
     `).join('');
@@ -158,7 +158,7 @@ function createOrderCard(order: DonHangData): string {
             <div class="order-total">
                 <div class="total-row">
                     <span class="total-label">Tổng thanh toán:</span>
-                    <span class="total-amount">${formatCurrency(order._tong_thanh_toan)}</span>
+                    <span class="total-amount">${formatCurrency2(order._tong_thanh_toan)}</span>
                 </div>
             </div>
             <div class="order-actions">${renderOrderActions(order._trang_thai, order._id)}</div>
@@ -200,7 +200,7 @@ async function loadDonHangData(): Promise<void> {
     if (loadingContainer) loadingContainer.style.display = 'flex';
     ordersContainer.style.display = 'none';
 
-    const currentUserId = getUserId();
+    const currentUserId = getId();
     console.log('Current User ID:', currentUserId);
 
     if (!currentUserId) {
@@ -276,7 +276,7 @@ function renderOrders(orders: DonHangData[]): void {
 
 async function huyDonHang(orderId: string): Promise<void> {
     const API_BASE_URL = 'http://localhost:3000/api';
-    const currentUserId = getUserId();
+    const currentUserId = getId();
 
     if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
 

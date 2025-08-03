@@ -13,6 +13,38 @@ export class SanPhamController {
             res.status(500).json({ message: 'Server error' });
         }
     }
+    static async updateSanPham(req: Request, res: Response) {
+        try {
+            const id = req.params.id;
+            const {
+                ten_san_pham,
+                ma_san_pham,
+                mo_ta,
+                gia_ban,
+                ten_danh_muc,
+                ten_thuong_hieu
+            } = req.body;
+
+            const success = await SanPhamService.updateSanPham(id, {
+                ten_san_pham,
+                ma_san_pham,
+                mo_ta,
+                gia_ban,
+                ten_danh_muc,
+                ten_thuong_hieu
+            });
+
+            if (success) {
+                res.json({ message: 'Cập nhật sản phẩm thành công' });
+            } else {
+                res.status(404).json({ message: 'Không tìm thấy sản phẩm để cập nhật' });
+            }
+        } catch (err) {
+            console.error('Lỗi khi cập nhật sản phẩm:', err);
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
+
     static async getAllWithImages(req: Request, res: Response) {
         try {
             const danhSach: SanPham[] = await SanPhamService.getAllWithImages();

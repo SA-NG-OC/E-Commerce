@@ -44,6 +44,9 @@ export class SanPhamService {
             id: bienThe.id,
             san_pham_id: bienThe.san_pham_id,
             mau_sac_id: bienThe.mau_sac_id,
+            mau_sac: bienThe.mau_sac,
+            ma_mau: bienThe.ma_mau,
+            kich_co: bienThe.kich_co,
             kich_co_id: bienThe.kich_co_id,
             so_luong_ton_kho: bienThe.so_luong_ton_kho
         }));
@@ -246,5 +249,56 @@ export class SanPhamService {
             });
         });
     }
+
+    static async updateSanPham(id: string, data: {
+        ten_san_pham: string;
+        ma_san_pham: string;
+        mo_ta: string;
+        gia_ban: number;
+        ten_danh_muc: string;
+        ten_thuong_hieu: string;
+    }): Promise<boolean> {
+        // Truy vấn lấy ID danh mục
+        const dmResult = await pool.query(
+            `SELECT id FROM danh_muc WHERE ten_danh_muc = $1 LIMIT 1`,
+            [data.ten_danh_muc]
+        );
+        if (dmResult.rows.length === 0) throw new Error('Không tìm thấy danh mục');
+
+        const danh_muc_id = dmResult.rows[0].id;
+
+        // Truy vấn lấy ID thương hiệu
+        const thResult = await pool.query(
+            `SELECT id FROM thuong_hieu WHERE ten_thuong_hieu = $1 LIMIT 1`,
+            [data.ten_thuong_hieu]
+        );
+        if (thResult.rows.length === 0) throw new Error('Không tìm thấy thương hiệu');
+
+        const thuong_hieu_id = thResult.rows[0].id;
+
+        // Cập nhật sản phẩm
+        const updateResult = await pool.query(
+            `UPDATE san_pham 
+         SET ten_san_pham = $1, 
+             ma_san_pham = $2,
+             mo_ta = $3,
+             gia_ban = $4,
+             danh_muc_id = $5,
+             thuong_hieu_id = $6
+         WHERE id = $7`,
+            [
+                data.ten_san_pham,
+                data.ma_san_pham,
+                data.mo_ta,
+                data.gia_ban,
+                danh_muc_id,
+                thuong_hieu_id,
+                id
+            ]
+        );
+        if (updateResult.rowCount === 0) throw new Error('Cập nhật sản phẩm không thành công');
+        return !(updateResult.rowCount === 0);
+    }
+
 
 }

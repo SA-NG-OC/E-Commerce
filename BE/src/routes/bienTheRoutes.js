@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const BienTheController_1 = require("../controllers/BienTheController");
+const express_1 = require("express");
+const router = (0, express_1.Router)();
+router.get("/:mauSacId/:kichCoId/:sanPhamId", BienTheController_1.BienTheController.checkExist);
+router.put('/:id', BienTheController_1.BienTheController.updateSoLuong);
+router.get('/:id', BienTheController_1.BienTheController.getById);
+router.get('/san-pham/:sanPhamId', BienTheController_1.BienTheController.getByProductId);
+router.delete('/:id', BienTheController_1.BienTheController.deleteBienThe);
+router.post('/', BienTheController_1.BienTheController.createVariant);
+exports.default = router;

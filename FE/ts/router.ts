@@ -80,7 +80,8 @@ class SmoothRouter {
             'ThongBao.html': '/FE/CSS/ThongBao.css',
             'YeuThich.html': '/FE/CSS/YeuThich.css',
             'KhuyenMai.html': '/FE/CSS/KhuyenMai.css',
-            'ChiTietSanPham.html': '/FE/CSS/ChiTietSanPham.css'
+            'ChiTietSanPham.html': '/FE/CSS/ChiTietSanPham.css',
+            'ThanhToan.html': '/FE/CSS/ThanhToan.css'
         };
 
         const stylePath = styleMap[page];
@@ -104,7 +105,8 @@ class SmoothRouter {
             'ThongBao.html': '/FE/ts/thongBao.js',
             'YeuThich.html': '/FE/ts/yeuThich.js',
             'KhuyenMai.html': '/FE/ts/khuyenMai.js',
-            'ChiTietSanPham.html': '/FE/ts/chiTietSanPham.js'
+            'ChiTietSanPham.html': '/FE/ts/chiTietSanPham.js',
+            'ThanhToan.html': '/FE/ts/thanhToan.js'
         };
 
         const scriptPath = scriptMap[page];
@@ -148,6 +150,9 @@ class SmoothRouter {
                 case 'DonHang.html':
                     return typeof (window as any).initDonHang === 'function' ||
                         typeof (window as any).loadDonHangData === 'function';
+                case 'ThanhToan.html':
+                    return typeof (window as any).initThanhToan === 'function' ||
+                        typeof (window as any).loadProductInfo === 'function';
                 default:
                     return true;
             }
@@ -207,6 +212,15 @@ class SmoothRouter {
                         (window as any).initDonHang();
                     } else if ((window as any).loadDonHangData) {
                         (window as any).loadDonHangData();
+                    }
+                case 'ThanhToan.html':
+                    if (params) {
+                        history.replaceState({ page, params }, '', window.location.href);
+                    }
+                    if ((window as any).initThanhToan) {
+                        (window as any).initThanhToan();
+                    } else if ((window as any).loadProductInfo) {
+                        (window as any).loadProductInfo();
                     }
                     break;
             }

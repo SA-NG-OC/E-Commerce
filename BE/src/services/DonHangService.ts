@@ -154,4 +154,164 @@ export class DonHangService {
         }
     }
 
+    async xoaDonHang(don_hang_id: string): Promise<{ success: boolean; message: string }> {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const result = await client.query(
+                `DELETE FROM don_hang WHERE id = $1`,
+                [don_hang_id]
+            );
+
+            if (result.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không tìm thấy đơn hàng để xóa'
+                };
+            }
+
+            await client.query('COMMIT');
+            return {
+                success: true,
+                message: 'Đơn hàng đã được xóa thành công'
+            };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi xóa đơn hàng:', error);
+
+            return {
+                success: false,
+                message: 'Có lỗi xảy ra khi xóa đơn hàng'
+            };
+        } finally {
+            client.release();
+        }
+    }
+
+
+    async createDonHang(nguoi_dung_id: string): Promise<string | null> {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // Lấy ID lớn nhất hiện tại
+            const idResult = await client.query(`
+            SELECT id FROM don_hang 
+            WHERE id LIKE 'DH%' 
+            ORDER BY id DESC 
+            LIMIT 1
+        `);
+
+            let newIdNumber: number = 1;
+            if (idResult.rows.length > 0) {
+                const lastId = idResult.rows[0].id; // eg: "DH005"
+                const numPart: number = parseInt(lastId.replace('DH', '')) || 0;
+                newIdNumber = numPart + 1;
+            }
+
+            const newId = `DH${newIdNumber.toString().padStart(3, '0')}`;
+
+            await client.query(`
+            INSERT INTO don_hang(id, nguoi_dung_id, tong_thanh_toan) 
+            VALUES ($1, $2, 0)
+        `, [newId, nguoi_dung_id]);
+
+            await client.query('COMMIT');
+            return newId;
+
+        } catch (err) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi tạo đơn hàng:', err);
+            return null;
+        } finally {
+            client.release();
+        }
+    }
+
+    async addChiTietDonHang(
+        don_hang_id: string,
+        bien_the_id: string,
+        so_luong: number
+    ): Promise<string | null> {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // Lấy san_pham_id từ bien_the_san_pham
+            const bienTheResult = await client.query(`
+            SELECT san_pham_id 
+            FROM bien_the_san_pham 
+            WHERE id = $1
+        `, [bien_the_id]);
+
+            if (bienTheResult.rows.length === 0) {
+                await client.query('ROLLBACK');
+                console.error('Không tìm thấy biến thể sản phẩm');
+                return null;
+            }
+
+            const san_pham_id = bienTheResult.rows[0].san_pham_id;
+
+            // Lấy giá bán từ bảng san_pham
+            const giaResult = await client.query(`
+            SELECT gia_ban 
+            FROM san_pham 
+            WHERE id = $1
+        `, [san_pham_id]);
+
+            if (giaResult.rows.length === 0) {
+                await client.query('ROLLBACK');
+                console.error('Không tìm thấy sản phẩm tương ứng');
+                return null;
+            }
+
+            const gia_ban = parseFloat(giaResult.rows[0].gia_ban);
+
+            // Sinh ID mới cho chi tiết đơn hàng
+            const idResult = await client.query(`
+            SELECT id FROM chi_tiet_don_hang 
+            WHERE id LIKE 'CTDH%' 
+            ORDER BY id DESC 
+            LIMIT 1
+        `);
+
+            let newIdNumber = 1;
+            if (idResult.rows.length > 0) {
+                const lastId = idResult.rows[0].id;
+                const numPart = parseInt(lastId.replace('CTDH', '')) || 0;
+                newIdNumber = numPart + 1;
+            }
+
+            const newId = `CTDH${newIdNumber.toString().padStart(3, '0')}`;
+
+            // Thêm chi tiết đơn hàng
+            await client.query(`
+            INSERT INTO chi_tiet_don_hang(id, don_hang_id, bien_the_id, so_luong, gia_ban)
+            VALUES ($1, $2, $3, $4, $5)
+        `, [newId, don_hang_id, bien_the_id, so_luong, gia_ban]);
+
+            // Cập nhật tổng thanh toán đơn hàng
+            await client.query(`
+            UPDATE don_hang 
+            SET tong_thanh_toan = tong_thanh_toan + $1 
+            WHERE id = $2
+        `, [gia_ban * so_luong, don_hang_id]);
+
+            await client.query('COMMIT');
+            return newId;
+
+        } catch (err) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi thêm chi tiết đơn hàng:', err);
+            return null;
+        } finally {
+            client.release();
+        }
+    }
+
+
 }

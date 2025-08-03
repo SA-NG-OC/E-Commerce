@@ -12,5 +12,6 @@ router.get('/filter/:danhMucId/all', SanPhamController.getByDanhMuc);
 router.get('/filter/all/:thuongHieuId', SanPhamController.getByThuongHieu);
 // Route tổng quát đặt cuối
 router.get('/filter/:danhMucId/:thuongHieuId', SanPhamController.getByDanhMuc_ThuongHieu);
+router.put('/:id', SanPhamController.updateSanPham);
 
 export default router;

@@ -61,4 +61,81 @@ export class DonHangController {
         }
     }
 
+    // ✅ Tạo đơn hàng mới
+    // Sử dụng api: http://localhost:3000/api/don-hang/tao
+    static async createDonHang(req: Request, res: Response) {
+        try {
+            const { nguoi_dung_id } = req.body;
+
+            if (!nguoi_dung_id) {
+                return res.status(400).json({ success: false, message: 'Thiếu nguoi_dung_id' });
+            }
+
+            const donHangService = new DonHangService();
+            const newId = await donHangService.createDonHang(nguoi_dung_id);
+
+            if (newId) {
+                res.status(201).json({ success: true, id: newId });
+            } else {
+                res.status(500).json({ success: false, message: 'Không thể tạo đơn hàng' });
+            }
+
+        } catch (err) {
+            console.error('Lỗi khi tạo đơn hàng:', err);
+            res.status(500).json({ success: false, message: 'Lỗi server' });
+        }
+    }
+
+    static async deleteDonHang(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res.status(400).json({ success: false, message: 'Thiếu id đơn hàng' });
+            }
+
+            const donHangService = new DonHangService();
+            const result = await donHangService.xoaDonHang(id);
+
+            if (result.success) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).json(result);
+            }
+
+        } catch (err) {
+            console.error('Lỗi khi xóa đơn hàng:', err);
+            res.status(500).json({ success: false, message: 'Lỗi server' });
+        }
+    }
+
+
+    // ✅ Thêm chi tiết đơn hàng
+    // Sử dụng api: http://localhost:3000/api/don-hang/chi-tiet/them
+    static async addChiTietDonHang(req: Request, res: Response) {
+        try {
+            const { don_hang_id, bien_the_id, so_luong } = req.body;
+
+            if (!don_hang_id || !bien_the_id || !so_luong) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Thiếu thông tin bắt buộc (don_hang_id, bien_the_id, so_luong)'
+                });
+            }
+
+            const donHangService = new DonHangService();
+            const newCTId = await donHangService.addChiTietDonHang(don_hang_id, bien_the_id, parseInt(so_luong));
+
+            if (newCTId) {
+                res.status(201).json({ success: true, id: newCTId });
+            } else {
+                res.status(500).json({ success: false, message: 'Không thể thêm chi tiết đơn hàng' });
+            }
+
+        } catch (err) {
+            console.error('Lỗi khi thêm chi tiết đơn hàng:', err);
+            res.status(500).json({ success: false, message: 'Lỗi server' });
+        }
+    }
+
 }

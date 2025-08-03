@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán</title>
+    <link rel="stylesheet" href="/FE/CSS/ThanhToan.css">
+    <link rel="stylesheet" href="/FE/CSS/NavBar.css">
+</head>
+
+<body>
+    <div class="main-content">
+        <div class="checkout-container">
+            <div class="checkout-form">
+                <h1 class="section-title">Thanh Toán</h1>
+
+                <form id="checkoutForm">
+                    <!-- Thông tin giao hàng -->
+                    <div class="form-section">
+                        <h2 class="section-header">
+                            <span class="section-icon">📍</span>
+                            Thông tin giao hàng
+                        </h2>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">Họ</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Tên</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Số điện thoại</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">Tỉnh/Thành phố</label>
+                                <select id="city" name="city" required>
+                                    <option value="">Chọn tỉnh/thành phố</option>
+                                    <option value="hanoi">Hà Nội</option>
+                                    <option value="hcm">TP. Hồ Chí Minh</option>
+                                    <option value="danang">Đà Nẵng</option>
+                                    <option value="haiphong">Hải Phòng</option>
+                                    <option value="cantho">Cần Thơ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="district">Phường/Xã</label>
+                                <select id="district" name="district" required>
+                                    <option value="">Chọn phường/xã</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Địa chỉ cụ thể</label>
+                            <input type="text" id="address" name="address" placeholder="Số nhà, tên đường..." required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="note">Ghi chú (tùy chọn)</label>
+                            <textarea id="note" name="note" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Phương thức thanh toán -->
+                    <div class="form-section">
+                        <h2 class="section-header">
+                            <span class="section-icon">💳</span>
+                            Phương thức thanh toán
+                        </h2>
+
+                        <div class="payment-methods">
+                            <div class="payment-option selected" data-method="cod">
+                                <input type="radio" id="cod" name="paymentMethod" value="cod" checked>
+                                <div class="payment-header">
+                                    <div class="payment-icon">🚚</div>
+                                    <div class="payment-title">Thanh toán khi nhận hàng (COD)</div>
+                                </div>
+                                <div class="payment-description">
+                                    Thanh toán bằng tiền mặt khi nhận được hàng
+                                </div>
+                            </div>
+
+                            <div class="payment-option" data-method="bank">
+                                <input type="radio" id="bank" name="paymentMethod" value="bank">
+                                <div class="payment-header">
+                                    <div class="payment-icon">🏦</div>
+                                    <div class="payment-title">Chuyển khoản ngân hàng</div>
+                                </div>
+                                <div class="payment-description">
+                                    Chuyển khoản trực tiếp vào tài khoản ngân hàng
+                                </div>
+                                <div class="bank-info">
+                                    <div class="bank-details">
+                                        <div class="bank-item">
+                                            <span class="bank-label">Ngân hàng:</span>
+                                            <span class="bank-value">Vietcombank</span>
+                                        </div>
+                                        <div class="bank-item">
+                                            <span class="bank-label">Số tài khoản:</span>
+                                            <span class="bank-value">1234567890</span>
+                                        </div>
+                                        <div class="bank-item">
+                                            <span class="bank-label">Chủ tài khoản:</span>
+                                            <span class="bank-value">SHOP GIÀY XYZ</span>
+                                        </div>
+                                        <div class="bank-item">
+                                            <span class="bank-label">Nội dung chuyển khoản:</span>
+                                            <span class="bank-value">Mã đơn hàng + Tên khách hàng</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="security-note">
+                        <span class="security-icon">🔒</span>
+                        Thông tin của bạn được bảo mật và mã hóa an toàn
+                    </div>
+                </form>
+            </div>
+
+            <div class="order-summary">
+                <h2 class="section-title">Đơn hàng của bạn</h2>
+
+                <div id="orderItems" class="order-items">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        Đang tải thông tin sản phẩm...
+                    </div>
+                </div>
+
+                <div id="orderTotal" class="order-total" style="display: none;">
+                    <div class="summary-row">
+                        <span>Tạm tính:</span>
+                        <span id="subtotal">0đ</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span id="shipping">30.000đ</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Giảm giá:</span>
+                        <span id="discount" style="color: #27ae60;">0đ</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Tổng cộng:</span>
+                        <span id="total">0đ</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="checkout-btn" form="checkoutForm" disabled>
+                    Đặt hàng ngay
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="/FE/ts/router.js"></script>
+    <script src="/FE/ts/navBar.js"></script>
+    <script src="/FE/ts/thanhToan.js"></script>

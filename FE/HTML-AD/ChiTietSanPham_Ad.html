@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Sản Phẩm - Cửa Hàng Giày</title>
+    <link rel="stylesheet" href="/FE/css/ChiTietSanPham_Ad.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥿 Quản Lý Sản Phẩm</h1>
+            <p>Cửa hàng giày thời trang</p>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading">
+            <h3>🔄 Đang tải dữ liệu...</h3>
+        </div>
+
+        <!-- Error message -->
+        <div id="errorMessage" class="error-message">
+            <strong>❌ Lỗi:</strong> <span id="errorText"></span>
+        </div>
+
+        <!-- Thống kê tổng quan -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="totalVariants">0</span>
+                <span class="stat-label">Biến thể</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="totalStock">0</span>
+                <span class="stat-label">Tồn kho</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="avgRating">0</span>
+                <span class="stat-label">Đánh giá TB</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="totalReviews">0</span>
+                <span class="stat-label">Nhận xét</span>
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="product-info">
+            <h2 class="section-title">Thông Tin Sản Phẩm</h2>
+
+            <div class="product-header">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop"
+                        alt="Sản phẩm" class="main-image" id="mainImage">
+                    <div class="image-gallery">
+                        <!-- Hình ảnh sẽ được render từ TypeScript -->
+                    </div>
+                    <button class="btn delete-image" onclick="window.chiTietSanPhamManager_Ad.deleteImage_Ad()">Xóa
+                        ảnh</button>
+                </div>
+
+                <div class="product-details">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productId">ID Sản Phẩm</label>
+                            <input type="text" id="productId" value="" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="productCode">Mã Sản Phẩm</label>
+                            <input type="text" id="productCode" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productName">Tên Sản Phẩm</label>
+                        <input type="text" id="productName" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productDescription">Mô Tả</label>
+                        <textarea id="productDescription"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productPrice">Giá Bán (VNĐ)</label>
+                            <input type="number" id="productPrice" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">Danh Mục</label>
+                            <select id="productCategory">
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productBrand">Thương Hiệu</label>
+                            <select id="productBrand">
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.chiTietSanPhamManager_Ad.saveProduct_Ad()">💾 Lưu Thay
+                    Đổi</button>
+                <button class="btn btn-secondary" onclick="window.chiTietSanPhamManager_Ad.resetForm_Ad()">🔄 Đặt
+                    Lại</button>
+                <button class="btn btn-primary" onclick="window.chiTietSanPhamManager_Ad.addImages_Ad()">📷 Thêm
+                    Ảnh</button>
+            </div>
+        </div>
+
+        <div class="variants-section">
+            <h2 class="section-title">Biến Thể Sản Phẩm</h2>
+
+            <div class="action-buttons" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="window.chiTietSanPhamManager_Ad.addVariant_Ad()">➕ Thêm Biến
+                    Thể</button>
+                <button class="btn btn-secondary" onclick="window.chiTietSanPhamManager_Ad.update_Ad()">📊 Cập
+                    nhật</button>
+            </div>
+
+            <!-- Thêm div cuộn -->
+            <div class="variants-table-container" style="max-height: 600px; overflow-y: auto; border: 1px solid #ccc;">
+                <table class="variants-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Màu Sắc</th>
+                            <th>Kích Cỡ</th>
+                            <th>Tồn Kho</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="variantsTableBody">
+                        <!-- Dữ liệu biến thể sẽ được render từ TypeScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Đánh giá của khách hàng -->
+        <div class="reviews-section" style="max-height: 600px; overflow-y: auto; border: 1px solid #ccc;">
+            <h2 class="section-title">Đánh Giá Của Khách Hàng</h2>
+
+            <div id="reviewsList">
+                <!-- Dữ liệu đánh giá sẽ được render từ TypeScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bao gồm compiled TypeScript file -->
+    <script src="/FE/ts-ad/chiTietSanPham_Ad.js"></script>
+</body>
+
+</html>

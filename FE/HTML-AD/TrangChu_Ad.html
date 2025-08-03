@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce</title>
+    <link rel="stylesheet" href="/FE/CSS/TrangChu.css">
+    <link rel="stylesheet" href="/FE/CSS/NavBar.css">
+</head>
+
+<body>
+    <div id="navbar"></div>
+    <main class="main-content">
+        <!-- Thêm loading state -->
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Đang tải sản phẩm...</div>
+        </div>
+
+        <div class="product-grid" id="productGrid" style="display: none;"></div>
+    </main>
+
+    <script src="/FE/ts-ad/productRender.js"></script>
+
+</body>
+
+</html>

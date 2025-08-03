@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { DanhMucService } from '../services/DanhMucService';
 
 export class DanhMucController {
-    // GET /api/danh-muc
+    // GET http://localhost:3000/api/danh-muc
     static async getAll(req: Request, res: Response): Promise<void> {
         try {
             const danhMucs = await DanhMucService.getAll();

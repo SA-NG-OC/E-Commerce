@@ -154,33 +154,42 @@ function buyNow(): void {
         return;
     }
 
-    // Kiểm tra xem đã chọn màu và size chưa
     if (!selectedColor || !selectedSize) {
         alert('Vui lòng chọn màu sắc và kích cỡ!');
         return;
     }
 
-    const quantity = parseInt(quantityInput.value);
+    if (!currentBienThe) {
+        alert('Sản phẩm này hiện không còn hàng!');
+        return;
+    }
 
-    // Validation số lượng
+    const quantity = parseInt(quantityInput.value);
     if (quantity < 1) {
         alert('Số lượng phải lớn hơn 0!');
         return;
     }
 
-    // Logic mua ngay - có thể redirect đến trang thanh toán
-    console.log('Mua ngay:', {
-        sanPhamId: getSanPhamIdFromUrl(),
-        colorId: selectedColor.id,
-        colorName: selectedColor.ten_Mau_Sac,
-        sizeId: selectedSize.id,
-        sizeName: selectedSize.so_Kich_Co,
-        quantity: quantity
-    });
+    if (quantity > currentBienThe.so_luong_ton_kho) {
+        alert(`Chỉ còn ${currentBienThe.so_luong_ton_kho} sản phẩm trong kho!`);
+        return;
+    }
 
-    alert(`Mua ngay ${quantity} sản phẩm!`);
-    // window.location.href = '/checkout'; // Redirect đến trang thanh toán
+    const params = {
+        bien_the_id: currentBienThe.id,
+        so_luong: quantity
+    };
+
+    // ✅ Dùng smoothRouter nếu có
+    if ((window as any).smoothRouter) {
+        (window as any).smoothRouter.navigateTo('ThanhToan.html', params);
+    } else {
+        // Fallback: dùng URL query string
+        const query = new URLSearchParams(params as any).toString();
+        window.location.href = `/FE/HTML/ThanhToan.html?${query}`;
+    }
 }
+
 
 // Function xử lý quantity increase
 function increaseQuantity(): void {

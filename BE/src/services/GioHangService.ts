@@ -49,6 +49,9 @@ export class GioHangService {
                         id: bt.id,
                         san_pham_id: bt.san_pham_id,
                         mau_sac_id: bt.mau_sac_id,
+                        mau_sac: bt.mau_sac,
+                        ma_mau: bt.ma_mau,
+                        kich_co: bt.kich_co,
                         kich_co_id: bt.kich_co_id,
                         so_luong_ton_kho: bt.so_luong_ton_kho
                     });

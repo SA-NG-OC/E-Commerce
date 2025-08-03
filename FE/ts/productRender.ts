@@ -1,3 +1,4 @@
+//Product Render Script
 interface HinhAnhSPModel {
     id: string;
     san_pham_id: string;
