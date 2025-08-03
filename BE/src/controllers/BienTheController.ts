@@ -83,6 +83,23 @@ export class BienTheController {
         }
     }
 
+    // sử dụng api http://localhost:3000/api/bien-the/:id/soft-delete
+    static async deleteBienTheAo(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            const success = await BienTheService.deleteBienTheAo(id);
+            if (success) {
+                return res.status(200).json({ message: 'Xóa ảo biến thể thành công.' });
+            } else {
+                return res.status(404).json({ message: 'Không tìm thấy biến thể để xóa ảo.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'Lỗi server khi xóa ảo biến thể.' });
+        }
+    }
+
+
     // GET /api/bien-the/:id
     static async getById(req: Request, res: Response) {
         try {

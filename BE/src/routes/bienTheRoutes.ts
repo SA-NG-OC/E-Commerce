@@ -8,5 +8,6 @@ router.get('/:id', BienTheController.getById);
 router.get('/san-pham/:sanPhamId', BienTheController.getByProductId);
 router.delete('/:id', BienTheController.deleteBienThe);
 router.post('/', BienTheController.createVariant);
+router.patch('/:id/soft-delete', BienTheController.deleteBienTheAo);
 
 export default router;

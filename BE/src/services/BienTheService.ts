@@ -9,7 +9,7 @@ export class BienTheService {
                 FROM bien_the_san_pham b
                 JOIN mau_sac ms ON b.mau_sac_id = ms.id
                 JOIN kich_co kc ON b.kich_co_id = kc.id
-                WHERE b.mau_sac_id = $1 AND b.kich_co_id = $2 AND b.san_pham_id = $3
+                WHERE b.mau_sac_id = $1 AND b.kich_co_id = $2 AND b.san_pham_id = $3 AND b.da_xoa = FALSE
             `, [id_mau, id_kich_co, id_san_pham]);
 
             if (query.rows.length === 0) return null;
@@ -57,6 +57,20 @@ export class BienTheService {
         }
     }
 
+    static async deleteBienTheAo(id: string): Promise<boolean> {
+        try {
+            const result = await pool.query(
+                `UPDATE bien_the_san_pham SET da_xoa = TRUE WHERE id = $1`,
+                [id]
+            );
+            return result.rowCount! > 0;
+        } catch (error) {
+            console.error('Lỗi khi "xóa ảo" biến thể:', error);
+            throw error;
+        }
+    }
+
+
     static async getById(id: string): Promise<BienTheSPModel | null> {
         try {
             const result = await pool.query(`
@@ -64,7 +78,7 @@ export class BienTheService {
                 FROM bien_the_san_pham b
                 JOIN mau_sac ms ON b.mau_sac_id = ms.id
                 JOIN kich_co kc ON b.kich_co_id = kc.id
-                WHERE b.id = $1
+                WHERE b.id = $1 AND b.da_xoa = FALSE
             `, [id]);
 
             if (result.rows.length === 0) return null;
@@ -93,7 +107,7 @@ export class BienTheService {
                 FROM bien_the_san_pham b
                 JOIN mau_sac ms ON b.mau_sac_id = ms.id
                 JOIN kich_co kc ON b.kich_co_id = kc.id
-                WHERE b.san_pham_id = $1
+                WHERE b.san_pham_id = $1 AND b.da_xoa = FALSE
             `, [sanPhamId]);
 
             return result.rows.map(row => new BienTheSPModel({

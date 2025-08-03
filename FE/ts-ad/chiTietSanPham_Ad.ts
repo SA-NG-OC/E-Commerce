@@ -1070,22 +1070,22 @@ class ChiTietSanPhamManager_Ad {
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/bien-the/${variantId}`, {
-                    method: 'DELETE'
+                const response = await fetch(`http://localhost:3000/api/bien-the/${variantId}/soft-delete`, {
+                    method: 'PATCH'
                 });
 
                 if (!response.ok) {
                     const data = await response.json();
-                    throw new Error(data.message || 'Xóa biến thể thất bại.');
+                    throw new Error(data.message || 'Xóa ảo biến thể thất bại.');
                 }
 
                 if (row) {
-                    row.remove();
+                    row.remove(); // Hoặc có thể đánh dấu mờ biến thể thay vì remove, tùy UI
                     this.updateStockStats_Ad();
-                    alert('🗑️ Đã xóa biến thể!');
+                    alert('🗑️ Đã xóa ảo biến thể!');
                 }
             } catch (error: any) {
-                console.error('Lỗi khi gọi API xóa biến thể:', error);
+                console.error('Lỗi khi gọi API xóa ảo biến thể:', error);
                 alert(`❌ Xóa thất bại: ${error.message}`);
             }
         }

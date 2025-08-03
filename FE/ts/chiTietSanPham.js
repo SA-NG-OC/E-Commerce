@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,92 +7,133 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 // ✅ Biến global để lưu lựa chọn hiện tại
-let selectedColor = null;
-let selectedSize = null;
-let currentBienThe = null;
+var selectedColor = null;
+var selectedSize = null;
+var currentBienThe = null;
 // ✅ Thêm các function xử lý button vào file TypeScript
 // ✅ Cập nhật hàm addToCart
 function addToCart() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const quantityInput = document.getElementById('quantity');
-        if (!quantityInput) {
-            console.error('Không tìm thấy input quantity');
-            return;
-        }
-        if (!selectedColor || !selectedSize) {
-            alert('Vui lòng chọn màu sắc và kích cỡ!');
-            return;
-        }
-        // ✅ Kiểm tra biến thể có tồn tại không
-        if (!currentBienThe) {
-            alert('Sản phẩm này hiện không còn hàng!');
-            return;
-        }
-        const quantity = parseInt(quantityInput.value);
-        if (quantity < 1) {
-            alert('Số lượng phải lớn hơn 0!');
-            return;
-        }
-        // ✅ Kiểm tra số lượng tồn kho
-        if (quantity > currentBienThe.so_luong_ton_kho) {
-            alert(`Chỉ còn ${currentBienThe.so_luong_ton_kho} sản phẩm trong kho!`);
-            return;
-        }
-        const sanPhamId = getSanPhamIdFromUrl();
-        const user = localStorage.getItem('usercontext');
-        const userJson = JSON.parse(user || '{}');
-        const nguoi_dung_id = userJson._id;
-        console.log('Người dùng ID:', nguoi_dung_id);
-        if (!nguoi_dung_id) {
-            alert('Bạn chưa đăng nhập!');
-            return;
-        }
-        try {
-            // 1. Lấy biến thể sản phẩm từ API
-            const res = yield fetch(`http://localhost:3000/api/bien-the/${selectedColor.id}/${selectedSize.id}/${sanPhamId}`);
-            if (!res.ok) {
-                alert('Không tìm thấy biến thể sản phẩm!');
-                return;
+    return __awaiter(this, void 0, void 0, function () {
+        var quantityInput, quantity, sanPhamId, user, userJson, nguoi_dung_id, res, bienThe, bien_the_id, response, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    quantityInput = document.getElementById('quantity');
+                    if (!quantityInput) {
+                        console.error('Không tìm thấy input quantity');
+                        return [2 /*return*/];
+                    }
+                    if (!selectedColor || !selectedSize) {
+                        alert('Vui lòng chọn màu sắc và kích cỡ!');
+                        return [2 /*return*/];
+                    }
+                    // ✅ Kiểm tra biến thể có tồn tại không
+                    if (!currentBienThe) {
+                        alert('Sản phẩm này hiện không còn hàng!');
+                        return [2 /*return*/];
+                    }
+                    quantity = parseInt(quantityInput.value);
+                    if (quantity < 1) {
+                        alert('Số lượng phải lớn hơn 0!');
+                        return [2 /*return*/];
+                    }
+                    // ✅ Kiểm tra số lượng tồn kho
+                    if (quantity > currentBienThe.so_luong_ton_kho) {
+                        alert("Ch\u1EC9 c\u00F2n ".concat(currentBienThe.so_luong_ton_kho, " s\u1EA3n ph\u1EA9m trong kho!"));
+                        return [2 /*return*/];
+                    }
+                    sanPhamId = getSanPhamIdFromUrl();
+                    user = localStorage.getItem('usercontext');
+                    userJson = JSON.parse(user || '{}');
+                    nguoi_dung_id = userJson._id;
+                    console.log('Người dùng ID:', nguoi_dung_id);
+                    if (!nguoi_dung_id) {
+                        alert('Bạn chưa đăng nhập!');
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 5, , 6]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColor.id, "/").concat(selectedSize.id, "/").concat(sanPhamId))];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        alert('Không tìm thấy biến thể sản phẩm!');
+                        return [2 /*return*/];
+                    }
+                    return [4 /*yield*/, res.json()];
+                case 3:
+                    bienThe = _a.sent();
+                    bien_the_id = bienThe._id || bienThe.id;
+                    // ✅ Kiểm tra lại số lượng tồn kho trước khi thêm vào giỏ
+                    if (bienThe._so_luong_ton_kho <= 0 || bienThe.so_luong_ton_kho <= 0) {
+                        alert('Sản phẩm này hiện đã hết hàng!');
+                        // Cập nhật lại UI
+                        renderBienTheInfo(selectedColor.id, selectedSize.id);
+                        return [2 /*return*/];
+                    }
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/gio-hang/them', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                nguoi_dung_id: nguoi_dung_id,
+                                bien_the_id: bien_the_id,
+                                so_luong: quantity
+                            })
+                        })];
+                case 4:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        alert('Không thể thêm vào giỏ hàng');
+                        return [2 /*return*/];
+                    }
+                    alert("\u0110\u00E3 th\u00EAm ".concat(quantity, " s\u1EA3n ph\u1EA9m v\u00E0o gi\u1ECF h\u00E0ng!"));
+                    // ✅ Cập nhật lại thông tin biến thể sau khi thêm vào giỏ
+                    renderBienTheInfo(selectedColor.id, selectedSize.id);
+                    return [3 /*break*/, 6];
+                case 5:
+                    err_1 = _a.sent();
+                    console.error('Lỗi khi thêm vào giỏ hàng:', err_1);
+                    alert('Đã có lỗi xảy ra!');
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
-            const bienThe = yield res.json();
-            const bien_the_id = bienThe._id || bienThe.id;
-            // ✅ Kiểm tra lại số lượng tồn kho trước khi thêm vào giỏ
-            if (bienThe._so_luong_ton_kho <= 0 || bienThe.so_luong_ton_kho <= 0) {
-                alert('Sản phẩm này hiện đã hết hàng!');
-                // Cập nhật lại UI
-                renderBienTheInfo(selectedColor.id, selectedSize.id);
-                return;
-            }
-            // 2. Gọi API thêm vào giỏ hàng
-            const response = yield fetch('http://localhost:3000/api/gio-hang/them', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    nguoi_dung_id,
-                    bien_the_id,
-                    so_luong: quantity
-                })
-            });
-            if (!response.ok) {
-                alert('Không thể thêm vào giỏ hàng');
-                return;
-            }
-            alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
-            // ✅ Cập nhật lại thông tin biến thể sau khi thêm vào giỏ
-            renderBienTheInfo(selectedColor.id, selectedSize.id);
-        }
-        catch (err) {
-            console.error('Lỗi khi thêm vào giỏ hàng:', err);
-            alert('Đã có lỗi xảy ra!');
-        }
+        });
     });
 }
 // Function xử lý mua ngay
 function buyNow() {
-    const quantityInput = document.getElementById('quantity');
+    var quantityInput = document.getElementById('quantity');
     if (!quantityInput) {
         console.error('Không tìm thấy input quantity');
         return;
@@ -106,16 +146,16 @@ function buyNow() {
         alert('Sản phẩm này hiện không còn hàng!');
         return;
     }
-    const quantity = parseInt(quantityInput.value);
+    var quantity = parseInt(quantityInput.value);
     if (quantity < 1) {
         alert('Số lượng phải lớn hơn 0!');
         return;
     }
     if (quantity > currentBienThe.so_luong_ton_kho) {
-        alert(`Chỉ còn ${currentBienThe.so_luong_ton_kho} sản phẩm trong kho!`);
+        alert("Ch\u1EC9 c\u00F2n ".concat(currentBienThe.so_luong_ton_kho, " s\u1EA3n ph\u1EA9m trong kho!"));
         return;
     }
-    const params = {
+    var params = {
         bien_the_id: currentBienThe.id,
         so_luong: quantity
     };
@@ -125,27 +165,27 @@ function buyNow() {
     }
     else {
         // Fallback: dùng URL query string
-        const query = new URLSearchParams(params).toString();
-        window.location.href = `/FE/HTML/ThanhToan.html?${query}`;
+        var query = new URLSearchParams(params).toString();
+        window.location.href = "/FE/HTML/ThanhToan.html?".concat(query);
     }
 }
 // Function xử lý quantity increase
 function increaseQuantity() {
-    const quantityInput = document.getElementById('quantity');
+    var quantityInput = document.getElementById('quantity');
     if (!quantityInput)
         return;
-    const currentValue = parseInt(quantityInput.value);
-    const maxValue = parseInt(quantityInput.max);
+    var currentValue = parseInt(quantityInput.value);
+    var maxValue = parseInt(quantityInput.max);
     if (currentValue < maxValue) {
         quantityInput.value = (currentValue + 1).toString();
     }
 }
 // Function xử lý quantity decrease
 function decreaseQuantity() {
-    const quantityInput = document.getElementById('quantity');
+    var quantityInput = document.getElementById('quantity');
     if (!quantityInput)
         return;
-    const currentValue = parseInt(quantityInput.value);
+    var currentValue = parseInt(quantityInput.value);
     if (currentValue > 1) {
         quantityInput.value = (currentValue - 1).toString();
     }
@@ -153,10 +193,10 @@ function decreaseQuantity() {
 // ✅ Function để bind event listeners (gọi khi DOM loaded)
 function initializeButtonEvents() {
     // Bind button events
-    const addToCartBtn = document.querySelector('.btn.btn-primary');
-    const buyNowBtn = document.querySelector('.btn.btn-secondary');
-    const increaseBtn = document.querySelector('.quantity-btn:last-child');
-    const decreaseBtn = document.querySelector('.quantity-btn:first-child');
+    var addToCartBtn = document.querySelector('.btn.btn-primary');
+    var buyNowBtn = document.querySelector('.btn.btn-secondary');
+    var increaseBtn = document.querySelector('.quantity-btn:last-child');
+    var decreaseBtn = document.querySelector('.quantity-btn:first-child');
     if (addToCartBtn) {
         addToCartBtn.addEventListener('click', addToCart);
     }
@@ -169,7 +209,7 @@ function initializeButtonEvents() {
     if (decreaseBtn) {
         decreaseBtn.addEventListener('click', decreaseQuantity);
     }
-    const quantityInput = document.getElementById('quantity');
+    var quantityInput = document.getElementById('quantity');
     if (quantityInput) {
         quantityInput.setAttribute('readonly', 'true');
         quantityInput.style.cursor = 'default';
@@ -179,8 +219,8 @@ function initializeButtonEvents() {
 //Sản phẩm//
 function getSanPhamIdFromUrl() {
     // ✅ Kiểm tra cả URL params và history state
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlId = urlParams.get('id');
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlId = urlParams.get('id');
     // Kiểm tra trong history state (cho smooth router)
     if (history.state && history.state.params && history.state.params.id) {
         return history.state.params.id;
@@ -188,66 +228,88 @@ function getSanPhamIdFromUrl() {
     return urlId;
 }
 function fetchSanPhamById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c;
-        try {
-            const res = yield fetch(`http://localhost:3000/api/san-pham/${id}`);
-            if (!res.ok)
-                return null;
-            const p = yield res.json();
-            return {
-                id: String(p._id),
-                ten_san_pham: p._ten_san_pham,
-                ma_san_pham: p._ma_san_pham,
-                gia_ban: p._gia_ban,
-                mo_ta: (_a = p._mo_ta) !== null && _a !== void 0 ? _a : '',
-                danh_muc: (_b = p._danh_muc) !== null && _b !== void 0 ? _b : '',
-                thuong_hieu: (_c = p._thuong_hieu) !== null && _c !== void 0 ? _c : '',
-                danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map((img) => ({
-                    id: String(img._id),
-                    san_pham_id: String(img._san_pham_id),
-                    duong_dan_hinh_anh: img._duong_dan_hinh_anh,
-                }))
-            };
-        }
-        catch (_d) {
-            return null;
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        var res, p, _a;
+        var _b, _c, _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    _e.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id))];
+                case 1:
+                    res = _e.sent();
+                    if (!res.ok)
+                        return [2 /*return*/, null];
+                    return [4 /*yield*/, res.json()];
+                case 2:
+                    p = _e.sent();
+                    return [2 /*return*/, {
+                            id: String(p._id),
+                            ten_san_pham: p._ten_san_pham,
+                            ma_san_pham: p._ma_san_pham,
+                            gia_ban: p._gia_ban,
+                            mo_ta: (_b = p._mo_ta) !== null && _b !== void 0 ? _b : '',
+                            danh_muc: (_c = p._danh_muc) !== null && _c !== void 0 ? _c : '',
+                            thuong_hieu: (_d = p._thuong_hieu) !== null && _d !== void 0 ? _d : '',
+                            danh_sach_hinh_anh: (p._danh_sach_hinh_anh || []).map(function (img) { return ({
+                                id: String(img._id),
+                                san_pham_id: String(img._san_pham_id),
+                                duong_dan_hinh_anh: img._duong_dan_hinh_anh,
+                            }); })
+                        }];
+                case 3:
+                    _a = _e.sent();
+                    return [2 /*return*/, null];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
 }
 //Hàm fetch biến thể từ database
 function fetchBienTheBySanPhamId(selectedColorId, selectedSizeId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const sanPhamId = getSanPhamIdFromUrl();
-        if (!sanPhamId) {
-            console.error("Không lấy được ID sản phẩm từ URL");
-            return null;
-        }
-        try {
-            const response = yield fetch(`http://localhost:3000/api/bien-the/${selectedColorId}/${selectedSizeId}/${sanPhamId}`);
-            if (!response.ok)
-                return null;
-            const data = yield response.json();
-            if (!data)
-                return null;
-            // Ánh xạ key về đúng interface
-            const mapped = {
-                id: data._id || data.id,
-                san_pham_id: data._san_pham_id || data.san_pham_id,
-                mau_sac_id: data._mau_sac_id || data.mau_sac_id,
-                kich_co_id: data._kich_co_id || data.kich_co_id,
-                so_luong_ton_kho: data._so_luong_ton_kho || data.so_luong_ton_kho,
-            };
-            return mapped;
-        }
-        catch (error) {
-            console.error("Lỗi khi fetch biến thể sản phẩm:", error);
-            return null;
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        var sanPhamId, response, data, mapped, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    sanPhamId = getSanPhamIdFromUrl();
+                    if (!sanPhamId) {
+                        console.error("Không lấy được ID sản phẩm từ URL");
+                        return [2 /*return*/, null];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColorId, "/").concat(selectedSizeId, "/").concat(sanPhamId))];
+                case 2:
+                    response = _a.sent();
+                    if (!response.ok)
+                        return [2 /*return*/, null];
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _a.sent();
+                    if (!data)
+                        return [2 /*return*/, null];
+                    mapped = {
+                        id: data._id || data.id,
+                        san_pham_id: data._san_pham_id || data.san_pham_id,
+                        mau_sac_id: data._mau_sac_id || data.mau_sac_id,
+                        kich_co_id: data._kich_co_id || data.kich_co_id,
+                        so_luong_ton_kho: data._so_luong_ton_kho || data.so_luong_ton_kho,
+                    };
+                    return [2 /*return*/, mapped];
+                case 4:
+                    error_1 = _a.sent();
+                    console.error("Lỗi khi fetch biến thể sản phẩm:", error_1);
+                    return [2 /*return*/, null];
+                case 5: return [2 /*return*/];
+            }
+        });
     });
 }
-function updateAddToCartButton(isAvailable, quantity = 0) {
-    const addToCartBtn = document.querySelector('.add-to-cart-btn, #addToCartBtn, button[onclick*="addToCart"]');
+function updateAddToCartButton(isAvailable, quantity) {
+    if (quantity === void 0) { quantity = 0; }
+    var addToCartBtn = document.querySelector('.add-to-cart-btn, #addToCartBtn, button[onclick*="addToCart"]');
     if (!addToCartBtn) {
         console.warn('Không tìm thấy nút Add to Cart');
         return;
@@ -272,159 +334,194 @@ function updateAddToCartButton(isAvailable, quantity = 0) {
 // ✅ Cập nhật hàm renderBienTheInfo
 // ✅ Cập nhật hàm renderBienTheInfo
 function renderBienTheInfo(selectedColorId, selectedSizeId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const quantityDiv = document.querySelector(".quantity");
-        const quantityInput = document.getElementById('quantity');
-        if (!quantityDiv)
-            return;
-        const bienThe = yield fetchBienTheBySanPhamId(selectedColorId, selectedSizeId);
-        // ✅ Cập nhật biến global
-        currentBienThe = bienThe;
-        if (bienThe && bienThe.so_luong_ton_kho > 0) {
-            quantityDiv.innerHTML = `Số lượng còn lại: <strong>${bienThe.so_luong_ton_kho}</strong>`;
-            // ✅ Cập nhật max của input quantity
-            if (quantityInput) {
-                quantityInput.max = bienThe.so_luong_ton_kho.toString();
-                // Reset value nếu vượt quá số lượng tồn kho
-                if (parseInt(quantityInput.value) > bienThe.so_luong_ton_kho) {
-                    quantityInput.value = bienThe.so_luong_ton_kho.toString();
-                }
+    return __awaiter(this, void 0, void 0, function () {
+        var quantityDiv, quantityInput, bienThe;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    quantityDiv = document.querySelector(".quantity");
+                    quantityInput = document.getElementById('quantity');
+                    if (!quantityDiv)
+                        return [2 /*return*/];
+                    return [4 /*yield*/, fetchBienTheBySanPhamId(selectedColorId, selectedSizeId)];
+                case 1:
+                    bienThe = _a.sent();
+                    // ✅ Cập nhật biến global
+                    currentBienThe = bienThe;
+                    if (bienThe && bienThe.so_luong_ton_kho > 0) {
+                        quantityDiv.innerHTML = "S\u1ED1 l\u01B0\u1EE3ng c\u00F2n l\u1EA1i: <strong>".concat(bienThe.so_luong_ton_kho, "</strong>");
+                        // ✅ Cập nhật max của input quantity
+                        if (quantityInput) {
+                            quantityInput.max = bienThe.so_luong_ton_kho.toString();
+                            // Reset value nếu vượt quá số lượng tồn kho
+                            if (parseInt(quantityInput.value) > bienThe.so_luong_ton_kho) {
+                                quantityInput.value = bienThe.so_luong_ton_kho.toString();
+                            }
+                        }
+                        // ✅ Kích hoạt nút Add to Cart
+                        updateAddToCartButton(true, bienThe.so_luong_ton_kho);
+                    }
+                    else {
+                        quantityDiv.innerHTML = "<span style=\"color:red\">Kh\u00F4ng c\u00F2n h\u00E0ng</span>";
+                        // ✅ Reset max về mặc định khi không có biến thế
+                        if (quantityInput) {
+                            quantityInput.max = "15";
+                            quantityInput.value = "1";
+                        }
+                        // ✅ Vô hiệu hóa nút Add to Cart
+                        updateAddToCartButton(false);
+                    }
+                    return [2 /*return*/];
             }
-            // ✅ Kích hoạt nút Add to Cart
-            updateAddToCartButton(true, bienThe.so_luong_ton_kho);
-        }
-        else {
-            quantityDiv.innerHTML = `<span style="color:red">Không còn hàng</span>`;
-            // ✅ Reset max về mặc định khi không có biến thế
-            if (quantityInput) {
-                quantityInput.max = "15";
-                quantityInput.value = "1";
-            }
-            // ✅ Vô hiệu hóa nút Add to Cart
-            updateAddToCartButton(false);
-        }
+        });
     });
 }
 // ✅ Hàm fetch màu sắc từ database
 function fetchMauSac() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const sanPhamId = getSanPhamIdFromUrl();
-            const res = yield fetch(`http://localhost:3000/api/mau-sac/${sanPhamId}`);
-            if (!res.ok)
-                return [];
-            const data = yield res.json();
-            return data.map((item) => ({
-                id: String(item._id || item.id),
-                ten_Mau_Sac: item._ten_Mau_Sac || item.ten_Mau_Sac,
-                ma_Mau: item._ma_Mau || item.ma_Mau
-            }));
-        }
-        catch (_a) {
-            return [];
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        var sanPhamId, res, data, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    sanPhamId = getSanPhamIdFromUrl();
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/mau-sac/".concat(sanPhamId))];
+                case 1:
+                    res = _b.sent();
+                    if (!res.ok)
+                        return [2 /*return*/, []];
+                    return [4 /*yield*/, res.json()];
+                case 2:
+                    data = _b.sent();
+                    return [2 /*return*/, data.map(function (item) { return ({
+                            id: String(item._id || item.id),
+                            ten_Mau_Sac: item._ten_Mau_Sac || item.ten_Mau_Sac,
+                            ma_Mau: item._ma_Mau || item.ma_Mau
+                        }); })];
+                case 3:
+                    _a = _b.sent();
+                    return [2 /*return*/, []];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
 }
 // ✅ Hàm fetch kích cỡ từ database
 function fetchKichCo() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const sanPhamId = getSanPhamIdFromUrl();
-            const res = yield fetch(`http://localhost:3000/api/kich-co/${sanPhamId}`);
-            if (!res.ok)
-                return [];
-            const data = yield res.json();
-            return data.map((item) => ({
-                id: String(item._id || item.id),
-                so_Kich_Co: item._so_Kich_Co || item.so_Kich_Co
-            }));
-        }
-        catch (_a) {
-            return [];
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        var sanPhamId, res, data, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    sanPhamId = getSanPhamIdFromUrl();
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/kich-co/".concat(sanPhamId))];
+                case 1:
+                    res = _b.sent();
+                    if (!res.ok)
+                        return [2 /*return*/, []];
+                    return [4 /*yield*/, res.json()];
+                case 2:
+                    data = _b.sent();
+                    return [2 /*return*/, data.map(function (item) { return ({
+                            id: String(item._id || item.id),
+                            so_Kich_Co: item._so_Kich_Co || item.so_Kich_Co
+                        }); })];
+                case 3:
+                    _a = _b.sent();
+                    return [2 /*return*/, []];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
 }
 function renderMauSac() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const mauSacs = yield fetchMauSac();
-        const colorOptionsContainer = document.querySelector('.color-options');
-        if (!colorOptionsContainer || mauSacs.length === 0)
-            return;
-        colorOptionsContainer.innerHTML = mauSacs.map((mau, index) => `
-        <div class="color-option ${index === 0 ? 'selected' : ''}" 
-             data-color-id="${mau.id}" 
-             data-color-code="${mau.ma_Mau}" 
-             data-color-name="${mau.ten_Mau_Sac}" 
-             onclick="selectColor(this)">
-            <div class="color-circle" style="background: ${mau.ma_Mau}; ${mau.ma_Mau.toLowerCase() === '#ffffff' || mau.ma_Mau.toLowerCase() === 'white' ? 'border: 1px solid #ddd;' : ''}"></div>
-            <div class="color-name">${mau.ten_Mau_Sac}</div>
-        </div>
-    `).join('');
-        // ✅ Chọn màu đầu tiên làm mặc định
-        if (mauSacs.length > 0) {
-            selectedColor = mauSacs[0];
-            updateSelectionInfo();
-            // ✅ Load quantity ban đầu nếu đã có size
-            if (selectedSize) {
-                renderBienTheInfo(selectedColor.id, selectedSize.id);
+    return __awaiter(this, void 0, void 0, function () {
+        var mauSacs, colorOptionsContainer;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetchMauSac()];
+                case 1:
+                    mauSacs = _a.sent();
+                    colorOptionsContainer = document.querySelector('.color-options');
+                    if (!colorOptionsContainer || mauSacs.length === 0)
+                        return [2 /*return*/];
+                    colorOptionsContainer.innerHTML = mauSacs.map(function (mau, index) { return "\n        <div class=\"color-option ".concat(index === 0 ? 'selected' : '', "\" \n             data-color-id=\"").concat(mau.id, "\" \n             data-color-code=\"").concat(mau.ma_Mau, "\" \n             data-color-name=\"").concat(mau.ten_Mau_Sac, "\" \n             onclick=\"selectColor(this)\">\n            <div class=\"color-circle\" style=\"background: ").concat(mau.ma_Mau, "; ").concat(mau.ma_Mau.toLowerCase() === '#ffffff' || mau.ma_Mau.toLowerCase() === 'white' ? 'border: 1px solid #ddd;' : '', "\"></div>\n            <div class=\"color-name\">").concat(mau.ten_Mau_Sac, "</div>\n        </div>\n    "); }).join('');
+                    // ✅ Chọn màu đầu tiên làm mặc định
+                    if (mauSacs.length > 0) {
+                        selectedColor = mauSacs[0];
+                        updateSelectionInfo();
+                        // ✅ Load quantity ban đầu nếu đã có size
+                        if (selectedSize) {
+                            renderBienTheInfo(selectedColor.id, selectedSize.id);
+                        }
+                    }
+                    return [2 /*return*/];
             }
-        }
+        });
     });
 }
 // ✅ Cải tiến hàm renderKichCo để load quantity ban đầu
 function renderKichCo() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const kichCos = yield fetchKichCo();
-        const sizeOptionsContainer = document.querySelector('.size-options');
-        if (!sizeOptionsContainer || kichCos.length === 0)
-            return;
-        // ✅ Sắp xếp kích cỡ theo thứ tự số
-        const sortedKichCos = kichCos.sort((a, b) => {
-            const numA = parseFloat(a.so_Kich_Co);
-            const numB = parseFloat(b.so_Kich_Co);
-            return numA - numB;
-        });
-        sizeOptionsContainer.innerHTML = sortedKichCos.map((kichCo, index) => `
-        <div class="size-option ${index === 0 ? 'selected' : ''}" 
-             data-size-id="${kichCo.id}" 
-             data-size="${kichCo.so_Kich_Co}" 
-             onclick="selectSize(this)">
-            ${kichCo.so_Kich_Co}
-        </div>
-    `).join('');
-        // ✅ Chọn kích cỡ đầu tiên làm mặc định
-        if (sortedKichCos.length > 0) {
-            selectedSize = sortedKichCos[0];
-            updateSelectionInfo();
-            // ✅ Load quantity ban đầu nếu đã có màu
-            if (selectedColor) {
-                renderBienTheInfo(selectedColor.id, selectedSize.id);
+    return __awaiter(this, void 0, void 0, function () {
+        var kichCos, sizeOptionsContainer, sortedKichCos;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetchKichCo()];
+                case 1:
+                    kichCos = _a.sent();
+                    sizeOptionsContainer = document.querySelector('.size-options');
+                    if (!sizeOptionsContainer || kichCos.length === 0)
+                        return [2 /*return*/];
+                    sortedKichCos = kichCos.sort(function (a, b) {
+                        var numA = parseFloat(a.so_Kich_Co);
+                        var numB = parseFloat(b.so_Kich_Co);
+                        return numA - numB;
+                    });
+                    sizeOptionsContainer.innerHTML = sortedKichCos.map(function (kichCo, index) { return "\n        <div class=\"size-option ".concat(index === 0 ? 'selected' : '', "\" \n             data-size-id=\"").concat(kichCo.id, "\" \n             data-size=\"").concat(kichCo.so_Kich_Co, "\" \n             onclick=\"selectSize(this)\">\n            ").concat(kichCo.so_Kich_Co, "\n        </div>\n    "); }).join('');
+                    // ✅ Chọn kích cỡ đầu tiên làm mặc định
+                    if (sortedKichCos.length > 0) {
+                        selectedSize = sortedKichCos[0];
+                        updateSelectionInfo();
+                        // ✅ Load quantity ban đầu nếu đã có màu
+                        if (selectedColor) {
+                            renderBienTheInfo(selectedColor.id, selectedSize.id);
+                        }
+                    }
+                    return [2 /*return*/];
             }
-        }
+        });
     });
 }
 // ✅ Hàm khởi tạo để load quantity ban đầu
 function initializeProductVariant() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield Promise.all([renderMauSac(), renderKichCo()]);
-        // ✅ Load quantity cho lựa chọn mặc định
-        if (selectedColor && selectedSize) {
-            renderBienTheInfo(selectedColor.id, selectedSize.id);
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, Promise.all([renderMauSac(), renderKichCo()])];
+                case 1:
+                    _a.sent();
+                    // ✅ Load quantity cho lựa chọn mặc định
+                    if (selectedColor && selectedSize) {
+                        renderBienTheInfo(selectedColor.id, selectedSize.id);
+                    }
+                    return [2 /*return*/];
+            }
+        });
     });
 }
 // ✅ Hàm xử lý chọn màu sắc
 function selectColor(element) {
     // Bỏ selected khỏi tất cả màu
-    document.querySelectorAll('.color-option').forEach(option => {
+    document.querySelectorAll('.color-option').forEach(function (option) {
         option.classList.remove('selected');
     });
     // Thêm selected vào màu được chọn
     element.classList.add('selected');
     // Cập nhật selectedColor
-    const colorId = element.getAttribute('data-color-id');
-    const colorCode = element.getAttribute('data-color-code');
-    const colorName = element.getAttribute('data-color-name');
+    var colorId = element.getAttribute('data-color-id');
+    var colorCode = element.getAttribute('data-color-code');
+    var colorName = element.getAttribute('data-color-name');
     if (colorId && colorCode && colorName) {
         selectedColor = {
             id: colorId,
@@ -445,14 +542,14 @@ function selectSize(element) {
         return;
     }
     // Bỏ selected khỏi tất cả size
-    document.querySelectorAll('.size-option').forEach(option => {
+    document.querySelectorAll('.size-option').forEach(function (option) {
         option.classList.remove('selected');
     });
     // Thêm selected vào size được chọn
     element.classList.add('selected');
     // Cập nhật selectedSize
-    const sizeId = element.getAttribute('data-size-id');
-    const sizeValue = element.getAttribute('data-size');
+    var sizeId = element.getAttribute('data-size-id');
+    var sizeValue = element.getAttribute('data-size');
     if (sizeId && sizeValue) {
         selectedSize = {
             id: sizeId,
@@ -467,9 +564,9 @@ function selectSize(element) {
 }
 // ✅ Hàm cập nhật thông tin lựa chọn
 function updateSelectionInfo() {
-    const selectedColorPreview = document.getElementById('selectedColorPreview');
-    const selectedColorName = document.getElementById('selectedColorName');
-    const selectedSizeName = document.getElementById('selectedSizeName');
+    var selectedColorPreview = document.getElementById('selectedColorPreview');
+    var selectedColorName = document.getElementById('selectedColorName');
+    var selectedSizeName = document.getElementById('selectedSizeName');
     if (selectedColor && selectedColorPreview && selectedColorName) {
         selectedColorPreview.style.background = selectedColor.ma_Mau;
         selectedColorName.textContent = selectedColor.ten_Mau_Sac;
@@ -490,102 +587,72 @@ window.selectColor = selectColor;
 window.selectSize = selectSize;
 //Review//
 function fetchDanhGiaBySanPhamId(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const res = yield fetch(`http://localhost:3000/api/san-pham/${id}/danh-gia`);
-            if (!res.ok)
-                return [];
-            const data = yield res.json();
-            // Map lại field cho đúng interface
-            return data.map((r) => ({
-                id: String(r._id),
-                san_pham_id: String(r._san_pham_id),
-                nguoi_dung_id: String(r._nguoi_dung_id),
-                diem_danh_gia: r._diem_danh_gia,
-                noi_dung_danh_gia: r._noi_dung_danh_gia,
-                ngay_tao: r._ngay_tao,
-                ho_ten_nguoi_dung: r._ho_ten_nguoi_dung
-            }));
-        }
-        catch (_a) {
-            return [];
-        }
+    return __awaiter(this, void 0, void 0, function () {
+        var res, data, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id, "/danh-gia"))];
+                case 1:
+                    res = _b.sent();
+                    if (!res.ok)
+                        return [2 /*return*/, []];
+                    return [4 /*yield*/, res.json()];
+                case 2:
+                    data = _b.sent();
+                    // Map lại field cho đúng interface
+                    return [2 /*return*/, data.map(function (r) { return ({
+                            id: String(r._id),
+                            san_pham_id: String(r._san_pham_id),
+                            nguoi_dung_id: String(r._nguoi_dung_id),
+                            diem_danh_gia: r._diem_danh_gia,
+                            noi_dung_danh_gia: r._noi_dung_danh_gia,
+                            ngay_tao: r._ngay_tao,
+                            ho_ten_nguoi_dung: r._ho_ten_nguoi_dung
+                        }); })];
+                case 3:
+                    _a = _b.sent();
+                    return [2 /*return*/, []];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
 }
 function filterReviewByStar(reviews, star) {
     if (star === 'all')
         return reviews;
     if (star === 'user') {
-        const userStr = localStorage.getItem('usercontext');
+        var userStr = localStorage.getItem('usercontext');
         if (!userStr)
             return [];
-        const user = JSON.parse(userStr);
-        return reviews.filter(r => r.nguoi_dung_id === user._id);
+        var user_1 = JSON.parse(userStr);
+        return reviews.filter(function (r) { return r.nguoi_dung_id === user_1._id; });
     }
-    const numStar = Number(star);
-    return reviews.filter(r => r.diem_danh_gia === numStar);
+    var numStar = Number(star);
+    return reviews.filter(function (r) { return r.diem_danh_gia === numStar; });
 }
 // Hàm tạo và hiển thị dialog quản lý comment
 function showCommentDialog(reviewId, currentContent, currentRating) {
     // Tạo overlay
-    const overlay = document.createElement('div');
+    var overlay = document.createElement('div');
     overlay.className = 'comment-dialog-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `;
+    overlay.style.cssText = "\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background: rgba(0, 0, 0, 0.5);\n        z-index: 1000;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n    ";
     // Tạo dialog
-    const dialog = document.createElement('div');
+    var dialog = document.createElement('div');
     dialog.className = 'comment-dialog';
-    dialog.style.cssText = `
-        background: white;
-        border-radius: 12px;
-        padding: 24px;
-        max-width: 500px;
-        width: 90%;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    `;
-    dialog.innerHTML = `
-        <h3 style="color: #E91E63; margin-bottom: 20px; font-size: 20px;">Quản lý đánh giá</h3>
-        
-        <div style="margin-bottom: 16px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Số sao:</label>
-            <div class="edit-star-rating" style="display: flex; gap: 4px;">
-                ${[1, 2, 3, 4, 5].map(i => `<span class="edit-star" data-value="${i}" style="font-size: 24px; cursor: pointer; color: ${i <= currentRating ? '#E91E63' : '#F19EDC'};">${i <= currentRating ? '★' : '☆'}</span>`).join('')}
-            </div>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Nội dung:</label>
-            <textarea id="editReviewContent" style="width: 100%; height: 100px; padding: 10px; border: 1px solid #F19EDC; border-radius: 6px; resize: vertical;">${currentContent}</textarea>
-        </div>
-        
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-            <button id="cancelBtn" style="padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">Hủy</button>
-            <button id="saveBtn" style="padding: 10px 20px; background: linear-gradient(45deg, #F19EDC, #E91E63); color: white; border: none; border-radius: 6px; cursor: pointer;">Lưu</button>
-            <button id="deleteBtn" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">Xóa</button>
-        </div>
-        
-        <div id="dialogMessage" style="margin-top: 12px; color: #e74c3c;"></div>
-    `;
+    dialog.style.cssText = "\n        background: white;\n        border-radius: 12px;\n        padding: 24px;\n        max-width: 500px;\n        width: 90%;\n        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);\n    ";
+    dialog.innerHTML = "\n        <h3 style=\"color: #E91E63; margin-bottom: 20px; font-size: 20px;\">Qu\u1EA3n l\u00FD \u0111\u00E1nh gi\u00E1</h3>\n        \n        <div style=\"margin-bottom: 16px;\">\n            <label style=\"display: block; margin-bottom: 8px; font-weight: 500;\">S\u1ED1 sao:</label>\n            <div class=\"edit-star-rating\" style=\"display: flex; gap: 4px;\">\n                ".concat([1, 2, 3, 4, 5].map(function (i) { return "<span class=\"edit-star\" data-value=\"".concat(i, "\" style=\"font-size: 24px; cursor: pointer; color: ").concat(i <= currentRating ? '#E91E63' : '#F19EDC', ";\">").concat(i <= currentRating ? '★' : '☆', "</span>"); }).join(''), "\n            </div>\n        </div>\n        \n        <div style=\"margin-bottom: 20px;\">\n            <label style=\"display: block; margin-bottom: 8px; font-weight: 500;\">N\u1ED9i dung:</label>\n            <textarea id=\"editReviewContent\" style=\"width: 100%; height: 100px; padding: 10px; border: 1px solid #F19EDC; border-radius: 6px; resize: vertical;\">").concat(currentContent, "</textarea>\n        </div>\n        \n        <div style=\"display: flex; gap: 10px; justify-content: flex-end;\">\n            <button id=\"cancelBtn\" style=\"padding: 10px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;\">H\u1EE7y</button>\n            <button id=\"saveBtn\" style=\"padding: 10px 20px; background: linear-gradient(45deg, #F19EDC, #E91E63); color: white; border: none; border-radius: 6px; cursor: pointer;\">L\u01B0u</button>\n            <button id=\"deleteBtn\" style=\"padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;\">X\u00F3a</button>\n        </div>\n        \n        <div id=\"dialogMessage\" style=\"margin-top: 12px; color: #e74c3c;\"></div>\n    ");
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
-    let selectedRating = currentRating;
+    var selectedRating = currentRating;
     // Xử lý chọn sao
-    const editStars = dialog.querySelectorAll('.edit-star');
-    editStars.forEach((star, idx) => {
+    var editStars = dialog.querySelectorAll('.edit-star');
+    editStars.forEach(function (star, idx) {
         star.addEventListener('click', function () {
             selectedRating = idx + 1;
-            editStars.forEach((s, i) => {
-                const el = s;
+            editStars.forEach(function (s, i) {
+                var el = s;
                 if (i < selectedRating) {
                     el.style.color = '#E91E63';
                     el.innerHTML = '★';
@@ -597,9 +664,9 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
             });
         });
         star.addEventListener('mouseover', function () {
-            const hoverRating = idx + 1;
-            editStars.forEach((s, i) => {
-                const el = s;
+            var hoverRating = idx + 1;
+            editStars.forEach(function (s, i) {
+                var el = s;
                 if (i < hoverRating) {
                     el.style.color = '#E91E63';
                     el.innerHTML = '★';
@@ -611,8 +678,8 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
             });
         });
         star.addEventListener('mouseout', function () {
-            editStars.forEach((s, i) => {
-                const el = s;
+            editStars.forEach(function (s, i) {
+                var el = s;
                 if (i < selectedRating) {
                     el.style.color = '#E91E63';
                     el.innerHTML = '★';
@@ -625,12 +692,12 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
         });
     });
     // Xử lý sự kiện nút
-    const cancelBtn = dialog.querySelector('#cancelBtn');
-    const saveBtn = dialog.querySelector('#saveBtn');
-    const deleteBtn = dialog.querySelector('#deleteBtn');
-    const messageEl = dialog.querySelector('#dialogMessage');
+    var cancelBtn = dialog.querySelector('#cancelBtn');
+    var saveBtn = dialog.querySelector('#saveBtn');
+    var deleteBtn = dialog.querySelector('#deleteBtn');
+    var messageEl = dialog.querySelector('#dialogMessage');
     // Đóng dialog
-    const closeDialog = () => {
+    var closeDialog = function () {
         document.body.removeChild(overlay);
     };
     cancelBtn === null || cancelBtn === void 0 ? void 0 : cancelBtn.addEventListener('click', closeDialog);
@@ -641,201 +708,210 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
     });
     // Lưu thay đổi
     saveBtn === null || saveBtn === void 0 ? void 0 : saveBtn.addEventListener('click', function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            const newContent = dialog.querySelector('#editReviewContent').value.trim();
-            if (!newContent) {
-                messageEl.textContent = 'Vui lòng nhập nội dung đánh giá!';
-                return;
-            }
-            try {
-                const res = yield fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        diem_danh_gia: selectedRating,
-                        noi_dung_danh_gia: newContent
-                    })
-                });
-                if (res.ok) {
-                    alert('Cập nhật đánh giá thành công!');
-                    closeDialog();
-                    renderChiTietSanPham();
+        return __awaiter(this, void 0, void 0, function () {
+            var newContent, res, err, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        newContent = dialog.querySelector('#editReviewContent').value.trim();
+                        if (!newContent) {
+                            messageEl.textContent = 'Vui lòng nhập nội dung đánh giá!';
+                            return [2 /*return*/];
+                        }
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    diem_danh_gia: selectedRating,
+                                    noi_dung_danh_gia: newContent
+                                })
+                            })];
+                    case 2:
+                        res = _b.sent();
+                        if (!res.ok) return [3 /*break*/, 3];
+                        alert('Cập nhật đánh giá thành công!');
+                        closeDialog();
+                        renderChiTietSanPham();
+                        return [3 /*break*/, 5];
+                    case 3: return [4 /*yield*/, res.json()];
+                    case 4:
+                        err = _b.sent();
+                        messageEl.textContent = err.message || 'Cập nhật đánh giá thất bại!';
+                        _b.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        _a = _b.sent();
+                        messageEl.textContent = 'Lỗi kết nối máy chủ!';
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
-                else {
-                    const err = yield res.json();
-                    messageEl.textContent = err.message || 'Cập nhật đánh giá thất bại!';
-                }
-            }
-            catch (_a) {
-                messageEl.textContent = 'Lỗi kết nối máy chủ!';
-            }
+            });
         });
     });
     // Xóa đánh giá
     deleteBtn === null || deleteBtn === void 0 ? void 0 : deleteBtn.addEventListener('click', function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
-                try {
-                    const res = yield fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
-                        method: 'DELETE'
-                    });
-                    if (res.ok) {
-                        alert('Xóa đánh giá thành công!');
-                        closeDialog();
-                        renderChiTietSanPham();
-                    }
-                    else {
-                        messageEl.textContent = 'Xóa đánh giá thất bại!';
-                    }
+        return __awaiter(this, void 0, void 0, function () {
+            var res, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!confirm('Bạn có chắc muốn xóa đánh giá này?')) return [3 /*break*/, 4];
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                                method: 'DELETE'
+                            })];
+                    case 2:
+                        res = _b.sent();
+                        if (res.ok) {
+                            alert('Xóa đánh giá thành công!');
+                            closeDialog();
+                            renderChiTietSanPham();
+                        }
+                        else {
+                            messageEl.textContent = 'Xóa đánh giá thất bại!';
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        _a = _b.sent();
+                        messageEl.textContent = 'Lỗi kết nối máy chủ!';
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
-                catch (_a) {
-                    messageEl.textContent = 'Lỗi kết nối máy chủ!';
-                }
-            }
+            });
         });
     });
 }
 // Hàm render chi tiết sản phẩm và đánh giá (bạn tự gắn vào DOM theo id hoặc class tuỳ HTML)
 function renderChiTietSanPham() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const id = getSanPhamIdFromUrl();
-        if (!id)
-            return;
-        const sanPham = yield fetchSanPhamById(id);
-        const danhGias = yield fetchDanhGiaBySanPhamId(id);
-        if (!sanPham)
-            return;
-        // Render ảnh chính và thumbnails
-        const mainImage = document.getElementById('mainImage');
-        const imageThumbnails = document.getElementById('imageThumbnails');
-        if (mainImage && sanPham.danh_sach_hinh_anh.length > 0) {
-            mainImage.src = sanPham.danh_sach_hinh_anh[0].duong_dan_hinh_anh;
-            mainImage.alt = sanPham.ten_san_pham;
-        }
-        if (imageThumbnails) {
-            imageThumbnails.innerHTML = sanPham.danh_sach_hinh_anh.map((img, idx) => `<img src="${img.duong_dan_hinh_anh}" alt="Hình ${idx + 1}" class="thumbnail${idx === 0 ? ' active' : ''}" onclick="document.getElementById('mainImage').src='${img.duong_dan_hinh_anh}'; Array.from(document.querySelectorAll('.thumbnail')).forEach(t=>t.classList.remove('active')); this.classList.add('active');">
-            `).join('');
-        }
-        // Render thông tin sản phẩm
-        const titleEl = document.querySelector('.product-title');
-        if (titleEl)
-            titleEl.textContent = sanPham.ten_san_pham;
-        const codeEl = document.querySelector('.product-code');
-        if (codeEl)
-            codeEl.textContent = sanPham.ma_san_pham ? `Mã sản phẩm: ${sanPham.ma_san_pham}` : '';
-        const brandEl = document.querySelector('.brand-tag');
-        if (brandEl)
-            brandEl.textContent = sanPham.thuong_hieu || '';
-        const priceEl = document.querySelector('.original-price');
-        if (priceEl)
-            priceEl.textContent = sanPham.gia_ban ? `${Number(sanPham.gia_ban).toLocaleString()}₫` : '';
-        const stockEl = document.querySelector('.stock-status');
-        if (stockEl)
-            stockEl.textContent = sanPham.so_luong_ton_kho !== undefined ? `Còn hàng: ${sanPham.so_luong_ton_kho} sản phẩm có sẵn` : '';
-        const moTaEl = document.getElementById('moTaSanPham');
-        if (moTaEl)
-            moTaEl.textContent = sanPham.mo_ta || '';
-        // Render review
-        const reviewList = document.getElementById('reviewList');
-        const filterStarEl = document.getElementById('filterStar');
-        let filteredReviews = danhGias;
-        if (filterStarEl) {
-            const selectedStar = filterStarEl.value;
-            filteredReviews = filterReviewByStar(danhGias, selectedStar);
-            filterStarEl.onchange = function () {
-                const selected = filterStarEl.value;
-                const filtered = filterReviewByStar(danhGias, selected);
-                if (reviewList) {
-                    if (filtered.length === 0) {
-                        reviewList.innerHTML = '<div class="placeholder-text">Không có đánh giá nào phù hợp.</div>';
+    return __awaiter(this, void 0, void 0, function () {
+        var id, sanPham, danhGias, mainImage, imageThumbnails, titleEl, codeEl, brandEl, priceEl, stockEl, moTaEl, reviewList, filterStarEl, filteredReviews, selectedStar, userStr, userId_1, user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    id = getSanPhamIdFromUrl();
+                    if (!id)
+                        return [2 /*return*/];
+                    return [4 /*yield*/, fetchSanPhamById(id)];
+                case 1:
+                    sanPham = _a.sent();
+                    return [4 /*yield*/, fetchDanhGiaBySanPhamId(id)];
+                case 2:
+                    danhGias = _a.sent();
+                    if (!sanPham)
+                        return [2 /*return*/];
+                    mainImage = document.getElementById('mainImage');
+                    imageThumbnails = document.getElementById('imageThumbnails');
+                    if (mainImage && sanPham.danh_sach_hinh_anh.length > 0) {
+                        mainImage.src = sanPham.danh_sach_hinh_anh[0].duong_dan_hinh_anh;
+                        mainImage.alt = sanPham.ten_san_pham;
                     }
-                    else {
-                        const userStr = localStorage.getItem('usercontext');
-                        let userId = null;
-                        if (userStr) {
-                            try {
-                                const user = JSON.parse(userStr);
-                                userId = user._id;
-                            }
-                            catch (_a) { }
-                        }
-                        reviewList.innerHTML = filtered.map(r => {
-                            const isOwner = userId && r.nguoi_dung_id === userId;
-                            return `
-                        <div class="review-item ${isOwner ? 'user-review clickable' : ''}" data-review-id="${r.id}" data-review-content="${r.noi_dung_danh_gia}" data-review-rating="${r.diem_danh_gia}" ${isOwner ? 'title="Click để chỉnh sửa đánh giá"' : ''}>
-                            <div class="review-header">
-                                <div class="reviewer-avatar">${r.ho_ten_nguoi_dung ? r.ho_ten_nguoi_dung.charAt(0).toUpperCase() : '?'}</div>
-                                <div class="reviewer-info">
-                                    <div class="reviewer-name">${r.ho_ten_nguoi_dung || 'Ẩn danh'}</div>
-                                    <div class="review-date">${new Date(r.ngay_tao).toLocaleDateString('vi-VN')}</div>
-                                </div>
-                                <div class="review-rating">${'★'.repeat(r.diem_danh_gia)}${'☆'.repeat(5 - r.diem_danh_gia)}</div>
-                            </div>
-                            <div class="review-content">${r.noi_dung_danh_gia}</div>
-                        </div>
-                        `;
+                    if (imageThumbnails) {
+                        imageThumbnails.innerHTML = sanPham.danh_sach_hinh_anh.map(function (img, idx) {
+                            return "<img src=\"".concat(img.duong_dan_hinh_anh, "\" alt=\"H\u00ECnh ").concat(idx + 1, "\" class=\"thumbnail").concat(idx === 0 ? ' active' : '', "\" onclick=\"document.getElementById('mainImage').src='").concat(img.duong_dan_hinh_anh, "'; Array.from(document.querySelectorAll('.thumbnail')).forEach(t=>t.classList.remove('active')); this.classList.add('active');\">\n            ");
                         }).join('');
                     }
-                    // Gắn lại sự kiện click cho các review sau khi filter
-                    attachReviewClickEvents();
-                }
-            };
-        }
-        if (reviewList) {
-            if (filteredReviews.length === 0) {
-                reviewList.innerHTML = '<div class="placeholder-text">Chưa có đánh giá nào cho sản phẩm này.</div>';
-            }
-            else {
-                const userStr = localStorage.getItem('usercontext');
-                let userId = null;
-                if (userStr) {
-                    try {
-                        const user = JSON.parse(userStr);
-                        userId = user._id;
+                    titleEl = document.querySelector('.product-title');
+                    if (titleEl)
+                        titleEl.textContent = sanPham.ten_san_pham;
+                    codeEl = document.querySelector('.product-code');
+                    if (codeEl)
+                        codeEl.textContent = sanPham.ma_san_pham ? "M\u00E3 s\u1EA3n ph\u1EA9m: ".concat(sanPham.ma_san_pham) : '';
+                    brandEl = document.querySelector('.brand-tag');
+                    if (brandEl)
+                        brandEl.textContent = sanPham.thuong_hieu || '';
+                    priceEl = document.querySelector('.original-price');
+                    if (priceEl)
+                        priceEl.textContent = sanPham.gia_ban ? "".concat(Number(sanPham.gia_ban).toLocaleString(), "\u20AB") : '';
+                    stockEl = document.querySelector('.stock-status');
+                    if (stockEl)
+                        stockEl.textContent = sanPham.so_luong_ton_kho !== undefined ? "C\u00F2n h\u00E0ng: ".concat(sanPham.so_luong_ton_kho, " s\u1EA3n ph\u1EA9m c\u00F3 s\u1EB5n") : '';
+                    moTaEl = document.getElementById('moTaSanPham');
+                    if (moTaEl)
+                        moTaEl.textContent = sanPham.mo_ta || '';
+                    reviewList = document.getElementById('reviewList');
+                    filterStarEl = document.getElementById('filterStar');
+                    filteredReviews = danhGias;
+                    if (filterStarEl) {
+                        selectedStar = filterStarEl.value;
+                        filteredReviews = filterReviewByStar(danhGias, selectedStar);
+                        filterStarEl.onchange = function () {
+                            var selected = filterStarEl.value;
+                            var filtered = filterReviewByStar(danhGias, selected);
+                            if (reviewList) {
+                                if (filtered.length === 0) {
+                                    reviewList.innerHTML = '<div class="placeholder-text">Không có đánh giá nào phù hợp.</div>';
+                                }
+                                else {
+                                    var userStr = localStorage.getItem('usercontext');
+                                    var userId_2 = null;
+                                    if (userStr) {
+                                        try {
+                                            var user = JSON.parse(userStr);
+                                            userId_2 = user._id;
+                                        }
+                                        catch (_a) { }
+                                    }
+                                    reviewList.innerHTML = filtered.map(function (r) {
+                                        var isOwner = userId_2 && r.nguoi_dung_id === userId_2;
+                                        return "\n                        <div class=\"review-item ".concat(isOwner ? 'user-review clickable' : '', "\" data-review-id=\"").concat(r.id, "\" data-review-content=\"").concat(r.noi_dung_danh_gia, "\" data-review-rating=\"").concat(r.diem_danh_gia, "\" ").concat(isOwner ? 'title="Click để chỉnh sửa đánh giá"' : '', ">\n                            <div class=\"review-header\">\n                                <div class=\"reviewer-avatar\">").concat(r.ho_ten_nguoi_dung ? r.ho_ten_nguoi_dung.charAt(0).toUpperCase() : '?', "</div>\n                                <div class=\"reviewer-info\">\n                                    <div class=\"reviewer-name\">").concat(r.ho_ten_nguoi_dung || 'Ẩn danh', "</div>\n                                    <div class=\"review-date\">").concat(new Date(r.ngay_tao).toLocaleDateString('vi-VN'), "</div>\n                                </div>\n                                <div class=\"review-rating\">").concat('★'.repeat(r.diem_danh_gia)).concat('☆'.repeat(5 - r.diem_danh_gia), "</div>\n                            </div>\n                            <div class=\"review-content\">").concat(r.noi_dung_danh_gia, "</div>\n                        </div>\n                        ");
+                                    }).join('');
+                                }
+                                // Gắn lại sự kiện click cho các review sau khi filter
+                                attachReviewClickEvents();
+                            }
+                        };
                     }
-                    catch (_a) { }
-                }
-                reviewList.innerHTML = filteredReviews.map(r => {
-                    const isOwner = userId && r.nguoi_dung_id === userId;
-                    return `
-                <div class="review-item ${isOwner ? 'user-review clickable' : ''}" data-review-id="${r.id}" data-review-content="${r.noi_dung_danh_gia}" data-review-rating="${r.diem_danh_gia}" ${isOwner ? 'title="Click để chỉnh sửa đánh giá"' : ''}>
-                    <div class="review-header">
-                        <div class="reviewer-avatar">${r.ho_ten_nguoi_dung ? r.ho_ten_nguoi_dung.charAt(0).toUpperCase() : '?'}</div>
-                        <div class="reviewer-info">
-                            <div class="reviewer-name">${r.ho_ten_nguoi_dung || 'Ẩn danh'}</div>
-                            <div class="review-date">${new Date(r.ngay_tao).toLocaleDateString('vi-VN')}</div>
-                        </div>
-                        <div class="review-rating">${'★'.repeat(r.diem_danh_gia)}${'☆'.repeat(5 - r.diem_danh_gia)}</div>
-                    </div>
-                    <div class="review-content">${r.noi_dung_danh_gia}</div>
-                </div>
-                `;
-                }).join('');
-                // Gắn sự kiện click cho các review của user
-                attachReviewClickEvents();
+                    if (reviewList) {
+                        if (filteredReviews.length === 0) {
+                            reviewList.innerHTML = '<div class="placeholder-text">Chưa có đánh giá nào cho sản phẩm này.</div>';
+                        }
+                        else {
+                            userStr = localStorage.getItem('usercontext');
+                            userId_1 = null;
+                            if (userStr) {
+                                try {
+                                    user = JSON.parse(userStr);
+                                    userId_1 = user._id;
+                                }
+                                catch (_b) { }
+                            }
+                            reviewList.innerHTML = filteredReviews.map(function (r) {
+                                var isOwner = userId_1 && r.nguoi_dung_id === userId_1;
+                                return "\n                <div class=\"review-item ".concat(isOwner ? 'user-review clickable' : '', "\" data-review-id=\"").concat(r.id, "\" data-review-content=\"").concat(r.noi_dung_danh_gia, "\" data-review-rating=\"").concat(r.diem_danh_gia, "\" ").concat(isOwner ? 'title="Click để chỉnh sửa đánh giá"' : '', ">\n                    <div class=\"review-header\">\n                        <div class=\"reviewer-avatar\">").concat(r.ho_ten_nguoi_dung ? r.ho_ten_nguoi_dung.charAt(0).toUpperCase() : '?', "</div>\n                        <div class=\"reviewer-info\">\n                            <div class=\"reviewer-name\">").concat(r.ho_ten_nguoi_dung || 'Ẩn danh', "</div>\n                            <div class=\"review-date\">").concat(new Date(r.ngay_tao).toLocaleDateString('vi-VN'), "</div>\n                        </div>\n                        <div class=\"review-rating\">").concat('★'.repeat(r.diem_danh_gia)).concat('☆'.repeat(5 - r.diem_danh_gia), "</div>\n                    </div>\n                    <div class=\"review-content\">").concat(r.noi_dung_danh_gia, "</div>\n                </div>\n                ");
+                            }).join('');
+                            // Gắn sự kiện click cho các review của user
+                            attachReviewClickEvents();
+                        }
+                    }
+                    return [2 /*return*/];
             }
-        }
+        });
     });
 }
 // Hàm gắn sự kiện click cho các review của user
 function attachReviewClickEvents() {
-    const userReviews = document.querySelectorAll('.review-item.user-review.clickable');
-    userReviews.forEach(reviewEl => {
+    var userReviews = document.querySelectorAll('.review-item.user-review.clickable');
+    userReviews.forEach(function (reviewEl) {
         reviewEl.addEventListener('click', function () {
-            const reviewId = reviewEl.getAttribute('data-review-id');
-            const reviewContent = reviewEl.getAttribute('data-review-content') || '';
-            const reviewRating = Number(reviewEl.getAttribute('data-review-rating')) || 1;
+            var reviewId = reviewEl.getAttribute('data-review-id');
+            var reviewContent = reviewEl.getAttribute('data-review-content') || '';
+            var reviewRating = Number(reviewEl.getAttribute('data-review-rating')) || 1;
             showCommentDialog(reviewId, reviewContent, reviewRating);
         });
     });
 }
 // ✅ Hàm khởi tạo star rating
 function initStarRating() {
-    const stars = document.querySelectorAll('#starRating .star');
-    let selectedRating = 0;
-    stars.forEach((star, idx) => {
+    var stars = document.querySelectorAll('#starRating .star');
+    var selectedRating = 0;
+    stars.forEach(function (star, idx) {
         star.addEventListener('mouseover', function () {
             highlightStars(idx + 1);
         });
@@ -848,7 +924,7 @@ function initStarRating() {
         });
     });
     function highlightStars(rating) {
-        stars.forEach((star, i) => {
+        stars.forEach(function (star, i) {
             if (i < rating) {
                 star.classList.add('selected');
                 star.innerHTML = '★'; // filled star
@@ -863,11 +939,11 @@ function initStarRating() {
 }
 // ✅ Hàm khởi tạo form review
 function initReviewForm() {
-    const reviewForm = document.getElementById('userReviewForm');
-    const stars = document.querySelectorAll('#starRating .star');
-    let selectedRating = 0;
+    var reviewForm = document.getElementById('userReviewForm');
+    var stars = document.querySelectorAll('#starRating .star');
+    var selectedRating = 0;
     // Khởi tạo star rating
-    stars.forEach((star, idx) => {
+    stars.forEach(function (star, idx) {
         star.addEventListener('mouseover', function () {
             highlightStars(idx + 1);
         });
@@ -880,7 +956,7 @@ function initReviewForm() {
         });
     });
     function highlightStars(rating) {
-        stars.forEach((star, i) => {
+        stars.forEach(function (star, i) {
             if (i < rating) {
                 star.classList.add('selected');
                 star.innerHTML = '★';
@@ -893,50 +969,62 @@ function initReviewForm() {
     }
     if (reviewForm) {
         reviewForm.addEventListener('submit', function (e) {
-            return __awaiter(this, void 0, void 0, function* () {
-                e.preventDefault();
-                if (selectedRating === 0) {
-                    document.getElementById('reviewFormMessage').textContent = 'Vui lòng chọn số sao trước khi gửi đánh giá!';
-                    return;
-                }
-                document.getElementById('reviewFormMessage').textContent = '';
-                // Lấy user từ localStorage
-                const userStr = localStorage.getItem('usercontext');
-                if (!userStr) {
-                    document.getElementById('reviewFormMessage').textContent = 'Bạn cần đăng nhập để gửi đánh giá!';
-                    return;
-                }
-                const user = JSON.parse(userStr);
-                const sanPhamId = getSanPhamIdFromUrl();
-                const reviewContent = document.getElementById('reviewContent').value;
-                try {
-                    const res = yield fetch(`http://localhost:3000/api/san-pham/${sanPhamId}/danh-gia`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            san_pham_id: sanPhamId,
-                            nguoi_dung_id: user._id,
-                            diem_danh_gia: selectedRating,
-                            noi_dung_danh_gia: reviewContent
-                        })
-                    });
-                    if (res.ok) {
-                        document.getElementById('reviewFormMessage').textContent = 'Gửi đánh giá thành công!';
-                        reviewForm.reset();
-                        highlightStars(0);
-                        selectedRating = 0;
-                        renderChiTietSanPham();
+            return __awaiter(this, void 0, void 0, function () {
+                var userStr, user, sanPhamId, reviewContent, res, err, _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            e.preventDefault();
+                            if (selectedRating === 0) {
+                                document.getElementById('reviewFormMessage').textContent = 'Vui lòng chọn số sao trước khi gửi đánh giá!';
+                                return [2 /*return*/];
+                            }
+                            document.getElementById('reviewFormMessage').textContent = '';
+                            userStr = localStorage.getItem('usercontext');
+                            if (!userStr) {
+                                document.getElementById('reviewFormMessage').textContent = 'Bạn cần đăng nhập để gửi đánh giá!';
+                                return [2 /*return*/];
+                            }
+                            user = JSON.parse(userStr);
+                            sanPhamId = getSanPhamIdFromUrl();
+                            reviewContent = document.getElementById('reviewContent').value;
+                            _b.label = 1;
+                        case 1:
+                            _b.trys.push([1, 6, , 7]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(sanPhamId, "/danh-gia"), {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        san_pham_id: sanPhamId,
+                                        nguoi_dung_id: user._id,
+                                        diem_danh_gia: selectedRating,
+                                        noi_dung_danh_gia: reviewContent
+                                    })
+                                })];
+                        case 2:
+                            res = _b.sent();
+                            if (!res.ok) return [3 /*break*/, 3];
+                            document.getElementById('reviewFormMessage').textContent = 'Gửi đánh giá thành công!';
+                            reviewForm.reset();
+                            highlightStars(0);
+                            selectedRating = 0;
+                            renderChiTietSanPham();
+                            return [3 /*break*/, 5];
+                        case 3: return [4 /*yield*/, res.json()];
+                        case 4:
+                            err = _b.sent();
+                            document.getElementById('reviewFormMessage').textContent = err.message || 'Gửi đánh giá thất bại!';
+                            _b.label = 5;
+                        case 5: return [3 /*break*/, 7];
+                        case 6:
+                            _a = _b.sent();
+                            document.getElementById('reviewFormMessage').textContent = 'Lỗi kết nối máy chủ!';
+                            return [3 /*break*/, 7];
+                        case 7: return [2 /*return*/];
                     }
-                    else {
-                        const err = yield res.json();
-                        document.getElementById('reviewFormMessage').textContent = err.message || 'Gửi đánh giá thất bại!';
-                    }
-                }
-                catch (_a) {
-                    document.getElementById('reviewFormMessage').textContent = 'Lỗi kết nối máy chủ!';
-                }
+                });
             });
         });
     }
@@ -953,7 +1041,7 @@ function initChiTietSanPham() {
 window.initChiTietSanPham = initChiTietSanPham;
 window.renderChiTietSanPham = renderChiTietSanPham;
 // ✅ Chỉ khởi tạo khi trang được load trực tiếp (không phải qua smooth router)
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
     // Kiểm tra xem có đang trong smooth router hay không
     if (!history.state || !history.state.page) {
         // Đang load trực tiếp, không qua smooth router

@@ -15,7 +15,7 @@ interface SanPham {
 }
 
 // Thêm function format giá
-function formatPriceAd(price: number): string {
+function formatPriceAd2(price: number): string {
     return new Intl.NumberFormat('vi-VN').format(price);
 }
 
@@ -42,7 +42,7 @@ function createProductCardAd(product: SanPham): string {
                     ${product.danh_muc ? `<span class="product-category">${product.danh_muc}</span>` : ''}
                     ${product.thuong_hieu ? `<span class="product-brand">${product.thuong_hieu}</span>` : ''}
                 </div>
-                <div class="price">${formatPriceAd(price)} đ</div>
+                <div class="price">${formatPriceAd2(price)} đ</div>
             </div>
         </div>
     `;

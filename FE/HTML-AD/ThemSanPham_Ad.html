@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Sản Phẩm Mới</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(241, 158, 220, 0.3);
+            width: 100%;
+            max-width: 600px;
+            border: 2px solid #F19EDC;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #F19EDC;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(241, 158, 220, 0.2);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .required {
+            color: #F19EDC;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #F19EDC;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e68cc7;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(241, 158, 220, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #F19EDC, #e68cc7);
+            color: white;
+            box-shadow: 0 4px 15px rgba(241, 158, 220, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(241, 158, 220, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #F19EDC;
+            border: 2px solid #F19EDC;
+        }
+
+        .btn-secondary:hover {
+            background: #F19EDC;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon::before {
+            content: '💰';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .price-input {
+            padding-left: 50px !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #F19EDC, #e68cc7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Thêm Sản Phẩm Mới</h1>
+            <p>Điền thông tin chi tiết để thêm sản phẩm vào hệ thống</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            🎉 Sản phẩm đã được thêm thành công!
+        </div>
+
+        <form id="productForm">
+            <div class="form-group">
+                <label for="tenSanPham">Tên Sản Phẩm <span class="required">*</span></label>
+                <input type="text" id="tenSanPham" name="tenSanPham" required placeholder="Nhập tên sản phẩm...">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="maSanPham">Mã Sản Phẩm <span class="required">*</span></label>
+                    <input type="text" id="maSanPham" name="maSanPham" required placeholder="SP001, SP002...">
+                </div>
+
+                <div class="form-group input-icon">
+                    <label for="giaBan">Giá Bán (VNĐ) <span class="required">*</span></label>
+                    <input type="number" id="giaBan" name="giaBan" class="price-input" required min="0" step="1000"
+                        placeholder="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="danhMuc">Danh Mục</label>
+                    <select id="danhMuc" name="danhMuc">
+                        <option value="">-- Đang tải danh mục... --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="thuongHieu">Thương Hiệu</label>
+                    <select id="thuongHieu" name="thuongHieu">
+                        <option value="">-- Đang tải thương hiệu... --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="moTa">Mô Tả Sản Phẩm</label>
+                <textarea id="moTa" name="moTa" placeholder="Nhập mô tả chi tiết về sản phẩm..."></textarea>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">➡️ Tiếp theo</button>
+                <button type="reset" class="btn btn-secondary">🔄 Làm Mới</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module" src="/FE/ts-ad/themSanPham_Ad.js"></script>
+</body>
+
+</html>

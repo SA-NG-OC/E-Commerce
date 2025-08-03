@@ -300,5 +300,66 @@ export class SanPhamService {
         return !(updateResult.rowCount === 0);
     }
 
+    static async createSanPham(data: {
+        ten_san_pham: string;
+        ma_san_pham: string;
+        mo_ta: string;
+        gia_ban: number;
+        ten_danh_muc: string;
+        ten_thuong_hieu: string;
+    }): Promise<string | null> {
+        // Truy vấn lấy ID danh mục
+        const dmResult = await pool.query(
+            `SELECT id FROM danh_muc WHERE ten_danh_muc = $1 LIMIT 1`,
+            [data.ten_danh_muc]
+        );
+        if (dmResult.rows.length === 0) throw new Error('Không tìm thấy danh mục');
+        const danh_muc_id = dmResult.rows[0].id;
+
+        // Truy vấn lấy ID thương hiệu
+        const thResult = await pool.query(
+            `SELECT id FROM thuong_hieu WHERE ten_thuong_hieu = $1 LIMIT 1`,
+            [data.ten_thuong_hieu]
+        );
+        if (thResult.rows.length === 0) throw new Error('Không tìm thấy thương hiệu');
+        const thuong_hieu_id = thResult.rows[0].id;
+
+        // Tìm ID sản phẩm lớn nhất hiện tại theo dạng SPxxx
+        const maxIdResult = await pool.query(
+            `SELECT id FROM san_pham 
+         WHERE id ~ '^SP[0-9]{3}$' 
+         ORDER BY CAST(SUBSTRING(id FROM 3) AS INTEGER) DESC 
+         LIMIT 1`
+        );
+
+        let newIdNumber = 1;
+        if (maxIdResult.rows.length > 0) {
+            const lastId = maxIdResult.rows[0].id; // ví dụ "SP045"
+            const lastNumber = parseInt(lastId.substring(2)); // lấy "045" -> 45
+            newIdNumber = lastNumber + 1;
+        }
+
+        const newId = 'SP' + newIdNumber.toString().padStart(3, '0'); // SP001, SP002, ...
+
+        // Thêm sản phẩm mới
+        const insertResult = await pool.query(
+            `INSERT INTO san_pham 
+         (id, ten_san_pham, ma_san_pham, mo_ta, gia_ban, danh_muc_id, thuong_hieu_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+                newId,
+                data.ten_san_pham,
+                data.ma_san_pham,
+                data.mo_ta,
+                data.gia_ban,
+                danh_muc_id,
+                thuong_hieu_id
+            ]
+        );
+
+        if (insertResult.rowCount === 0) throw new Error('Thêm sản phẩm không thành công');
+        return newId;
+    }
+
 
 }

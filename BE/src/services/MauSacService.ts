@@ -18,7 +18,7 @@ export class MauSacService {
         SELECT DISTINCT ms.id, ms.ten_mau, ms.ma_mau
         FROM bien_the_san_pham bt
         JOIN mau_sac ms ON bt.mau_sac_id = ms.id
-        WHERE bt.san_pham_id = $1
+        WHERE bt.san_pham_id = $1 AND bt.da_xoa = FALSE
         ORDER BY ms.ten_mau
     `, [sanPhamId]);
 

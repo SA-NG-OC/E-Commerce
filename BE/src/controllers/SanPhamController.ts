@@ -112,6 +112,38 @@ export class SanPhamController {
             res.status(500).json({ message: 'Lỗi server' });
         }
     }
+    // sử dụng http://localhost:3000/api/san-pham/ 
+    static async createSanPham(req: Request, res: Response) {
+        try {
+            const {
+                ten_san_pham,
+                ma_san_pham,
+                mo_ta,
+                gia_ban,
+                ten_danh_muc,
+                ten_thuong_hieu
+            } = req.body;
+
+            const success: string | null = await SanPhamService.createSanPham({
+                ten_san_pham,
+                ma_san_pham,
+                mo_ta,
+                gia_ban,
+                ten_danh_muc,
+                ten_thuong_hieu
+            });
+
+            if (success) {
+                res.status(201).json({ message: 'Thêm sản phẩm thành công', id: success });
+            } else {
+                res.status(400).json({ message: 'Không thể thêm sản phẩm' });
+            }
+        } catch (err) {
+            console.error('Lỗi khi thêm sản phẩm:', err);
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
+
 
 
     /*static async create(req: Request, res: Response) {

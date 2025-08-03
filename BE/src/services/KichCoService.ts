@@ -22,7 +22,7 @@ export class KichCoService {
         SELECT DISTINCT ON (kc.id) kc.id, kc.so_kich_co
         FROM bien_the_san_pham bt
         JOIN kich_co kc ON bt.kich_co_id = kc.id
-        WHERE bt.san_pham_id = $1
+        WHERE bt.san_pham_id = $1 AND bt.da_xoa = FALSE
         ORDER BY kc.id, kc.so_kich_co::int
     `, [sanPhamId]);
 
