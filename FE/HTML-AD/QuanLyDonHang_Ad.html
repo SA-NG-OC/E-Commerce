@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đơn Hàng</title>
+    <link rel="stylesheet" href="/FE/CSS/QuanLyDonHang_Ad.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🛍️ Quản Lý Đơn Hàng</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('dashboard')">Dashboard</div>
+            <div class="nav-tab" onclick="showTab('orders')">Danh Sách Đơn Hàng</div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-orders">0</div>
+                    <div class="stat-label">Tổng Đơn Hàng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pending-orders">0</div>
+                    <div class="stat-label">Chờ Xác Nhận</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="confirmed-orders">0</div>
+                    <div class="stat-label">Đã Xác Nhận</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="delivered-orders">0</div>
+                    <div class="stat-label">Đã Giao</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders List Tab -->
+        <div id="orders" class="tab-content">
+            <input type="text" class="search-bar" placeholder="🔍 Tìm kiếm đơn hàng..." id="search-input">
+
+            <div class="filters">
+                <select class="filter-select" id="status-filter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="cho_xac_nhan">Chờ xác nhận</option>
+                    <option value="da_xac_nhan">Đã xác nhận</option>
+                    <option value="dang_giao">Đang giao</option>
+                    <option value="da_giao">Đã giao</option>
+                    <option value="da_huy">Đã hủy</option>
+                </select>
+                <select class="filter-select" id="date-filter">
+                    <option value="">Tất cả thời gian</option>
+                    <option value="today">Hôm nay</option>
+                    <option value="week">Tuần này</option>
+                    <option value="month">Tháng này</option>
+                </select>
+                <input type="text" class="filter-input" id="user-filter" placeholder="Lọc theo mã người dùng..." />
+            </div>
+
+            <div class="orders-grid" id="orders-container">
+                <!-- Orders will be populated here -->
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Chi Tiết Đơn Hàng</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modal-body">
+                <!-- Order details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Status Modal -->
+    <div id="status-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Cập Nhật Trạng Thái</h2>
+                <span class="close" onclick="closeStatusModal()">&times;</span>
+            </div>
+            <form id="status-form">
+                <div class="form-group">
+                    <label class="form-label">Trạng Thái Mới</label>
+                    <select class="form-control" id="new-status">
+                        <option value="cho_xac_nhan">Chờ xác nhận</option>
+                        <option value="da_xac_nhan">Đã xác nhận</option>
+                        <option value="dang_giao">Đang giao</option>
+                        <option value="da_giao">Đã giao</option>
+                        <option value="da_huy">Đã hủy</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                    💾 Cập Nhật
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/FE/ts-ad/quanLyDonHang_Ad.js"></script>
+</body>
+
+</html>

@@ -313,5 +313,137 @@ export class DonHangService {
         }
     }
 
+    async getAllDonHang(): Promise<DonHangModel[]> {
+        const query = `
+        SELECT 
+            dh.id AS don_hang_id,
+            dh.nguoi_dung_id,
+            dh.tong_thanh_toan,
+            dh.trang_thai,
+            dh.ngay_tao,
+
+            sp.ten_san_pham,
+            sp.id AS san_pham_id,
+            bts.id AS bien_the_id,
+            ct.gia_ban,
+            ms.ten_mau AS mau_sac,
+            kc.so_kich_co AS kich_co,
+            hasp.duong_dan_hinh_anh AS hinh_anh_bien_the,
+            ct.so_luong
+
+        FROM don_hang dh
+        JOIN chi_tiet_don_hang ct ON ct.don_hang_id = dh.id
+        JOIN bien_the_san_pham bts ON ct.bien_the_id = bts.id
+        JOIN san_pham sp ON sp.id = bts.san_pham_id
+        JOIN mau_sac ms ON ms.id = bts.mau_sac_id
+        JOIN kich_co kc ON kc.id = bts.kich_co_id
+
+        LEFT JOIN (
+            SELECT 
+                san_pham_id, 
+                mau_sac_id, 
+                duong_dan_hinh_anh
+            FROM (
+                SELECT *, 
+                    ROW_NUMBER() OVER (
+                        PARTITION BY san_pham_id, mau_sac_id 
+                        ORDER BY id
+                    ) AS rn
+                FROM hinh_anh_san_pham
+            ) AS ranked
+            WHERE rn = 1
+        ) AS hasp 
+            ON hasp.san_pham_id = sp.id 
+            AND hasp.mau_sac_id = bts.mau_sac_id
+
+        ORDER BY dh.ngay_tao DESC;
+    `;
+
+        const result = await pool.query(query);
+
+        if (result.rows.length === 0) return [];
+
+        const donHangMap = new Map<string, DonHangModel>();
+
+        for (const row of result.rows) {
+            const donHangId = row.don_hang_id;
+
+            if (!donHangMap.has(donHangId)) {
+                donHangMap.set(
+                    donHangId,
+                    new DonHangModel(
+                        donHangId,
+                        row.nguoi_dung_id,
+                        parseFloat(row.tong_thanh_toan),
+                        row.trang_thai,
+                        row.ngay_tao,
+                        []
+                    )
+                );
+            }
+
+            donHangMap.get(donHangId)?.san_pham.push({
+                ten_san_pham: row.ten_san_pham,
+                id_san_pham: row.san_pham_id,
+                id_bien_the: row.bien_the_id,
+                gia_ban: parseFloat(row.gia_ban),
+                mau_sac: row.mau_sac,
+                kich_co: row.kich_co,
+                hinh_anh_bien_the: row.hinh_anh_bien_the,
+                so_luong: row.so_luong
+            });
+        }
+
+        return Array.from(donHangMap.values());
+    }
+
+    async capNhatTrangThaiDonHang(don_hang_id: string, trang_thai_moi: string): Promise<{ success: boolean; message: string }> {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            // Kiểm tra trạng thái hợp lệ (nếu muốn bảo vệ thêm ngoài CHECK của DB)
+            const trangThaiHopLe = ['cho_xac_nhan', 'da_xac_nhan', 'dang_giao', 'da_giao', 'da_huy'];
+            if (!trangThaiHopLe.includes(trang_thai_moi)) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Trạng thái không hợp lệ'
+                };
+            }
+
+            const result = await client.query(
+                `UPDATE don_hang SET trang_thai = $1 WHERE id = $2`,
+                [trang_thai_moi, don_hang_id]
+            );
+
+            if (result.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không tìm thấy đơn hàng để cập nhật'
+                };
+            }
+
+            await client.query('COMMIT');
+            return {
+                success: true,
+                message: 'Trạng thái đơn hàng đã được cập nhật thành công'
+            };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+            return {
+                success: false,
+                message: 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng'
+            };
+        } finally {
+            client.release();
+        }
+    }
+
+
 
 }
