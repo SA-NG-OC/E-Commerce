@@ -531,6 +531,41 @@ class ChiTietSanPhamManager_Ad {
         }
     }
 
+    public async deleteProduct_Ad(): Promise<void> {
+        if (!this.sanPham || !this.sanPham.id) {
+            alert('❌ Không tìm thấy sản phẩm để xóa!');
+            return;
+        }
+
+        const confirmDelete = confirm('⚠️ Bạn có chắc muốn xóa sản phẩm này không?');
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/san-pham/${this.sanPham.id}/soft-delete`, {
+                method: 'PATCH'
+            });
+
+            if (res.ok) {
+                alert('✅ Sản phẩm đã được xóa (ẩn) thành công!');
+            } else {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const { message } = await res.json();
+                    throw new Error(message || 'Lỗi khi xóa sản phẩm');
+                } else {
+                    const text = await res.text();
+                    console.error('Server trả HTML:', text);
+                    throw new Error('❌ Máy chủ trả về dữ liệu không hợp lệ.');
+                }
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa sản phẩm:', error);
+            alert('❌ Có lỗi xảy ra khi xóa sản phẩm\n' + (error as Error).message);
+        }
+
+    }
+
+
     public resetForm_Ad(): void {
         if (confirm('Bạn có chắc muốn đặt lại tất cả thông tin?')) {
             this.loadSanPhamData_Ad(); // Reload dữ liệu gốc

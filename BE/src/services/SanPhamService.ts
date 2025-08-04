@@ -13,7 +13,7 @@ export class SanPhamService {
             FROM san_pham sp
             LEFT JOIN danh_muc dm ON sp.danh_muc_id = dm.id
             LEFT JOIN thuong_hieu th ON sp.thuong_hieu_id = th.id
-            WHERE sp.id = $1
+            WHERE sp.id = $1 AND sp.da_xoa = FALSE
             LIMIT 1
         `, [id]);
 
@@ -23,7 +23,7 @@ export class SanPhamService {
         // Lấy hình ảnh (gắn với từng màu sắc)
         const imgResult = await pool.query(`
             SELECT * FROM hinh_anh_san_pham 
-            WHERE san_pham_id = $1
+            WHERE san_pham_id = $1 
             ORDER BY id ASC
         `, [id]);
 
@@ -37,7 +37,7 @@ export class SanPhamService {
         // Lấy danh sách biến thể
         const bienTheResult = await pool.query(`
             SELECT * FROM bien_the_san_pham 
-            WHERE san_pham_id = $1
+            WHERE san_pham_id = $1 
         `, [id]);
 
         const danh_sach_bien_the: BienTheSPModel[] = bienTheResult.rows.map(bienThe => new BienTheSPModel({
@@ -80,6 +80,7 @@ export class SanPhamService {
                 ORDER BY id ASC 
                 LIMIT 1
             ) ha ON true
+            WHERE sp.da_xoa = FALSE
         `);
 
         return result.rows.map(row => {
@@ -109,21 +110,21 @@ export class SanPhamService {
     // Lấy sản phẩm theo danh mục ID
     static async getByDanhMucWithImages(danhMucId: string): Promise<SanPham[]> {
         const result = await pool.query(`
-        SELECT sp.*,
+            SELECT sp.*,
                 dm.ten_danh_muc AS ten_danh_muc,
                 th.ten_thuong_hieu AS ten_thuong_hieu,
-               ha.id as ha_id, ha.mau_sac_id, ha.duong_dan_hinh_anh
-        FROM san_pham sp
-        LEFT JOIN danh_muc dm ON sp.danh_muc_id = dm.id
-        LEFT JOIN thuong_hieu th ON sp.thuong_hieu_id = th.id
-        LEFT JOIN LATERAL (
-            SELECT * FROM hinh_anh_san_pham 
-            WHERE san_pham_id = sp.id 
-            ORDER BY id ASC 
-            LIMIT 1
-        ) ha ON true
-        WHERE sp.danh_muc_id = $1
-    `, [danhMucId]);
+                ha.id as ha_id, ha.mau_sac_id, ha.duong_dan_hinh_anh
+            FROM san_pham sp
+            LEFT JOIN danh_muc dm ON sp.danh_muc_id = dm.id
+            LEFT JOIN thuong_hieu th ON sp.thuong_hieu_id = th.id
+            LEFT JOIN LATERAL (
+                SELECT * FROM hinh_anh_san_pham 
+                WHERE san_pham_id = sp.id 
+                ORDER BY id ASC 
+                LIMIT 1
+            ) ha ON true
+            WHERE sp.danh_muc_id = $1 AND sp.da_xoa = FALSE
+        `, [danhMucId]);
 
         return result.rows.map(row => {
             const hinhAnh = row.ha_id
@@ -165,7 +166,7 @@ export class SanPhamService {
             ORDER BY id ASC 
             LIMIT 1
         ) ha ON true
-        WHERE sp.thuong_hieu_id = $1
+        WHERE sp.thuong_hieu_id = $1 AND sp.da_xoa = FALSE
     `, [thuongHieuId]);
 
         return result.rows.map(row => {
@@ -193,7 +194,7 @@ export class SanPhamService {
     }
 
     static async filterByDanhMucAndThuongHieu(danhMucId?: string, thuongHieuId?: string): Promise<SanPham[]> {
-        let conditions: string[] = [];
+        let conditions: string[] = ['sp.da_xoa = FALSE']; // Thêm điều kiện không bị xóa
         let params: any[] = [];
         let index = 1;
 
@@ -207,7 +208,7 @@ export class SanPhamService {
             params.push(thuongHieuId);
         }
 
-        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+        const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
         const result = await pool.query(`
         SELECT sp.*, 
@@ -249,6 +250,7 @@ export class SanPhamService {
             });
         });
     }
+
 
     static async updateSanPham(id: string, data: {
         ten_san_pham: string;
@@ -359,6 +361,19 @@ export class SanPhamService {
 
         if (insertResult.rowCount === 0) throw new Error('Thêm sản phẩm không thành công');
         return newId;
+    }
+
+    //Xóa ảo 1 sp 
+    static async deleteSanPhamAo(id: string): Promise<boolean> {
+        const query = await pool.query(
+            `UPDATE san_pham SET da_xoa = TRUE WHERE id = $1`,
+            [id]
+        );
+
+        if (query.rowCount === 0)
+            throw new Error('Xóa sản phẩm không thành');
+
+        return true;
     }
 
 

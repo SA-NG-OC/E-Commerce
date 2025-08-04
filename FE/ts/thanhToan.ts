@@ -1,5 +1,4 @@
-// thanhToan.ts - Refactored for router compatibility
-
+// thanhToan.ts - Fixed for duplicate submissions
 
 // Types/Interfaces
 interface User {
@@ -60,6 +59,10 @@ let orderData: OrderData = {
     total: 0
 };
 
+// 🔧 FIX: Biến để track initialization
+let isInitialized = false;
+let isProcessingOrder = false; // Prevent double submission
+
 const districts: Record<string, string[]> = {
     'hanoi': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ', 'Long Biên', 'Cầu Giấy', 'Đống Đa', 'Hai Bà Trưng', 'Hoàng Mai', 'Thanh Xuân'],
     'hcm': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7', 'Quận 8', 'Quận 9', 'Quận 10'],
@@ -76,7 +79,7 @@ const cityMap: Record<string, string> = {
     'Cần Thơ': 'cantho'
 };
 
-// API Functions
+// API Functions (giữ nguyên)
 function getUserId(): string | null {
     const userStr = localStorage.getItem('usercontext');
     if (!userStr) return null;
@@ -369,6 +372,14 @@ async function rollbackInventory(orderItems: ProductVariant[]): Promise<void> {
 }
 
 async function processOrderWithInventory(orderInfo: OrderInfo): Promise<boolean> {
+    // 🔧 FIX: Prevent double processing
+    if (isProcessingOrder) {
+        console.warn('⚠️ Order is already being processed, skipping...');
+        return false;
+    }
+
+    isProcessingOrder = true;
+
     let donHangId: string | null = null;
     let createdSteps: string[] = [];
     let inventoryUpdated = false;
@@ -470,6 +481,9 @@ async function processOrderWithInventory(orderInfo: OrderInfo): Promise<boolean>
         }
 
         return false;
+    } finally {
+        // 🔧 FIX: Reset processing flag
+        isProcessingOrder = false;
     }
 }
 
@@ -722,6 +736,12 @@ function updateDiscountElement(): void {
 
 // Handle payment method selection
 function handlePaymentMethodSelection(): void {
+    // 🔧 FIX: Remove existing listeners first
+    document.querySelectorAll('.payment-option').forEach(option => {
+        const clonedOption = option.cloneNode(true) as Element;
+        option.parentNode?.replaceChild(clonedOption, option);
+    });
+
     document.querySelectorAll('.payment-option').forEach(option => {
         option.addEventListener('click', function (this: Element) {
             document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
@@ -739,7 +759,14 @@ function handleLocationSelection(): void {
     const citySelect = getSelectElement('city');
     if (!citySelect) return;
 
-    citySelect.addEventListener('change', function (this: HTMLSelectElement) {
+    // 🔧 FIX: Remove existing listeners first
+    const clonedCitySelect = citySelect.cloneNode(true) as HTMLSelectElement;
+    citySelect.parentNode?.replaceChild(clonedCitySelect, citySelect);
+
+    const newCitySelect = getSelectElement('city');
+    if (!newCitySelect) return;
+
+    newCitySelect.addEventListener('change', function (this: HTMLSelectElement) {
         const cityValue = this.value;
         const districtSelect = getSelectElement('district');
         if (!districtSelect) return;
@@ -805,15 +832,32 @@ function prepareOrderInfo(): OrderInfo {
     };
 }
 
+// 🔧 FIX: Store form submit handler reference
+let formSubmitHandler: ((e: Event) => void) | null = null;
+
 // Handle form submission
 function handleFormSubmission(): void {
     const form = getElement('checkoutForm') as HTMLFormElement;
     if (!form) return;
 
-    form.addEventListener('submit', async function (e: Event) {
+    // 🔧 FIX: Remove existing listener first
+    if (formSubmitHandler) {
+        form.removeEventListener('submit', formSubmitHandler);
+        formSubmitHandler = null;
+    }
+
+    // Create new handler
+    formSubmitHandler = async function (e: Event) {
         e.preventDefault();
 
-        const isValid = validateForm(this);
+        // 🔧 FIX: Additional check to prevent double submission
+        if (isProcessingOrder) {
+            console.warn('⚠️ Form submission blocked - order already processing');
+            return;
+        }
+
+        const form = e.target as HTMLFormElement;
+        const isValid = validateForm(form);
 
         if (isValid && orderData.items.length > 0) {
             const btn = document.querySelector('.checkout-btn') as HTMLButtonElement;
@@ -850,7 +894,10 @@ function handleFormSubmission(): void {
                 alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
             }
         }
-    });
+    };
+
+    // Add new listener
+    form.addEventListener('submit', formSubmitHandler);
 }
 
 // Handle mobile smooth scrolling
@@ -869,11 +916,32 @@ function handleMobileScrolling(): void {
     }
 }
 
-// MAIN INITIALIZATION FUNCTIONS - tương tự như productRender.ts
+// 🔧 FIX: Cleanup function to remove all event listeners
+function cleanupEventListeners(): void {
+    console.log('🧹 Cleaning up event listeners...');
+
+    // Remove form submit listener
+    const form = getElement('checkoutForm') as HTMLFormElement;
+    if (form && formSubmitHandler) {
+        form.removeEventListener('submit', formSubmitHandler);
+        formSubmitHandler = null;
+    }
+
+    // Reset processing flag
+    isProcessingOrder = false;
+}
+
+// MAIN INITIALIZATION FUNCTIONS
 
 // Hàm khởi tạo trang thanh toán
 function initThanhToan(): void {
-    console.log('Initializing Thanh Toan...');
+    console.log('🚀 Initializing Thanh Toan...');
+
+    // 🔧 FIX: Prevent double initialization
+    if (isInitialized) {
+        console.log('⚠️ Already initialized, cleaning up first...');
+        cleanupEventListeners();
+    }
 
     // Reset orderData khi khởi tạo lại
     orderData = {
@@ -891,20 +959,22 @@ function initThanhToan(): void {
     handlePaymentMethodSelection();
     handleFormSubmission();
     handleMobileScrolling();
+
+    // 🔧 FIX: Mark as initialized
+    isInitialized = true;
+    console.log('✅ Thanh Toan initialized successfully');
 }
 
 // Expose functions globally để router có thể gọi
 (window as any).initThanhToan = initThanhToan;
 (window as any).loadProductInfo = loadProductInfo;
 (window as any).loadUserInfo = loadUserInfo;
+(window as any).cleanupThanhToan = cleanupEventListeners; // For manual cleanup
 
-// Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
-document.addEventListener('DOMContentLoaded', initThanhToan);
-
-// QUAN TRỌNG: Chạy luôn nếu DOM đã ready (cho router)
+// 🔧 FIX: Improved initialization logic
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initThanhToan);
 } else {
-    // DOM đã ready, chạy luôn
-    initThanhToan();
+    // DOM đã ready, chạy sau một chút để đảm bảo elements đã render
+    setTimeout(initThanhToan, 100);
 }

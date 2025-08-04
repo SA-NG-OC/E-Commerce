@@ -586,6 +586,53 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
             });
         });
     };
+    ChiTietSanPhamManager_Ad.prototype.deleteProduct_Ad = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var confirmDelete, res, contentType, message, text, error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.sanPham || !this.sanPham.id) {
+                            alert('❌ Không tìm thấy sản phẩm để xóa!');
+                            return [2 /*return*/];
+                        }
+                        confirmDelete = confirm('⚠️ Bạn có chắc muốn xóa sản phẩm này không?');
+                        if (!confirmDelete)
+                            return [2 /*return*/];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 8, , 9]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(this.sanPham.id, "/soft-delete"), {
+                                method: 'PATCH'
+                            })];
+                    case 2:
+                        res = _a.sent();
+                        if (!res.ok) return [3 /*break*/, 3];
+                        alert('✅ Sản phẩm đã được xóa (ẩn) thành công!');
+                        return [3 /*break*/, 7];
+                    case 3:
+                        contentType = res.headers.get("content-type");
+                        if (!(contentType && contentType.includes("application/json"))) return [3 /*break*/, 5];
+                        return [4 /*yield*/, res.json()];
+                    case 4:
+                        message = (_a.sent()).message;
+                        throw new Error(message || 'Lỗi khi xóa sản phẩm');
+                    case 5: return [4 /*yield*/, res.text()];
+                    case 6:
+                        text = _a.sent();
+                        console.error('Server trả HTML:', text);
+                        throw new Error('❌ Máy chủ trả về dữ liệu không hợp lệ.');
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        error_7 = _a.sent();
+                        console.error('Lỗi khi xóa sản phẩm:', error_7);
+                        alert('❌ Có lỗi xảy ra khi xóa sản phẩm\n' + error_7.message);
+                        return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ChiTietSanPhamManager_Ad.prototype.resetForm_Ad = function () {
         if (confirm('Bạn có chắc muốn đặt lại tất cả thông tin?')) {
             this.loadSanPhamData_Ad(); // Reload dữ liệu gốc
@@ -594,7 +641,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     };
     ChiTietSanPhamManager_Ad.prototype.deleteImage_Ad = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var imgElement, duongDan, response, result, error_7;
+            var imgElement, duongDan, response, result, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -624,8 +671,8 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         }
                         return [3 /*break*/, 5];
                     case 4:
-                        error_7 = _a.sent();
-                        console.error("Lỗi khi gửi yêu cầu xóa ảnh:", error_7);
+                        error_8 = _a.sent();
+                        console.error("Lỗi khi gửi yêu cầu xóa ảnh:", error_8);
                         alert("⚠️ Lỗi kết nối tới server.");
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
@@ -636,7 +683,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     // Hàm load danh sách màu sắc (gọi trong init_Ad)
     ChiTietSanPhamManager_Ad.prototype.loadMauSacListByProductId_Ad = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var response, data, error_8;
+            var response, data, error_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -655,8 +702,8 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 3;
                     case 3: return [3 /*break*/, 5];
                     case 4:
-                        error_8 = _a.sent();
-                        console.error('Lỗi khi load màu sắc:', error_8);
+                        error_9 = _a.sent();
+                        console.error('Lỗi khi load màu sắc:', error_9);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }
@@ -836,7 +883,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     // Hàm gửi dữ liệu tạo biến thể
     ChiTietSanPhamManager_Ad.prototype.submitVariant_Ad = function (formData) {
         return __awaiter(this, void 0, void 0, function () {
-            var productId, variantData, response, errorData, error_9;
+            var productId, variantData, response, errorData, error_10;
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -868,9 +915,9 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         throw new Error(errorData.message || 'Lỗi khi tạo biến thể');
                     case 3: return [2 /*return*/, true];
                     case 4:
-                        error_9 = _b.sent();
-                        console.error('Lỗi khi gửi dữ liệu biến thể:', error_9);
-                        throw error_9;
+                        error_10 = _b.sent();
+                        console.error('Lỗi khi gửi dữ liệu biến thể:', error_10);
+                        throw error_10;
                     case 5: return [2 /*return*/];
                 }
             });
@@ -879,7 +926,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     // Hàm chính để thêm biến thể
     ChiTietSanPhamManager_Ad.prototype.addVariant_Ad = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var existingModal, _a, colors, sizes, modal_1, colorSelect_1, form, error_10;
+            var existingModal, _a, colors, sizes, modal_1, colorSelect_1, form, error_11;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -907,7 +954,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         });
                         form = modal_1.querySelector('#addVariantForm');
                         form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
-                            var formData, colorValue, sizeValue, stockValue, loadingIndicator, submitBtn, error_11;
+                            var formData, colorValue, sizeValue, stockValue, loadingIndicator, submitBtn, error_12;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
@@ -946,8 +993,8 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                                         }
                                         return [3 /*break*/, 5];
                                     case 3:
-                                        error_11 = _a.sent();
-                                        alert("\u274C L\u1ED7i khi th\u00EAm bi\u1EBFn th\u1EC3: ".concat(error_11 instanceof Error ? error_11.message : 'Lỗi không xác định'));
+                                        error_12 = _a.sent();
+                                        alert("\u274C L\u1ED7i khi th\u00EAm bi\u1EBFn th\u1EC3: ".concat(error_12 instanceof Error ? error_12.message : 'Lỗi không xác định'));
                                         return [3 /*break*/, 5];
                                     case 4:
                                         // Ẩn loading
@@ -962,8 +1009,8 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         this.loadSanPhamData_Ad();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_10 = _b.sent();
-                        console.error('Lỗi trong addVariant_Ad:', error_10);
+                        error_11 = _b.sent();
+                        console.error('Lỗi trong addVariant_Ad:', error_11);
                         alert('❌ Có lỗi xảy ra khi mở form thêm biến thể!');
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
@@ -973,7 +1020,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     };
     ChiTietSanPhamManager_Ad.prototype.deleteVariant_Ad = function (button) {
         return __awaiter(this, void 0, void 0, function () {
-            var row, variantId, response, data, error_12;
+            var row, variantId, response, data, error_13;
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -1006,9 +1053,9 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         }
                         return [3 /*break*/, 6];
                     case 5:
-                        error_12 = _b.sent();
-                        console.error('Lỗi khi gọi API xóa ảo biến thể:', error_12);
-                        alert("\u274C X\u00F3a th\u1EA5t b\u1EA1i: ".concat(error_12.message));
+                        error_13 = _b.sent();
+                        console.error('Lỗi khi gọi API xóa ảo biến thể:', error_13);
+                        alert("\u274C X\u00F3a th\u1EA5t b\u1EA1i: ".concat(error_13.message));
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
@@ -1017,7 +1064,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     };
     ChiTietSanPhamManager_Ad.prototype.update_Ad = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var variantInputs, changedVariants_2, confirmMessage_1, successCount, errorCount, errors, _i, changedVariants_1, variant, response, input, errorData, error_13, resultMessage, error_14;
+            var variantInputs, changedVariants_2, confirmMessage_1, successCount, errorCount, errors, _i, changedVariants_1, variant, response, input, errorData, error_14, resultMessage, error_15;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -1094,10 +1141,10 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 6;
                     case 6: return [3 /*break*/, 8];
                     case 7:
-                        error_13 = _a.sent();
+                        error_14 = _a.sent();
                         errorCount++;
-                        errors.push("ID ".concat(variant.id, ": ").concat(error_13.message));
-                        console.error("L\u1ED7i khi c\u1EADp nh\u1EADt bi\u1EBFn th\u1EC3 ".concat(variant.id, ":"), error_13);
+                        errors.push("ID ".concat(variant.id, ": ").concat(error_14.message));
+                        console.error("L\u1ED7i khi c\u1EADp nh\u1EADt bi\u1EBFn th\u1EC3 ".concat(variant.id, ":"), error_14);
                         return [3 /*break*/, 8];
                     case 8:
                         _i++;
@@ -1114,9 +1161,9 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         alert(resultMessage);
                         return [3 /*break*/, 12];
                     case 10:
-                        error_14 = _a.sent();
-                        console.error('Lỗi trong quá trình cập nhật:', error_14);
-                        alert('❌ Có lỗi xảy ra trong quá trình cập nhật: ' + error_14.message);
+                        error_15 = _a.sent();
+                        console.error('Lỗi trong quá trình cập nhật:', error_15);
+                        alert('❌ Có lỗi xảy ra trong quá trình cập nhật: ' + error_15.message);
                         return [3 /*break*/, 12];
                     case 11:
                         this.hideLoading_Ad();
@@ -1128,7 +1175,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
     };
     ChiTietSanPhamManager_Ad.prototype.deleteReview_Ad = function (button) {
         return __awaiter(this, void 0, void 0, function () {
-            var reviewId, reviewItem, response, data, remainingReviews, error_15;
+            var reviewId, reviewItem, response, data, remainingReviews, error_16;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1161,9 +1208,9 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         }
                         return [3 /*break*/, 6];
                     case 5:
-                        error_15 = _a.sent();
-                        console.error('Lỗi khi xóa đánh giá:', error_15);
-                        alert("\u274C X\u00F3a th\u1EA5t b\u1EA1i: ".concat(error_15.message));
+                        error_16 = _a.sent();
+                        console.error('Lỗi khi xóa đánh giá:', error_16);
+                        alert("\u274C X\u00F3a th\u1EA5t b\u1EA1i: ".concat(error_16.message));
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }

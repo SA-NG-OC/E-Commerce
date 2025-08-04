@@ -45,7 +45,7 @@ export class DonHangService {
                 ON hasp.san_pham_id = sp.id 
                 AND hasp.mau_sac_id = bts.mau_sac_id
 
-            WHERE dh.nguoi_dung_id = $1
+            WHERE dh.nguoi_dung_id = $1 
             ORDER BY dh.ngay_tao DESC;
         `;
 

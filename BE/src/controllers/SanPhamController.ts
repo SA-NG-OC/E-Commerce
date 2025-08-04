@@ -144,16 +144,19 @@ export class SanPhamController {
         }
     }
 
-
-
-    /*static async create(req: Request, res: Response) {
+    // sử dụng api http://localhost:3000/api/san-pham/:id/soft-delete
+    static async deleteSanPhamAo(req: Request, res: Response) {
         try {
-            const sp = new SanPham(req.body);
-            const created = await SanPhamService.create(sp);
-            res.status(201).json(created);
-        } catch (err) {
-            console.error('Lỗi khi thêm sản phẩm:', err);
-            res.status(500).json({ message: 'Lỗi server' });
+            const { id } = req.params;
+
+            const success = await SanPhamService.deleteSanPhamAo(id);
+            if (success) {
+                return res.status(200).json({ message: 'Xóa ảo sản phẩm thành công.' });
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa ảo sản phẩm:', error);
+            return res.status(500).json({ message: 'Xóa sản phẩm không thành.' });
         }
-    }*/
+    }
+
 }

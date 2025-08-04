@@ -1,4 +1,4 @@
-// thanhToan.ts - Refactored for router compatibility
+// thanhToan.ts - Fixed for duplicate submissions
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -43,6 +43,9 @@ var orderData = {
     discount: 0,
     total: 0
 };
+// 🔧 FIX: Biến để track initialization
+var isInitialized = false;
+var isProcessingOrder = false; // Prevent double submission
 var districts = {
     'hanoi': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ', 'Long Biên', 'Cầu Giấy', 'Đống Đa', 'Hai Bà Trưng', 'Hoàng Mai', 'Thanh Xuân'],
     'hcm': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7', 'Quận 8', 'Quận 9', 'Quận 10'],
@@ -57,7 +60,7 @@ var cityMap = {
     'Hải Phòng': 'haiphong',
     'Cần Thơ': 'cantho'
 };
-// API Functions
+// API Functions (giữ nguyên)
 function getUserId() {
     var userStr = localStorage.getItem('usercontext');
     if (!userStr)
@@ -454,12 +457,18 @@ function processOrderWithInventory(orderInfo) {
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
+                    // 🔧 FIX: Prevent double processing
+                    if (isProcessingOrder) {
+                        console.warn('⚠️ Order is already being processed, skipping...');
+                        return [2 /*return*/, false];
+                    }
+                    isProcessingOrder = true;
                     donHangId = null;
                     createdSteps = [];
                     inventoryUpdated = false;
                     _d.label = 1;
                 case 1:
-                    _d.trys.push([1, 10, , 15]);
+                    _d.trys.push([1, 10, 15, 16]);
                     userId = getUserId();
                     if (!userId) {
                         alert('Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.');
@@ -556,7 +565,11 @@ function processOrderWithInventory(orderInfo) {
                         alert('Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại.');
                     }
                     return [2 /*return*/, false];
-                case 15: return [2 /*return*/];
+                case 15:
+                    // 🔧 FIX: Reset processing flag
+                    isProcessingOrder = false;
+                    return [7 /*endfinally*/];
+                case 16: return [2 /*return*/];
             }
         });
     });
@@ -776,6 +789,12 @@ function updateDiscountElement() {
 }
 // Handle payment method selection
 function handlePaymentMethodSelection() {
+    // 🔧 FIX: Remove existing listeners first
+    document.querySelectorAll('.payment-option').forEach(function (option) {
+        var _a;
+        var clonedOption = option.cloneNode(true);
+        (_a = option.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(clonedOption, option);
+    });
     document.querySelectorAll('.payment-option').forEach(function (option) {
         option.addEventListener('click', function () {
             document.querySelectorAll('.payment-option').forEach(function (opt) { return opt.classList.remove('selected'); });
@@ -789,10 +808,17 @@ function handlePaymentMethodSelection() {
 }
 // Handle city/district selection
 function handleLocationSelection() {
+    var _a;
     var citySelect = getSelectElement('city');
     if (!citySelect)
         return;
-    citySelect.addEventListener('change', function () {
+    // 🔧 FIX: Remove existing listeners first
+    var clonedCitySelect = citySelect.cloneNode(true);
+    (_a = citySelect.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(clonedCitySelect, citySelect);
+    var newCitySelect = getSelectElement('city');
+    if (!newCitySelect)
+        return;
+    newCitySelect.addEventListener('change', function () {
         var cityValue = this.value;
         var districtSelect = getSelectElement('district');
         if (!districtSelect)
@@ -851,19 +877,33 @@ function prepareOrderInfo() {
         }
     };
 }
+// 🔧 FIX: Store form submit handler reference
+var formSubmitHandler = null;
 // Handle form submission
 function handleFormSubmission() {
     var form = getElement('checkoutForm');
     if (!form)
         return;
-    form.addEventListener('submit', function (e) {
+    // 🔧 FIX: Remove existing listener first
+    if (formSubmitHandler) {
+        form.removeEventListener('submit', formSubmitHandler);
+        formSubmitHandler = null;
+    }
+    // Create new handler
+    formSubmitHandler = function (e) {
         return __awaiter(this, void 0, void 0, function () {
-            var isValid, btn, originalText, orderInfo, success, error_4;
+            var form, isValid, btn, originalText, orderInfo, success, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         e.preventDefault();
-                        isValid = validateForm(this);
+                        // 🔧 FIX: Additional check to prevent double submission
+                        if (isProcessingOrder) {
+                            console.warn('⚠️ Form submission blocked - order already processing');
+                            return [2 /*return*/];
+                        }
+                        form = e.target;
+                        isValid = validateForm(form);
                         if (!(isValid && orderData.items.length > 0)) return [3 /*break*/, 6];
                         btn = document.querySelector('.checkout-btn');
                         if (!btn)
@@ -910,7 +950,9 @@ function handleFormSubmission() {
                 }
             });
         });
-    });
+    };
+    // Add new listener
+    form.addEventListener('submit', formSubmitHandler);
 }
 // Handle mobile smooth scrolling
 function handleMobileScrolling() {
@@ -928,10 +970,27 @@ function handleMobileScrolling() {
         });
     }
 }
-// MAIN INITIALIZATION FUNCTIONS - tương tự như productRender.ts
+// 🔧 FIX: Cleanup function to remove all event listeners
+function cleanupEventListeners() {
+    console.log('🧹 Cleaning up event listeners...');
+    // Remove form submit listener
+    var form = getElement('checkoutForm');
+    if (form && formSubmitHandler) {
+        form.removeEventListener('submit', formSubmitHandler);
+        formSubmitHandler = null;
+    }
+    // Reset processing flag
+    isProcessingOrder = false;
+}
+// MAIN INITIALIZATION FUNCTIONS
 // Hàm khởi tạo trang thanh toán
 function initThanhToan() {
-    console.log('Initializing Thanh Toan...');
+    console.log('🚀 Initializing Thanh Toan...');
+    // 🔧 FIX: Prevent double initialization
+    if (isInitialized) {
+        console.log('⚠️ Already initialized, cleaning up first...');
+        cleanupEventListeners();
+    }
     // Reset orderData khi khởi tạo lại
     orderData = {
         items: [],
@@ -947,18 +1006,20 @@ function initThanhToan() {
     handlePaymentMethodSelection();
     handleFormSubmission();
     handleMobileScrolling();
+    // 🔧 FIX: Mark as initialized
+    isInitialized = true;
+    console.log('✅ Thanh Toan initialized successfully');
 }
 // Expose functions globally để router có thể gọi
 window.initThanhToan = initThanhToan;
 window.loadProductInfo = loadProductInfo;
 window.loadUserInfo = loadUserInfo;
-// Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
-document.addEventListener('DOMContentLoaded', initThanhToan);
-// QUAN TRỌNG: Chạy luôn nếu DOM đã ready (cho router)
+window.cleanupThanhToan = cleanupEventListeners; // For manual cleanup
+// 🔧 FIX: Improved initialization logic
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initThanhToan);
 }
 else {
-    // DOM đã ready, chạy luôn
-    initThanhToan();
+    // DOM đã ready, chạy sau một chút để đảm bảo elements đã render
+    setTimeout(initThanhToan, 100);
 }

@@ -15,5 +15,7 @@ router.get('/filter/:danhMucId/:thuongHieuId', SanPhamController.getByDanhMuc_Th
 router.put('/:id', SanPhamController.updateSanPham);
 //Thêm san phẩm mới
 router.post('/', SanPhamController.createSanPham);
+//Xóa ảo sản phẩm
+router.patch('/:id/soft-delete', SanPhamController.deleteSanPhamAo);
 
 export default router;
