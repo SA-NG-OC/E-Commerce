@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục và Thương hiệu</title>
+    <link rel="stylesheet" href="/FE/css/QuanLyDM-TH_Ad.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏪 Quản lý Danh mục và Thương hiệu</h1>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCategories">0</div>
+                <div class="stat-label">Danh mục</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalBrands">0</div>
+                <div class="stat-label">Thương hiệu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalProducts">0</div>
+                <div class="stat-label">Sản phẩm</div>
+            </div>
+        </div>
+
+        <div class="tab-container">
+            <button class="tab-button active" onclick="showTab2('categories')">📂 Danh mục</button>
+            <button class="tab-button" onclick="showTab2('brands')">🏷️ Thương hiệu</button>
+        </div>
+
+        <!-- Tab Danh mục -->
+        <div id="categories" class="tab-content active">
+            <div class="section">
+                <h2>➕ Thêm Danh mục mới</h2>
+                <form id="addCategoryForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="categoryName">Tên danh mục:</label>
+                            <input type="text" id="categoryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryIcon">Icon:</label>
+                            <input type="text" id="categoryIcon" placeholder="🎯">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Thêm danh mục</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>✏️ Cập nhật Danh mục</h2>
+                <form id="updateCategoryForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="updateCategorySelect">Chọn danh mục:</label>
+                            <select id="updateCategorySelect" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCategoryName">Tên danh mục mới:</label>
+                            <input type="text" id="updateCategoryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateCategoryIcon">Icon mới:</label>
+                            <input type="text" id="updateCategoryIcon">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Cập nhật</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>📋 Danh sách Danh mục</h2>
+                <div id="categoryList" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- Tab Thương hiệu -->
+        <div id="brands" class="tab-content">
+            <div class="section">
+                <h2>➕ Thêm Thương hiệu mới</h2>
+                <form id="addBrandForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="brandName">Tên thương hiệu:</label>
+                            <input type="text" id="brandName" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Thêm thương hiệu</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>✏️ Cập nhật Thương hiệu</h2>
+                <form id="updateBrandForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="updateBrandSelect">Chọn thương hiệu:</label>
+                            <select id="updateBrandSelect" required>
+                                <option value="">-- Chọn thương hiệu --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateBrandName">Tên thương hiệu mới:</label>
+                            <input type="text" id="updateBrandName" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Cập nhật</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>📋 Danh sách Thương hiệu</h2>
+                <div id="brandList" class="item-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal thêm sản phẩm -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>➕ Thêm sản phẩm</h2>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="productName">Tên sản phẩm:</label>
+                    <input type="text" id="searchProductInput" placeholder="Tìm kiếm sản phẩm..." />
+                    <select id="productName" size="6" required></select>
+                </div>
+                <input type="hidden" id="productParentId">
+                <input type="hidden" id="productParentType">
+                <button type="submit" class="btn">Thêm sản phẩm</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/FE/ts-ad/quanLyDM-TH_Ad.js"></script>
+</body>
+
+</html>

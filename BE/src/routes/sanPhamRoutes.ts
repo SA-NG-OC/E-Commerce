@@ -3,19 +3,28 @@ import { SanPhamController } from '../controllers/SanPhamController';
 
 const router: Router = express.Router();
 
-router.get('/', SanPhamController.getAllWithImages);
-// Lấy sản phẩm theo id
-router.get('/:id', SanPhamController.getById);
-//router.post('/', SanPhamController.create);
-// Đặt các route cụ thể trước
+router.get('/id', SanPhamController.getIdSanPham);
+
+// 1. Routes tĩnh (static) - ưu tiên cao nhất
+router.get('/id', SanPhamController.getIdSanPham);
+
+// 2. Routes có action cụ thể  
+router.put('/update-danh-muc', SanPhamController.updateDanhMucSanPham);
+router.put('/update-thuong-hieu', SanPhamController.updateThuongHieuSanPham);
+
+// 3. Routes có nhiều tham số
+router.get('/filter/:danhMucId/:thuongHieuId', SanPhamController.getByDanhMuc_ThuongHieu);
+
+// 4. Routes có 1 tham số + action
 router.get('/filter/:danhMucId/all', SanPhamController.getByDanhMuc);
 router.get('/filter/all/:thuongHieuId', SanPhamController.getByThuongHieu);
-// Route tổng quát đặt cuối
-router.get('/filter/:danhMucId/:thuongHieuId', SanPhamController.getByDanhMuc_ThuongHieu);
-router.put('/:id', SanPhamController.updateSanPham);
-//Thêm san phẩm mới
-router.post('/', SanPhamController.createSanPham);
-//Xóa ảo sản phẩm
 router.patch('/:id/soft-delete', SanPhamController.deleteSanPhamAo);
 
+// 5. Routes CRUD cơ bản với tham số - ưu tiên thấp
+router.get('/:id', SanPhamController.getById);
+router.put('/:id', SanPhamController.updateSanPham);
+
+// 6. Routes catch-all - để cuối cùng
+router.get('/', SanPhamController.getAllWithImages);
+router.post('/', SanPhamController.createSanPham);
 export default router;

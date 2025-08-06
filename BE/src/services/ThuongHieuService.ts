@@ -59,4 +59,46 @@ export class ThuongHieuService {
 
         return thuongHieuList;
     }
+
+    static async updateName(id: string, ten_thuong_hieu: string): Promise<void> {
+        await pool.query(
+            'UPDATE thuong_hieu SET ten_thuong_hieu = $1 WHERE id = $2',
+            [ten_thuong_hieu, id]
+        );
+    }
+
+    static async delete(id: string): Promise<void> {
+        try {
+            await pool.query(`DELETE FROM thuong_hieu WHERE id = $1`, [id]);
+        } catch (err: any) {
+            throw err; // ném lỗi cho controller xử lý
+        }
+    }
+
+    static async create(ten_thuong_hieu: string): Promise<void> {
+        // Tìm ID lớn nhất theo định dạng THxxx
+        const result = await pool.query(`
+        SELECT id FROM thuong_hieu
+        WHERE id ~ '^TH[0-9]{3}$'
+        ORDER BY id DESC
+        LIMIT 1
+    `);
+
+        let nextId: string;
+        if (result.rows.length === 0) {
+            nextId = 'TH001'; // Nếu chưa có bản ghi nào
+        } else {
+            const maxId = result.rows[0].id; // ví dụ: 'TH014'
+            const number = parseInt(maxId.slice(2), 10) + 1;
+            nextId = 'TH' + number.toString().padStart(3, '0'); // ví dụ: 'TH015'
+        }
+
+        // Thêm thương hiệu mới
+        await pool.query(
+            'INSERT INTO thuong_hieu (id, ten_thuong_hieu) VALUES ($1, $2)',
+            [nextId, ten_thuong_hieu]
+        );
+    }
+
+
 }

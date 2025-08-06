@@ -158,5 +158,33 @@ export class SanPhamController {
             return res.status(500).json({ message: 'Xóa sản phẩm không thành.' });
         }
     }
+    // http://localhost:3000/api/san-pham/id
+    static async getIdSanPham(req: Request, res: Response) {
+        const sp: { id: string, ten_san_pham: string }[] = await SanPhamService.getIdSanPham();
+        if (sp.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
+        }
+
+        return res.status(200).json(sp);
+    }
+    // http://localhost:3000/api/san-pham/update-danh-muc
+    static async updateDanhMucSanPham(req: Request, res: Response) {
+        const { sanPhamId, danhMucId } = req.body;
+        const success = await SanPhamService.updateDanhMucSanPham(sanPhamId, danhMucId);
+        if (!success) {
+            return res.status(400).json({ message: 'Cập nhật danh mục thất bại' });
+        }
+        return res.status(200).json({ message: 'Cập nhật danh mục thành công' });
+    }
+
+    // http://localhost:3000/api/san-pham/update-thuong-hieu
+    static async updateThuongHieuSanPham(req: Request, res: Response) {
+        const { sanPhamId, thuongHieuId } = req.body;
+        const success = await SanPhamService.updateThuongHieuSanPham(sanPhamId, thuongHieuId);
+        if (!success) {
+            return res.status(400).json({ message: 'Cập nhật thương hiệu thất bại' });
+        }
+        return res.status(200).json({ message: 'Cập nhật thương hiệu thành công' });
+    }
 
 }

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Danh Mục và Thương Hiệu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #F19EDC;
+            text-shadow: none;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid #f0f0f0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab-button.active {
+            background: #F19EDC;
+            color: white;
+        }
+
+        .tab-button:hover {
+            background: #F19EDC;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+            border: 2px solid #f0f0f0;
+            border-top: none;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #F19EDC;
+            height: fit-content;
+        }
+
+        .form-section h3 {
+            color: #F19EDC;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #F19EDC;
+            box-shadow: 0 0 0 3px rgba(241, 158, 220, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #F19EDC;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #E088C9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(241, 158, 220, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #F19EDC;
+            box-shadow: 0 0 0 3px rgba(241, 158, 220, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th {
+            background: #F19EDC;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .icon-preview {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            color: #F19EDC;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #F19EDC;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #F19EDC;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .product-list {
+            margin-top: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            border-left: 3px solid #F19EDC;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info .product-id {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .product-info .product-name {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .product-actions {
+            margin-left: 10px;
+        }
+
+        .edit-mode {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+        }
+
+        .edit-mode h3 {
+            color: #856404;
+        }
+
+        .cancel-edit {
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .cancel-edit:hover {
+            color: #333;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .product-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .product-actions {
+                margin-left: 0;
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Quản Lý Danh Mục & Thương Hiệu</h1>
+            <p>Hệ thống quản lý danh mục sản phẩm và thương hiệu</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalCategories">0</h3>
+                <p>Tổng Danh Mục</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalBrands">0</h3>
+                <p>Tổng Thương Hiệu</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('categories')">📂 Quản Lý Danh Mục</button>
+            <button class="tab-button" onclick="switchTab('brands')">🏷️ Quản Lý Thương Hiệu</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Tab Danh Mục -->
+            <div id="categories" class="tab-pane active">
+                <div class="main-layout">
+                    <div class="form-section" id="categoryFormSection">
+                        <h3 id="categoryFormTitle">Thêm Danh Mục Mới</h3>
+                        <form id="categoryForm">
+                            <div class="form-group">
+                                <label for="categoryName">Tên Danh Mục *</label>
+                                <input type="text" id="categoryName" required placeholder="Nhập tên danh mục">
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryIcon">Icon</label>
+                                <select id="categoryIcon">
+                                    <option value="📱">📱 Điện thoại</option>
+                                    <option value="💻">💻 Laptop</option>
+                                    <option value="👕">👕 Thời trang</option>
+                                    <option value="👟">👟 Giày dép</option>
+                                    <option value="🏠">🏠 Gia dụng</option>
+                                    <option value="📚">📚 Sách</option>
+                                    <option value="🎮">🎮 Gaming</option>
+                                    <option value="💄">💄 Làm đẹp</option>
+                                    <option value="🚗">🚗 Xe cộ</option>
+                                    <option value="🏃">🏃 Thể thao</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="categorySubmitBtn">Thêm Danh Mục</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelCategoryEdit()"
+                                id="categoryCancelBtn" style="display: none;">Hủy</button>
+                        </form>
+                        <span class="cancel-edit" onclick="cancelCategoryEdit()" id="categoryCancelLink"
+                            style="display: none;">← Trở về thêm mới</span>
+                    </div>
+
+                    <div class="content-section">
+                        <input type="text" class="search-box" id="categorySearch" placeholder="🔍 Tìm kiếm danh mục...">
+
+                        <table class="data-table" id="categoryTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Icon</th>
+                                    <th>Tên Danh Mục</th>
+                                    <th>Sản Phẩm</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoryTableBody">
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <h3>Chưa có danh mục nào</h3>
+                                        <p>Hãy thêm danh mục đầu tiên của bạn!</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Thương Hiệu -->
+            <div id="brands" class="tab-pane">
+                <div class="main-layout">
+                    <div class="form-section" id="brandFormSection">
+                        <h3 id="brandFormTitle">Thêm Thương Hiệu Mới</h3>
+                        <form id="brandForm">
+                            <div class="form-group">
+                                <label for="brandName">Tên Thương Hiệu *</label>
+                                <input type="text" id="brandName" required placeholder="Nhập tên thương hiệu">
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="brandSubmitBtn">Thêm Thương Hiệu</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelBrandEdit()"
+                                id="brandCancelBtn" style="display: none;">Hủy</button>
+                        </form>
+                        <span class="cancel-edit" onclick="cancelBrandEdit()" id="brandCancelLink"
+                            style="display: none;">← Trở về thêm mới</span>
+                    </div>
+
+                    <div class="content-section">
+                        <input type="text" class="search-box" id="brandSearch" placeholder="🔍 Tìm kiếm thương hiệu...">
+
+                        <table class="data-table" id="brandTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên Thương Hiệu</th>
+                                    <th>Sản Phẩm</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="brandTableBody">
+                                <tr>
+                                    <td colspan="4" class="empty-state">
+                                        <h3>Chưa có thương hiệu nào</h3>
+                                        <p>Hãy thêm thương hiệu đầu tiên của bạn!</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interfaces implementation
+        let danhMucs2 = [];
+        let thuongHieus2 = [];
+        let editingCategoryId = null;
+        let editingBrandId = null;
+
+        function generateId(prefix) {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return prefix + timestamp + random;
+        }
+
+        function initSampleData() {
+            danhMucs2 = [
+                {
+                    id: 'DM001',
+                    ten_danh_muc: 'Điện thoại',
+                    icon: '📱',
+                    san_pham: [
+                        { id: 'SP001', ten_san_pham: 'iPhone 13' },
+                        { id: 'SP004', ten_san_pham: 'Samsung Galaxy S23' }
+                    ]
+                },
+                {
+                    id: 'DM002',
+                    ten_danh_muc: 'Laptop',
+                    icon: '💻',
+                    san_pham: [
+                        { id: 'SP002', ten_san_pham: 'MacBook Air' },
+                        { id: 'SP005', ten_san_pham: 'Dell XPS 13' }
+                    ]
+                },
+                {
+                    id: 'DM003',
+                    ten_danh_muc: 'Thời trang',
+                    icon: '👕',
+                    san_pham: []
+                }
+            ];
+
+            thuongHieus2 = [
+                {
+                    id: 'TH001',
+                    ten_thuong_hieu: 'Apple',
+                    san_pham: [
+                        { id: 'SP001', ten_san_pham: 'iPhone 13' },
+                        { id: 'SP002', ten_san_pham: 'MacBook Air' }
+                    ]
+                },
+                {
+                    id: 'TH002',
+                    ten_thuong_hieu: 'Samsung',
+                    san_pham: [
+                        { id: 'SP004', ten_san_pham: 'Samsung Galaxy S23' }
+                    ]
+                },
+                {
+                    id: 'TH003',
+                    ten_thuong_hieu: 'Nike',
+                    san_pham: []
+                }
+            ];
+
+            updateStats();
+            renderCategories();
+            renderBrands();
+        }
+
+        function updateStats() {
+            document.getElementById('totalCategories').textContent = `${danhMucs2.length}`;
+            document.getElementById('totalBrands').textContent = `${thuongHieus2.length}`;
+        }
+
+        function renderCategories(searchTerm = '') {
+            const tbody = document.getElementById('categoryTableBody');
+            const filtered = danhMucs2.filter(dm =>
+                dm.ten_danh_muc.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <h3>${searchTerm ? 'Không tìm thấy danh mục' : 'Chưa có danh mục nào'}</h3>
+                            <p>${searchTerm ? 'Thử từ khóa khác' : 'Hãy thêm danh mục đầu tiên!'}</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(dm => `
+                <tr>
+                    <td>${dm.id}</td>
+                    <td class="icon-preview">${dm.icon}</td>
+                    <td>${dm.ten_danh_muc}</td>
+                    <td>
+                        <div style="font-weight: 600; color: #F19EDC; margin-bottom: 8px;">
+                            ${dm.san_pham.length} sản phẩm
+                        </div>
+                        ${dm.san_pham.length > 0 ? `
+                            <div class="product-list">
+                                ${dm.san_pham.map(sp => `
+                                    <div class="product-item">
+                                        <div class="product-info">
+                                            <div class="product-id">#${sp.id}</div>
+                                            <div class="product-name">${sp.ten_san_pham}</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <button class="btn btn-danger" onclick="removeProductFromCategory('${dm.id}', '${sp.id}')">×</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div style="color: #666; font-style: italic; font-size: 0.9rem;">Chưa có sản phẩm</div>'}
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editCategory('${dm.id}')">Sửa</button>
+                        <button class="btn btn-danger" onclick="deleteCategory('${dm.id}')">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderBrands(searchTerm = '') {
+            const tbody = document.getElementById('brandTableBody');
+            const filtered = thuongHieus2.filter(th =>
+                th.ten_thuong_hieu.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <h3>${searchTerm ? 'Không tìm thấy thương hiệu' : 'Chưa có thương hiệu nào'}</h3>
+                            <p>${searchTerm ? 'Thử từ khóa khác' : 'Hãy thêm thương hiệu đầu tiên!'}</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(th => `
+                <tr>
+                    <td>${th.id}</td>
+                    <td>${th.ten_thuong_hieu}</td>
+                    <td>
+                        <div style="font-weight: 600; color: #F19EDC; margin-bottom: 8px;">
+                            ${th.san_pham.length} sản phẩm
+                        </div>
+                        ${th.san_pham.length > 0 ? `
+                            <div class="product-list">
+                                ${th.san_pham.map(sp => `
+                                    <div class="product-item">
+                                        <div class="product-info">
+                                            <div class="product-id">#${sp.id}</div>
+                                            <div class="product-name">${sp.ten_san_pham}</div>
+                                        </div>
+                                        <div class="product-actions">
+                                            <button class="btn btn-danger" onclick="removeProductFromBrand('${th.id}', '${sp.id}')">×</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div style="color: #666; font-style: italic; font-size: 0.9rem;">Chưa có sản phẩm</div>'}
+                    </td>
+                    <td>
+                        <button class="btn btn-edit" onclick="editBrand('${th.id}')">Sửa</button>
+                        <button class="btn btn-danger" onclick="deleteBrand('${th.id}')">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Category functions
+        function addOrUpdateCategory(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('categoryName').value.trim();
+            const icon = document.getElementById('categoryIcon').value;
+
+            if (!name) {
+                alert('Vui lòng nhập tên danh mục!');
+                return;
+            }
+
+            if (editingCategoryId) {
+                // Update existing category
+                const category = danhMucs2.find(dm => dm.id === editingCategoryId);
+                if (category) {
+                    category.ten_danh_muc = name;
+                    category.icon = icon;
+                }
+                cancelCategoryEdit();
+            } else {
+                // Add new category
+                const newCategory = {
+                    id: generateId('DM'),
+                    ten_danh_muc: name,
+                    icon: icon,
+                    san_pham: []
+                };
+                danhMucs2.push(newCategory);
+                document.getElementById('categoryForm').reset();
+            }
+
+            renderCategories();
+            updateStats();
+        }
+
+        function editCategory(id) {
+            const category = danhMucs2.find(dm => dm.id === id);
+            if (category) {
+                document.getElementById('categoryName').value = category.ten_danh_muc;
+                document.getElementById('categoryIcon').value = category.icon;
+
+                // Update form appearance
+                const formSection = document.getElementById('categoryFormSection');
+                const formTitle = document.getElementById('categoryFormTitle');
+                const submitBtn = document.getElementById('categorySubmitBtn');
+                const cancelBtn = document.getElementById('categoryCancelBtn');
+                const cancelLink = document.getElementById('categoryCancelLink');
+
+                formSection.classList.add('edit-mode');
+                formTitle.textContent = `Sửa Danh Mục: ${category.ten_danh_muc}`;
+                submitBtn.textContent = 'Cập Nhật';
+                cancelBtn.style.display = 'inline-block';
+                cancelLink.style.display = 'inline-block';
+
+                editingBrandId = id;
+            }
+        }
+
+        function cancelBrandEdit() {
+            const formSection = document.getElementById('brandFormSection');
+            const formTitle = document.getElementById('brandFormTitle');
+            const submitBtn = document.getElementById('brandSubmitBtn');
+            const cancelBtn = document.getElementById('brandCancelBtn');
+            const cancelLink = document.getElementById('brandCancelLink');
+
+            formSection.classList.remove('edit-mode');
+            formTitle.textContent = 'Thêm Thương Hiệu Mới';
+            submitBtn.textContent = 'Thêm Thương Hiệu';
+            cancelBtn.style.display = 'none';
+            cancelLink.style.display = 'none';
+
+            document.getElementById('brandForm').reset();
+            editingBrandId = null;
+        }
+
+        function deleteBrand(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) {
+                thuongHieus2 = thuongHieus2.filter(th => th.id !== id);
+                renderBrands();
+                updateStats();
+                if (editingBrandId === id) {
+                    cancelBrandEdit();
+                }
+            }
+        }
+
+        // Product removal functions (placeholder - you'll implement these later)
+        function removeProductFromCategory(categoryId, productId) {
+            // TODO: Implement product removal from category
+            console.log(`Remove product ${productId} from category ${categoryId}`);
+            alert('Chức năng xóa sản phẩm sẽ được triển khai sau!');
+        }
+
+        function removeProductFromBrand(brandId, productId) {
+            // TODO: Implement product removal from brand
+            console.log(`Remove product ${productId} from brand ${brandId}`);
+            alert('Chức năng xóa sản phẩm sẽ được triển khai sau!');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize data
+            initSampleData();
+
+            // Form submissions
+            document.getElementById('categoryForm').addEventListener('submit', addOrUpdateCategory);
+            document.getElementById('brandForm').addEventListener('submit', addOrUpdateBrand);
+
+            // Search functionality
+            document.getElementById('categorySearch').addEventListener('input', function (e) {
+                renderCategories(e.target.value);
+            });
+
+            document.getElementById('brandSearch').addEventListener('input', function (e) {
+                renderBrands(e.target.value);
+            });
+        });
+    </script>
+</body>
+
+</html>

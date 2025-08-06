@@ -375,6 +375,44 @@ export class SanPhamService {
 
         return true;
     }
+    //Lấy tên - id Sản phẩm
+    static async getIdSanPham(): Promise<{ id: string, ten_san_pham: string }[]> {
+        const query = await pool.query(`SELECT id, ten_san_pham FROM san_pham WHERE da_xoa = FALSE`);
+        const sp: { id: string, ten_san_pham: string }[] = [];
+        const rows = query.rows;
+        for (let row of rows) {
+            sp.push({ id: row.id, ten_san_pham: row.ten_san_pham });
+        }
+        return sp;
+    }
+
+    static async updateDanhMucSanPham(sanPhamId: string, danhMucId: string): Promise<boolean> {
+        try {
+            const result = await pool.query(
+                `UPDATE san_pham SET danh_muc_id = $1 WHERE id = $2`,
+                [danhMucId, sanPhamId]
+            );
+            return result.rowCount! > 0; // true nếu có bản ghi bị ảnh hưởng
+        } catch (error) {
+            console.error('Chi tiết lỗi SQL:', error);
+            return false;
+        }
+    }
+
+    static async updateThuongHieuSanPham(sanPhamId: string, thuongHieuId: string): Promise<boolean> {
+        try {
+            const result = await pool.query(
+                `UPDATE san_pham SET thuong_hieu_id = $1 WHERE id = $2`,
+                [thuongHieuId, sanPhamId]
+            );
+            return result.rowCount! > 0; // true nếu có bản ghi bị cập nhật
+        } catch (error) {
+            console.error('Lỗi khi cập nhật thương hiệu sản phẩm:', error);
+            return false;
+        }
+    }
+
+
 
 
 }
