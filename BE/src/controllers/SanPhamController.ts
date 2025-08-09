@@ -187,4 +187,16 @@ export class SanPhamController {
         return res.status(200).json({ message: 'Cập nhật thương hiệu thành công' });
     }
 
+    // http://localhost:3000/api/san-pham/count
+    static async countSanPham(req: Request, res: Response) {
+        try {
+            const total = await SanPhamService.countSanPham();
+            return res.status(200).json({ total });
+        } catch (error) {
+            console.error('Lỗi khi đếm số sản phẩm:', error);
+            return res.status(500).json({ message: 'Lỗi server khi đếm số sản phẩm' });
+        }
+    }
+
+
 }

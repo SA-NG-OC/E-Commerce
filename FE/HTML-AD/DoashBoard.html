@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Bán Giày</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="/FE/CSS/DoashBoard.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Dashboard</h1>
+                    <p>Tổng quan hoạt động bán hàng</p>
+                </div>
+                <div class="header-controls">
+                    <div class="select-wrapper">
+                        <div class="header-controls">
+                            <!-- Chọn chế độ thống kê -->
+                            <div class="select-wrapper">
+                                <select id="typeSelect">
+                                    <option value="day">Theo ngày</option>
+                                    <option value="month">Theo tháng</option>
+                                </select>
+                            </div>
+
+                            <!-- Chọn ngày cụ thể -->
+                            <input type="date" id="dateFilter" class="select-wrapper">
+                        </div>
+
+                    </div>
+                    <button class="btn" onclick="exportReport()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                        </svg>
+                        Xuất báo cáo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Số đơn hàng</h3>
+                            <div class="value">324</div>
+                        </div>
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Số Khách Hàng</h3>
+                            <div class="value">1,248</div>
+                        </div>
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Số Sản Phẩm</h3>
+                            <div class="value">156</div>
+                        </div>
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Doanh thu theo ngày</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Phân bố danh mục sản phẩm</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+    <script src="/FE/ts-ad/doashBoard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+</body>
+
+</html>

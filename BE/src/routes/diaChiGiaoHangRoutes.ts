@@ -5,5 +5,7 @@ import { DiaChiGiaoHangController } from '../controllers/DiaChiGiaoHangControlle
 const router = Router();
 
 router.post('/', DiaChiGiaoHangController.create);
+router.get('/:donHangId', DiaChiGiaoHangController.getByDonHangId);
+router.put('/cap-nhat/:addressId', DiaChiGiaoHangController.update);
 
 export default router;

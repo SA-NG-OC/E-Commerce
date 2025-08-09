@@ -44,9 +44,9 @@ export class GiaoDichThanhToanService {
                 trang_thai = 'cho_thanh_toan';
             } else {
                 trang_thai = 'da_thanh_toan';
-                ma_giao_dich = randomUUID();
-                ngay_thanh_toan = new Date();
             }
+            ma_giao_dich = randomUUID();
+            ngay_thanh_toan = new Date();
 
             // 4. Thêm giao dịch vào database
             await client.query(
@@ -83,4 +83,93 @@ export class GiaoDichThanhToanService {
             client.release();
         }
     }
+
+    static async findByDonHangId(donHangId: string): Promise<GiaoDichThanhToanModel | null> {
+        const client = await pool.connect();
+        try {
+            const res = await client.query(
+                `SELECT * FROM giao_dich_thanh_toan WHERE don_hang_id = $1 LIMIT 1`,
+                [donHangId]
+            );
+
+            if (res.rowCount === 0) return null;
+
+            const row = res.rows[0];
+
+            return new GiaoDichThanhToanModel({
+                id: row.id,
+                don_hang_id: row.don_hang_id,
+                phuong_thuc_thanh_toan: row.phuong_thuc_thanh_toan,
+                so_tien: row.so_tien,
+                trang_thai: row.trang_thai,
+                ma_giao_dich: row.ma_giao_dich,
+                ngay_thanh_toan: row.ngay_thanh_toan,
+                ghi_chu: row.ghi_chu
+            });
+        } catch (err) {
+            console.error('Lỗi khi lấy giao dịch theo đơn hàng:', err);
+            return null;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async getAll(): Promise<GiaoDichThanhToanModel[]> {
+        const client = await pool.connect();
+        try {
+            const res = await client.query(
+                `SELECT * FROM giao_dich_thanh_toan ORDER BY ngay_thanh_toan DESC`
+            );
+
+            return res.rows.map(row => new GiaoDichThanhToanModel({
+                id: row.id,
+                don_hang_id: row.don_hang_id,
+                phuong_thuc_thanh_toan: row.phuong_thuc_thanh_toan,
+                so_tien: row.so_tien,
+                trang_thai: row.trang_thai,
+                ma_giao_dich: row.ma_giao_dich,
+                ngay_thanh_toan: row.ngay_thanh_toan,
+                ghi_chu: row.ghi_chu
+            }));
+        } catch (err) {
+            console.error('Lỗi khi lấy tất cả giao dịch thanh toán:', err);
+            return [];
+        } finally {
+            client.release();
+        }
+    }
+
+    static async updateStatus(id: string, trang_thai: string): Promise<GiaoDichThanhToanModel | null> {
+        const client = await pool.connect();
+        try {
+            const query = `
+                UPDATE giao_dich_thanh_toan
+                SET trang_thai = $1
+                WHERE id = $2
+                RETURNING *;
+            `;
+            const res = await client.query(query, [trang_thai, id]);
+
+            if (res.rows.length === 0) return null;
+
+            const row = res.rows[0];
+            return new GiaoDichThanhToanModel({
+                id: row.id,
+                don_hang_id: row.don_hang_id,
+                phuong_thuc_thanh_toan: row.phuong_thuc_thanh_toan,
+                so_tien: row.so_tien,
+                trang_thai: row.trang_thai,
+                ma_giao_dich: row.ma_giao_dich,
+                ngay_thanh_toan: row.ngay_thanh_toan,
+                ghi_chu: row.ghi_chu
+            });
+        } catch (err) {
+            console.error('Lỗi khi cập nhật trạng thái giao dịch:', err);
+            return null;
+        } finally {
+            client.release();
+        }
+    }
+
+
 }

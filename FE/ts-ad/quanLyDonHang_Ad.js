@@ -35,6 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
+// Thêm biến global
+var currentPaymentInfo = null;
+var currentAddressInfo = null;
+var isEditingPayment = false;
+var isEditingAddress = false;
 var orders = [];
 function initOrders() {
     return __awaiter(this, void 0, void 0, function () {
@@ -50,9 +55,145 @@ function initOrders() {
     });
 }
 var currentEditingOrder = null;
-function getAllOrdersApi() {
+// API functions mới
+function getPaymentInfoApi(orderId) {
     return __awaiter(this, void 0, void 0, function () {
         var response, data, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/".concat(orderId))];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            return [2 /*return*/, null];
+                        }
+                        throw new Error('Lỗi khi gọi API lấy thông tin thanh toán');
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    return [2 /*return*/, data];
+                case 3:
+                    error_1 = _a.sent();
+                    console.error('Lỗi khi gọi API thanh toán:', error_1);
+                    return [2 /*return*/, null];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function getAddressInfoApi(orderId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/".concat(orderId))];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            return [2 /*return*/, null];
+                        }
+                        throw new Error('Lỗi khi gọi API lấy địa chỉ');
+                    }
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    return [2 /*return*/, data];
+                case 3:
+                    error_2 = _a.sent();
+                    console.error('Lỗi khi gọi API địa chỉ:', error_2);
+                    return [2 /*return*/, null];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function updatePaymentStatusApi(paymentId, newStatus) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, result, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/".concat(paymentId), {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ trang_thai: newStatus })
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    result = _a.sent();
+                    return [2 /*return*/, response.ok && result.success];
+                case 3:
+                    error_3 = _a.sent();
+                    console.error('Lỗi khi cập nhật trạng thái thanh toán:', error_3);
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function updateAddressApi(addressId, addressData) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, result, error_4;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/cap-nhat/".concat(addressId), {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(addressData)
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    result = _a.sent();
+                    return [2 /*return*/, response.ok && result.success];
+                case 3:
+                    error_4 = _a.sent();
+                    console.error('Lỗi khi cập nhật địa chỉ:', error_4);
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+// Helper functions
+function getPaymentStatusText(status) {
+    var statusMap = {
+        cho_thanh_toan: 'Chờ thanh toán',
+        da_thanh_toan: 'Đã thanh toán',
+        that_bai: 'Thất bại',
+        hoan_tien: 'Hoàn tiền'
+    };
+    return statusMap[status] || status;
+}
+function getPaymentMethodText(method) {
+    var methodMap = {
+        cod: 'Thanh toán khi nhận hàng',
+        bank_transfer: 'Chuyển khoản ngân hàng',
+        credit_card: 'Thẻ tín dụng',
+        e_wallet: 'Ví điện tử'
+    };
+    return methodMap[method] || method;
+}
+function getAllOrdersApi() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data, error_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -68,8 +209,8 @@ function getAllOrdersApi() {
                     data = _a.sent();
                     return [2 /*return*/, data];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error('Lỗi khi gọi API:', error_1);
+                    error_5 = _a.sent();
+                    console.error('Lỗi khi gọi API:', error_5);
                     return [2 /*return*/, []];
                 case 4: return [2 /*return*/];
             }
@@ -143,8 +284,105 @@ function formatDate(dateString) {
     var date = new Date(dateString);
     return date.toLocaleString('vi-VN');
 }
+// Cập nhật function createOrderCard - thêm nút thông tin thanh toán
 function createOrderCard(order) {
-    return "\n        <div class=\"order-card\">\n            <div class=\"order-header\">\n                <span class=\"order-id\">\u0110\u01A1n h\u00E0ng #".concat(order.id, "</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">\n                    ").concat(getStatusText(order.trang_thai), "\n                </span>\n            </div>\n            <div class=\"order-info\">\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span>\n                    <span class=\"info-value\">").concat(order.nguoi_dung_id, "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span>\n                    <span class=\"info-value\">").concat(formatDate(order.ngay_tao), "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">T\u1ED5ng ti\u1EC1n:</span>\n                    <span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">\n                <button class=\"btn btn-primary\" onclick=\"viewOrderDetails('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDC41\uFE0F Chi ti\u1EBFt\n                </button>\n                <button class=\"btn btn-secondary\" onclick=\"editOrderStatus('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \u270F\uFE0F S\u1EEDa\n                </button>\n                <button class=\"btn\" onclick=\"deleteOrder('").concat(order.id, "')\" style=\"background: #ff4757; color: white; flex: 1;\">\n                    \uD83D\uDDD1\uFE0F\n                </button>\n            </div>\n        </div>\n    ");
+    return "\n        <div class=\"order-card\">\n            <div class=\"order-header\">\n                <span class=\"order-id\">\u0110\u01A1n h\u00E0ng #".concat(order.id, "</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">\n                    ").concat(getStatusText(order.trang_thai), "\n                </span>\n            </div>\n            <div class=\"order-info\">\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span>\n                    <span class=\"info-value\">").concat(order.nguoi_dung_id, "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span>\n                    <span class=\"info-value\">").concat(formatDate(order.ngay_tao), "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">T\u1ED5ng ti\u1EC1n:</span>\n                    <span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">\n                <button class=\"btn btn-primary\" onclick=\"viewOrderDetails('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDC41\uFE0F Chi ti\u1EBFt\n                </button>\n                <button class=\"btn btn-success\" onclick=\"viewPaymentInfo('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDCB3 Thanh to\u00E1n\n                </button>\n                <button class=\"btn btn-secondary\" onclick=\"editOrderStatus('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \u270F\uFE0F S\u1EEDa\n                </button>\n                <button class=\"btn\" onclick=\"deleteOrder('").concat(order.id, "')\" style=\"background: #ff4757; color: white; flex: 1;\">\n                    \uD83D\uDDD1\uFE0F\n                </button>\n            </div>\n        </div>\n    ");
+}
+function viewPaymentInfo(orderId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var payment, address, modalBody;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, getPaymentInfoApi(orderId)];
+                case 1:
+                    payment = _a.sent();
+                    return [4 /*yield*/, getAddressInfoApi(orderId)];
+                case 2:
+                    address = _a.sent();
+                    if (!payment && !address) {
+                        alert('Không tìm thấy thông tin thanh toán hoặc địa chỉ!');
+                        return [2 /*return*/];
+                    }
+                    currentPaymentInfo = payment;
+                    currentAddressInfo = address;
+                    modalBody = document.getElementById('modal-body');
+                    modalBody.innerHTML = "\n        <h3 style=\"color: #2ED573;\">Th\u00F4ng tin thanh to\u00E1n</h3>\n        ".concat(payment ? "\n        <div class=\"info-row\"><span class=\"info-label\">M\u00E3 giao d\u1ECBch:</span><span class=\"info-value\">".concat(payment._ma_giao_dich, "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ph\u01B0\u01A1ng th\u1EE9c:</span><span class=\"info-value\">").concat(getPaymentMethodText(payment._phuong_thuc_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u1ED1 ti\u1EC1n:</span><span class=\"info-value\">").concat(formatCurrency(Number(payment._so_tien)), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Tr\u1EA1ng th\u00E1i:</span>\n            ").concat(isEditingPayment ? "\n                <select id=\"edit-payment-status\" class=\"form-control\">\n                    <option value=\"cho_thanh_toan\">Ch\u1EDD thanh to\u00E1n</option>\n                    <option value=\"da_thanh_toan\">\u0110\u00E3 thanh to\u00E1n</option>\n                    <option value=\"that_bai\">Th\u1EA5t b\u1EA1i</option>\n                    <option value=\"hoan_tien\">Ho\u00E0n ti\u1EC1n</option>\n                </select>\n                <button class=\"btn btn-success\" onclick=\"savePaymentStatus('".concat(payment._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n                <button class=\"btn btn-secondary\" onclick=\"cancelEditPayment()\">\u274C H\u1EE7y</button>\n            ") : "\n                <span class=\"status-badge status-".concat(payment._trang_thai, "\">\n                ").concat(getPaymentStatusText(payment._trang_thai), "\n                </span>\n                <div style=\"margin-top: 6px;\">\n                    <button class=\"btn btn-outline small-button\" onclick=\"enableEditPayment()\">\u270F\uFE0F S\u1EEDa</button>\n                </div>\n            "), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ng\u00E0y thanh to\u00E1n:</span><span class=\"info-value\">").concat(formatDate(payment._ngay_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span><span class=\"info-value\">").concat(payment._ghi_chu || '(Không có)', "</span></div>\n        ") : '<p>Không có dữ liệu thanh toán</p>', "\n\n        <hr style=\"margin: 20px 0;\" />\n\n        <h3 style=\"color: #70A1FF;\">Th\u00F4ng tin giao h\u00E0ng</h3>\n        ").concat(address ? "\n        <div class=\"info-row\"><span class=\"info-label\">H\u1ECD t\u00EAn:</span>\n            ".concat(isEditingAddress ? "<input id=\"edit-name\" value=\"".concat(address._ho_ten_nguoi_nhan, "\" />") : "<span class=\"info-value\">".concat(address._ho_ten_nguoi_nhan, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u0110T:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-phone\" value=\"".concat(address._so_dien_thoai, "\" />") : "<span class=\"info-value\">".concat(address._so_dien_thoai, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">\u0110\u1ECBa ch\u1EC9:</span>\n            ").concat(isEditingAddress ? "\n                <input id=\"edit-detail\" value=\"".concat(address._dia_chi_chi_tiet, "\" placeholder=\"Chi ti\u1EBFt\" />\n                <input id=\"edit-ward\" value=\"").concat(address._phuong_xa, "\" placeholder=\"Ph\u01B0\u1EDDng/X\u00E3\" />\n                <input id=\"edit-city\" value=\"").concat(address._tinh_thanh, "\" placeholder=\"T\u1EC9nh/Th\u00E0nh\" />\n            ") : "<span class=\"info-value\">".concat(address._dia_chi_chi_tiet, ", ").concat(address._phuong_xa, ", ").concat(address._tinh_thanh, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-note\" value=\"".concat(address._ghi_chu, "\" />") : "<span class=\"info-value\">".concat(address._ghi_chu || '(Không có)', "</span>"), "\n        </div>\n        ").concat(isEditingAddress ? "\n            <button class=\"btn btn-success\" onclick=\"saveAddress('".concat(address._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n            <button class=\"btn btn-secondary\" onclick=\"cancelEditAddress()\">\u274C H\u1EE7y</button>\n        ") : "<button class=\"btn btn-outline\" onclick=\"enableEditAddress()\">\u270F\uFE0F S\u1EEDa</button>", "\n        ") : '<p>Không có dữ liệu địa chỉ</p>', "\n    ");
+                    document.getElementById('order-modal').style.display = 'block';
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function enableEditPayment() {
+    isEditingPayment = true;
+    viewPaymentInfo(currentPaymentInfo._don_hang_id);
+}
+function cancelEditPayment() {
+    isEditingPayment = false;
+    viewPaymentInfo(currentPaymentInfo._don_hang_id);
+}
+function savePaymentStatus(paymentId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var newStatus, success;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newStatus = document.getElementById('edit-payment-status').value;
+                    return [4 /*yield*/, updatePaymentStatusApi(paymentId, newStatus)];
+                case 1:
+                    success = _a.sent();
+                    if (success) {
+                        currentPaymentInfo._trang_thai = newStatus;
+                        isEditingPayment = false;
+                        viewPaymentInfo(currentPaymentInfo._don_hang_id);
+                        alert('Cập nhật trạng thái thanh toán thành công!');
+                    }
+                    else {
+                        alert('Cập nhật thất bại!');
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function enableEditAddress() {
+    isEditingAddress = true;
+    viewPaymentInfo(currentAddressInfo._don_hang_id);
+}
+function cancelEditAddress() {
+    isEditingAddress = false;
+    viewPaymentInfo(currentAddressInfo._don_hang_id);
+}
+function saveAddress(addressId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var updatedData, success;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    updatedData = {
+                        _ho_ten_nguoi_nhan: document.getElementById('edit-name').value,
+                        _so_dien_thoai: document.getElementById('edit-phone').value,
+                        _dia_chi_chi_tiet: document.getElementById('edit-detail').value,
+                        _phuong_xa: document.getElementById('edit-ward').value,
+                        _tinh_thanh: document.getElementById('edit-city').value,
+                        _ghi_chu: document.getElementById('edit-note').value,
+                    };
+                    return [4 /*yield*/, updateAddressApi(addressId, updatedData)];
+                case 1:
+                    success = _a.sent();
+                    if (success) {
+                        Object.assign(currentAddressInfo, updatedData);
+                        isEditingAddress = false;
+                        viewPaymentInfo(currentAddressInfo._don_hang_id);
+                        alert('Cập nhật địa chỉ thành công!');
+                    }
+                    else {
+                        alert('Cập nhật địa chỉ thất bại!');
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 function displayOrders(filteredOrders) {
     if (filteredOrders === void 0) { filteredOrders = null; }
@@ -172,7 +410,7 @@ function editOrderStatus(orderId) {
     document.getElementById('new-status').value = order.trang_thai;
     document.getElementById('status-modal').style.display = 'block';
 }
-function closeModal() {
+function closeModal2() {
     document.getElementById('order-modal').style.display = 'none';
 }
 function closeStatusModal() {
@@ -249,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 initOrders();
                 document.getElementById('status-form').addEventListener('submit', function (e) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var newStatus, response, result, order, error_2;
+                        var newStatus, response, result, order, error_6;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -287,8 +525,8 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     }
                                     return [3 /*break*/, 5];
                                 case 4:
-                                    error_2 = _a.sent();
-                                    console.error('Lỗi khi cập nhật trạng thái:', error_2);
+                                    error_6 = _a.sent();
+                                    console.error('Lỗi khi cập nhật trạng thái:', error_6);
                                     alert('Có lỗi xảy ra khi kết nối đến máy chủ!');
                                     return [3 /*break*/, 5];
                                 case 5:
@@ -300,13 +538,13 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 });
                 window.addEventListener('click', function (e) {
                     if (e.target === document.getElementById('order-modal'))
-                        closeModal();
+                        closeModal2();
                     if (e.target === document.getElementById('status-modal'))
                         closeStatusModal();
                 });
                 document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') {
-                        closeModal();
+                        closeModal2();
                         closeStatusModal();
                     }
                     if (e.ctrlKey && e.key === 'f') {
@@ -339,7 +577,7 @@ function deleteOrderApi(orderId) {
 }
 function deleteOrder(orderId) {
     return __awaiter(this, void 0, void 0, function () {
-        var index, error_3;
+        var index, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -363,8 +601,8 @@ function deleteOrder(orderId) {
                     }
                     return [3 /*break*/, 4];
                 case 3:
-                    error_3 = _a.sent();
-                    console.error('Lỗi khi xóa đơn hàng:', error_3);
+                    error_7 = _a.sent();
+                    console.error('Lỗi khi xóa đơn hàng:', error_7);
                     alert('Xóa đơn hàng thất bại!');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

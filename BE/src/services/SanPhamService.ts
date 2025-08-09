@@ -412,7 +412,18 @@ export class SanPhamService {
         }
     }
 
-
+    static async countSanPham(): Promise<number> {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(`SELECT COUNT(*) AS total FROM san_pham`);
+            return parseInt(result.rows[0].total, 10);
+        } catch (err) {
+            console.error('Lỗi khi đếm số sản phẩm:', err);
+            return 0;
+        } finally {
+            client.release();
+        }
+    }
 
 
 }

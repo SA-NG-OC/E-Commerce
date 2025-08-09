@@ -3,10 +3,9 @@ import { SanPhamController } from '../controllers/SanPhamController';
 
 const router: Router = express.Router();
 
-router.get('/id', SanPhamController.getIdSanPham);
-
 // 1. Routes tĩnh (static) - ưu tiên cao nhất
 router.get('/id', SanPhamController.getIdSanPham);
+router.get('/count', SanPhamController.countSanPham);
 
 // 2. Routes có action cụ thể  
 router.put('/update-danh-muc', SanPhamController.updateDanhMucSanPham);

@@ -52,7 +52,7 @@ async function fetchData() {
         // Sau khi load xong thì hiển thị
         displayCategories();
         displayBrands();
-        updateStats();
+        updateStats2();
     } catch (err) {
         console.error('❌ Lỗi khi load dữ liệu từ server:', err);
     }
@@ -101,7 +101,7 @@ function showTab2(tabName: string) {
     (event?.target as HTMLElement)?.classList.add('active');
 }
 
-function updateStats() {
+function updateStats2() {
     const totalProducts = danhMucs2.reduce((sum, dm) => sum + dm.san_pham.length, 0);
     (document.getElementById('totalCategories') as HTMLElement).textContent = danhMucs2.length.toString();
     (document.getElementById('totalBrands') as HTMLElement).textContent = thuongHieus2.length.toString();
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayCategories();   // ← Hiển thị lại bảng danh mục
                 updateCategorySelect(); // ← Làm mới dropdown
 
-                updateStats();
+                updateStats2();
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
             }
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayCategories();   // ← Hiển thị lại bảng danh mục
                 updateCategorySelect(); // ← Làm mới dropdown
 
-                updateStats();
+                updateStats2();
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
             }
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetchData();
             }
 
-            updateStats();
+            updateStats2();
             (document.getElementById('productModal') as HTMLElement).style.display = 'none';
             (this as HTMLFormElement).reset();
             alert('✅ Thêm sản phẩm thành công!');

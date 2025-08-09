@@ -7,7 +7,7 @@ export class NguoiDungModel {
     private _so_dien_thoai: string;
     private _dia_chi: string;
     private _ngay_sinh: string;
-    private _role_id: string;
+    private _role: string;
 
     constructor(data: {
         id: string;
@@ -18,7 +18,7 @@ export class NguoiDungModel {
         so_dien_thoai: string;
         dia_chi: string;
         ngay_sinh: string;
-        role_id: string;
+        role: string;
     }) {
         this._id = data.id;
         this._email = data.email;
@@ -28,7 +28,7 @@ export class NguoiDungModel {
         this._so_dien_thoai = data.so_dien_thoai;
         this._dia_chi = data.dia_chi;
         this._ngay_sinh = data.ngay_sinh;
-        this._role_id = data.role_id;
+        this._role = data.role;
     }
     get id() { return this._id; }
     set id(v: string) { this._id = v; }
@@ -46,6 +46,6 @@ export class NguoiDungModel {
     set dia_chi(v: string) { this._dia_chi = v; }
     get ngay_sinh() { return this._ngay_sinh; }
     set ngay_sinh(v: string) { this._ngay_sinh = v; }
-    get role_id() { return this._role_id; }
-    set role_id(v: string) { this._role_id = v; }
+    get role() { return this._role; }
+    set role(v: string) { this._role = v; }
 }

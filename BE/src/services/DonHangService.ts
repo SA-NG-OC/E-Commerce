@@ -232,6 +232,42 @@ export class DonHangService {
         }
     }
 
+    async countDonHang(): Promise<number> {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(`
+            SELECT COUNT(*) AS total
+            FROM don_hang
+        `);
+            return parseInt(result.rows[0].total, 10);
+        } catch (err) {
+            console.error('Lỗi khi đếm số đơn hàng:', err);
+            return 0;
+        } finally {
+            client.release();
+        }
+    }
+
+    async capNhatTrangThai(donHangId: string, trangThai: string): Promise<boolean> {
+        const client = await pool.connect();
+        try {
+            const result = await client.query(
+                `
+                UPDATE don_hang
+                SET trang_thai = $1
+                WHERE id = $2
+            `,
+                [trangThai, donHangId]
+            );
+            return result.rowCount! > 0;
+        } catch (err) {
+            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', err);
+            return false;
+        } finally {
+            client.release();
+        }
+    }
+
     async addChiTietDonHang(
         don_hang_id: string,
         bien_the_id: string,
@@ -396,54 +432,5 @@ export class DonHangService {
 
         return Array.from(donHangMap.values());
     }
-
-    async capNhatTrangThaiDonHang(don_hang_id: string, trang_thai_moi: string): Promise<{ success: boolean; message: string }> {
-        const client = await pool.connect();
-
-        try {
-            await client.query('BEGIN');
-
-            // Kiểm tra trạng thái hợp lệ (nếu muốn bảo vệ thêm ngoài CHECK của DB)
-            const trangThaiHopLe = ['cho_xac_nhan', 'da_xac_nhan', 'dang_giao', 'da_giao', 'da_huy'];
-            if (!trangThaiHopLe.includes(trang_thai_moi)) {
-                await client.query('ROLLBACK');
-                return {
-                    success: false,
-                    message: 'Trạng thái không hợp lệ'
-                };
-            }
-
-            const result = await client.query(
-                `UPDATE don_hang SET trang_thai = $1 WHERE id = $2`,
-                [trang_thai_moi, don_hang_id]
-            );
-
-            if (result.rowCount === 0) {
-                await client.query('ROLLBACK');
-                return {
-                    success: false,
-                    message: 'Không tìm thấy đơn hàng để cập nhật'
-                };
-            }
-
-            await client.query('COMMIT');
-            return {
-                success: true,
-                message: 'Trạng thái đơn hàng đã được cập nhật thành công'
-            };
-
-        } catch (error) {
-            await client.query('ROLLBACK');
-            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
-            return {
-                success: false,
-                message: 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng'
-            };
-        } finally {
-            client.release();
-        }
-    }
-
-
 
 }

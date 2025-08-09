@@ -13,7 +13,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/san-pham', require('./routes/sanPhamRoutes').default);
 app.use('/api', require('./routes/danhGiaSPRoutes').default);
-app.use('/api', require('./routes/nguoiDungRoutes').default);
+app.use('/api/nguoi-dung', require('./routes/nguoiDungRoutes').default);
 app.use('/api/gio-hang', require('./routes/gioHangRoutes').default);
 app.use('/api/don-hang', require('./routes/donHangRoutes').default);
 app.use('/api/danh-muc', require('./routes/danhMucRoutes').default);

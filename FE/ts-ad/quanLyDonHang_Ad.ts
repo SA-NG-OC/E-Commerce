@@ -20,6 +20,34 @@ interface Order {
     chi_tiet: OrderDetail[];
 }
 
+interface PaymentInfo {
+    _id: string;
+    _don_hang_id: string;
+    _phuong_thuc_thanh_toan: string;
+    _so_tien: string;
+    _trang_thai: string;
+    _ma_giao_dich: number;
+    _ngay_thanh_toan: string;
+    _ghi_chu: string;
+}
+
+interface AddressInfo {
+    _id: string;
+    _don_hang_id: string;
+    _ho_ten_nguoi_nhan: string;
+    _so_dien_thoai: string;
+    _dia_chi_chi_tiet: string;
+    _phuong_xa: string;
+    _tinh_thanh: string;
+    _ghi_chu: string;
+}
+
+// Thêm biến global
+let currentPaymentInfo: PaymentInfo | null = null;
+let currentAddressInfo: AddressInfo | null = null;
+let isEditingPayment: boolean = false;
+let isEditingAddress: boolean = false;
+
 
 let orders: Order[] = [];
 
@@ -30,6 +58,98 @@ async function initOrders() {
 
 
 let currentEditingOrder: string | null = null;
+
+// API functions mới
+async function getPaymentInfoApi(orderId: string): Promise<PaymentInfo | null> {
+    try {
+        const response = await fetch(`http://localhost:3000/api/giao-dich/${orderId}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                return null;
+            }
+            throw new Error('Lỗi khi gọi API lấy thông tin thanh toán');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Lỗi khi gọi API thanh toán:', error);
+        return null;
+    }
+}
+
+async function getAddressInfoApi(orderId: string): Promise<AddressInfo | null> {
+    try {
+        const response = await fetch(`http://localhost:3000/api/dia-chi/${orderId}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                return null;
+            }
+            throw new Error('Lỗi khi gọi API lấy địa chỉ');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Lỗi khi gọi API địa chỉ:', error);
+        return null;
+    }
+}
+
+async function updatePaymentStatusApi(paymentId: string, newStatus: string): Promise<boolean> {
+    try {
+        const response = await fetch(`http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/${paymentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ trang_thai: newStatus })
+        });
+
+        const result = await response.json();
+        return response.ok && result.success;
+    } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái thanh toán:', error);
+        return false;
+    }
+}
+
+async function updateAddressApi(addressId: string, addressData: Partial<AddressInfo>): Promise<boolean> {
+    try {
+        const response = await fetch(`http://localhost:3000/api/dia-chi/cap-nhat/${addressId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(addressData)
+        });
+
+        const result = await response.json();
+        return response.ok && result.success;
+    } catch (error) {
+        console.error('Lỗi khi cập nhật địa chỉ:', error);
+        return false;
+    }
+}
+
+// Helper functions
+function getPaymentStatusText(status: string): string {
+    const statusMap: Record<string, string> = {
+        cho_thanh_toan: 'Chờ thanh toán',
+        da_thanh_toan: 'Đã thanh toán',
+        that_bai: 'Thất bại',
+        hoan_tien: 'Hoàn tiền'
+    };
+    return statusMap[status] || status;
+}
+
+function getPaymentMethodText(method: string): string {
+    const methodMap: Record<string, string> = {
+        cod: 'Thanh toán khi nhận hàng',
+        bank_transfer: 'Chuyển khoản ngân hàng',
+        credit_card: 'Thẻ tín dụng',
+        e_wallet: 'Ví điện tử'
+    };
+    return methodMap[method] || method;
+}
 
 async function getAllOrdersApi(): Promise<Order[]> {
     try {
@@ -112,6 +232,7 @@ function formatDate(dateString: string): string {
     return date.toLocaleString('vi-VN');
 }
 
+// Cập nhật function createOrderCard - thêm nút thông tin thanh toán
 function createOrderCard(order: Order): string {
     return `
         <div class="order-card">
@@ -139,6 +260,9 @@ function createOrderCard(order: Order): string {
                 <button class="btn btn-primary" onclick="viewOrderDetails('${order.id}')" style="flex: 2;">
                     👁️ Chi tiết
                 </button>
+                <button class="btn btn-success" onclick="viewPaymentInfo('${order.id}')" style="flex: 2;">
+                    💳 Thanh toán
+                </button>
                 <button class="btn btn-secondary" onclick="editOrderStatus('${order.id}')" style="flex: 2;">
                     ✏️ Sửa
                 </button>
@@ -149,6 +273,135 @@ function createOrderCard(order: Order): string {
         </div>
     `;
 }
+
+async function viewPaymentInfo(orderId: string): Promise<void> {
+    const payment = await getPaymentInfoApi(orderId);
+    const address = await getAddressInfoApi(orderId);
+
+    if (!payment && !address) {
+        alert('Không tìm thấy thông tin thanh toán hoặc địa chỉ!');
+        return;
+    }
+
+    currentPaymentInfo = payment;
+    currentAddressInfo = address;
+
+    const modalBody = document.getElementById('modal-body')!;
+    modalBody.innerHTML = `
+        <h3 style="color: #2ED573;">Thông tin thanh toán</h3>
+        ${payment ? `
+        <div class="info-row"><span class="info-label">Mã giao dịch:</span><span class="info-value">${payment._ma_giao_dich}</span></div>
+        <div class="info-row"><span class="info-label">Phương thức:</span><span class="info-value">${getPaymentMethodText(payment._phuong_thuc_thanh_toan)}</span></div>
+        <div class="info-row"><span class="info-label">Số tiền:</span><span class="info-value">${formatCurrency(Number(payment._so_tien))}</span></div>
+        <div class="info-row"><span class="info-label">Trạng thái:</span>
+            ${isEditingPayment ? `
+                <select id="edit-payment-status" class="form-control">
+                    <option value="cho_thanh_toan">Chờ thanh toán</option>
+                    <option value="da_thanh_toan">Đã thanh toán</option>
+                    <option value="that_bai">Thất bại</option>
+                    <option value="hoan_tien">Hoàn tiền</option>
+                </select>
+                <button class="btn btn-success" onclick="savePaymentStatus('${payment._id}')">💾 Lưu</button>
+                <button class="btn btn-secondary" onclick="cancelEditPayment()">❌ Hủy</button>
+            ` : `
+                <span class="status-badge status-${payment._trang_thai}">
+                ${getPaymentStatusText(payment._trang_thai)}
+                </span>
+                <div style="margin-top: 6px;">
+                    <button class="btn btn-outline small-button" onclick="enableEditPayment()">✏️ Sửa</button>
+                </div>
+            `}
+        </div>
+        <div class="info-row"><span class="info-label">Ngày thanh toán:</span><span class="info-value">${formatDate(payment._ngay_thanh_toan)}</span></div>
+        <div class="info-row"><span class="info-label">Ghi chú:</span><span class="info-value">${payment._ghi_chu || '(Không có)'}</span></div>
+        ` : '<p>Không có dữ liệu thanh toán</p>'}
+
+        <hr style="margin: 20px 0;" />
+
+        <h3 style="color: #70A1FF;">Thông tin giao hàng</h3>
+        ${address ? `
+        <div class="info-row"><span class="info-label">Họ tên:</span>
+            ${isEditingAddress ? `<input id="edit-name" value="${address._ho_ten_nguoi_nhan}" />` : `<span class="info-value">${address._ho_ten_nguoi_nhan}</span>`}
+        </div>
+        <div class="info-row"><span class="info-label">SĐT:</span>
+            ${isEditingAddress ? `<input id="edit-phone" value="${address._so_dien_thoai}" />` : `<span class="info-value">${address._so_dien_thoai}</span>`}
+        </div>
+        <div class="info-row"><span class="info-label">Địa chỉ:</span>
+            ${isEditingAddress ? `
+                <input id="edit-detail" value="${address._dia_chi_chi_tiet}" placeholder="Chi tiết" />
+                <input id="edit-ward" value="${address._phuong_xa}" placeholder="Phường/Xã" />
+                <input id="edit-city" value="${address._tinh_thanh}" placeholder="Tỉnh/Thành" />
+            ` : `<span class="info-value">${address._dia_chi_chi_tiet}, ${address._phuong_xa}, ${address._tinh_thanh}</span>`}
+        </div>
+        <div class="info-row"><span class="info-label">Ghi chú:</span>
+            ${isEditingAddress ? `<input id="edit-note" value="${address._ghi_chu}" />` : `<span class="info-value">${address._ghi_chu || '(Không có)'}</span>`}
+        </div>
+        ${isEditingAddress ? `
+            <button class="btn btn-success" onclick="saveAddress('${address._id}')">💾 Lưu</button>
+            <button class="btn btn-secondary" onclick="cancelEditAddress()">❌ Hủy</button>
+        ` : `<button class="btn btn-outline" onclick="enableEditAddress()">✏️ Sửa</button>`}
+        ` : '<p>Không có dữ liệu địa chỉ</p>'}
+    `;
+
+    (document.getElementById('order-modal') as HTMLElement).style.display = 'block';
+}
+
+function enableEditPayment(): void {
+    isEditingPayment = true;
+    viewPaymentInfo(currentPaymentInfo!._don_hang_id);
+}
+
+function cancelEditPayment(): void {
+    isEditingPayment = false;
+    viewPaymentInfo(currentPaymentInfo!._don_hang_id);
+}
+
+async function savePaymentStatus(paymentId: string): Promise<void> {
+    const newStatus = (document.getElementById('edit-payment-status') as HTMLSelectElement).value;
+    const success = await updatePaymentStatusApi(paymentId, newStatus);
+
+    if (success) {
+        currentPaymentInfo!._trang_thai = newStatus;
+        isEditingPayment = false;
+        viewPaymentInfo(currentPaymentInfo!._don_hang_id);
+        alert('Cập nhật trạng thái thanh toán thành công!');
+    } else {
+        alert('Cập nhật thất bại!');
+    }
+}
+
+function enableEditAddress(): void {
+    isEditingAddress = true;
+    viewPaymentInfo(currentAddressInfo!._don_hang_id);
+}
+
+function cancelEditAddress(): void {
+    isEditingAddress = false;
+    viewPaymentInfo(currentAddressInfo!._don_hang_id);
+}
+
+async function saveAddress(addressId: string): Promise<void> {
+    const updatedData: Partial<AddressInfo> = {
+        _ho_ten_nguoi_nhan: (document.getElementById('edit-name') as HTMLInputElement).value,
+        _so_dien_thoai: (document.getElementById('edit-phone') as HTMLInputElement).value,
+        _dia_chi_chi_tiet: (document.getElementById('edit-detail') as HTMLInputElement).value,
+        _phuong_xa: (document.getElementById('edit-ward') as HTMLInputElement).value,
+        _tinh_thanh: (document.getElementById('edit-city') as HTMLInputElement).value,
+        _ghi_chu: (document.getElementById('edit-note') as HTMLInputElement).value,
+    };
+
+    const success = await updateAddressApi(addressId, updatedData);
+
+    if (success) {
+        Object.assign(currentAddressInfo!, updatedData);
+        isEditingAddress = false;
+        viewPaymentInfo(currentAddressInfo!._don_hang_id);
+        alert('Cập nhật địa chỉ thành công!');
+    } else {
+        alert('Cập nhật địa chỉ thất bại!');
+    }
+}
+
 
 function displayOrders(filteredOrders: Order[] | null = null): void {
     const container = document.getElementById('orders-container')!;
@@ -224,7 +477,7 @@ function editOrderStatus(orderId: string): void {
     (document.getElementById('status-modal') as HTMLElement).style.display = 'block';
 }
 
-function closeModal(): void {
+function closeModal2(): void {
     (document.getElementById('order-modal') as HTMLElement).style.display = 'none';
 }
 
@@ -352,13 +605,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     window.addEventListener('click', function (e) {
-        if (e.target === document.getElementById('order-modal')) closeModal();
+        if (e.target === document.getElementById('order-modal')) closeModal2();
         if (e.target === document.getElementById('status-modal')) closeStatusModal();
     });
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            closeModal();
+            closeModal2();
             closeStatusModal();
         }
         if (e.ctrlKey && e.key === 'f') {
@@ -400,4 +653,3 @@ async function deleteOrder(orderId: string): Promise<void> {
         }
     }
 }
-

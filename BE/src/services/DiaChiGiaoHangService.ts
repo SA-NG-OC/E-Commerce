@@ -47,4 +47,69 @@ export class DiaChiGiaoHangService {
             client.release();
         }
     }
+
+    static async findByDonHangId(donHangId: string): Promise<DiaChiGiaoHangModel | null> {
+        const client = await pool.connect();
+        try {
+            const res = await client.query(
+                `SELECT * FROM dia_chi_giao_hang WHERE don_hang_id = $1 LIMIT 1`,
+                [donHangId]
+            );
+            if (res.rowCount === 0) return null;
+
+            const row = res.rows[0];
+            return new DiaChiGiaoHangModel({
+                id: row.id,
+                don_hang_id: row.don_hang_id,
+                ho_ten_nguoi_nhan: row.ho_ten_nguoi_nhan,
+                so_dien_thoai: row.so_dien_thoai,
+                dia_chi_chi_tiet: row.dia_chi_chi_tiet,
+                phuong_xa: row.phuong_xa,
+                tinh_thanh: row.tinh_thanh,
+                ghi_chu: row.ghi_chu
+            });
+        } catch (err) {
+            console.error('Lỗi khi lấy địa chỉ giao hàng:', err);
+            return null;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async update(addressId: string, data: Partial<DiaChiGiaoHangModel>): Promise<DiaChiGiaoHangModel | null> {
+        const client = await pool.connect();
+        try {
+            const updateQuery = `
+                UPDATE dia_chi_giao_hang
+                SET 
+                    ho_ten_nguoi_nhan = $1,
+                    so_dien_thoai = $2,
+                    dia_chi_chi_tiet = $3,
+                    phuong_xa = $4,
+                    tinh_thanh = $5,
+                    ghi_chu = $6
+                WHERE id = $7
+                RETURNING *;
+            `;
+
+            const values = [
+                data.ho_ten_nguoi_nhan,
+                data.so_dien_thoai,
+                data.dia_chi_chi_tiet,
+                data.phuong_xa,
+                data.tinh_thanh,
+                data.ghi_chu,
+                addressId
+            ];
+
+            const result = await client.query(updateQuery, values);
+            if (result.rowCount === 0) return null;
+
+            return new DiaChiGiaoHangModel(result.rows[0]);
+        } catch (err) {
+            throw err;
+        } finally {
+            client.release();
+        }
+    }
 }
