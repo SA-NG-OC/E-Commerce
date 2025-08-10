@@ -1,71 +1,224 @@
-/* Hiện mật khẩu - căn trái, cùng dòng với ô nhập mật khẩu */
-.show-password-container {
+/* Reset cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body nền trắng */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Khung login */
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Thanh màu hồng ở trên */
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #F19EDC;
+}
+
+/* Tiêu đề */
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input */
+.input-group {
+    position: relative;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"]#password {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Đảm bảo password type text hay password đều giống */
+#password {
+    width: 100% !important;
+    padding: 15px !important;
+    border: 2px solid #e1e5e9 !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+    background: #f8f9fa !important;
+}
+
+/* Hover & Focus cho input */
+input[type="email"]:focus,
+input[type="password"]:focus,
+#password:focus {
+    outline: none;
+    border-color: #F19EDC;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(241, 158, 220, 0.15);
+    transform: translateY(-2px);
+}
+
+input[type="email"]:hover,
+input[type="password"]:hover,
+#password:hover {
+    border-color: #F19EDC;
+    background: white;
+}
+
+/* Checkbox hiển thị mật khẩu */
+.show-password {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
-    justify-content: flex-start;
-    margin-left: 0;
-    width: 100%;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
 }
 
-.show-password-container input[type="checkbox"] {
-    accent-color: #E91E63;
-    width: 16px;
-    height: 16px;
+.show-password input[type="checkbox"] {
+    width: auto;
     margin: 0;
+    accent-color: #F19EDC;
+    transform: scale(1.2);
 }
 
-.show-password-container label {
-    font-size: 15px;
-    color: #333;
+.show-password label {
     cursor: pointer;
-    margin: 0;
     user-select: none;
 }
-.login-container {
-    max-width: 350px;
-    margin: 80px auto;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(241, 158, 220, 0.15);
-    padding: 32px 28px;
-    text-align: center;
-}
 
-.login-container h2 {
-    margin-bottom: 24px;
-    color: #E91E63;
-}
-
-#loginForm input {
-    width: 100%;
-    padding: 12px 10px;
-    margin-bottom: 16px;
-    border: 1px solid #F19EDC;
-    border-radius: 8px;
-    font-size: 15px;
-}
-
-#loginForm button {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(45deg, #F19EDC, #E91E63);
-    color: #fff;
+/* Nút Đăng nhập */
+button[type="submit"] {
+    background: #F19EDC;
+    color: white;
+    padding: 15px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-#loginForm button:hover {
-    background: linear-gradient(45deg, #E91E63, #F19EDC);
+button[type="submit"]:hover {
+    background: #e584c8;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(241, 158, 220, 0.4);
 }
 
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Thông báo lỗi */
 .error-message {
     color: #e74c3c;
-    margin-top: 8px;
     font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    background: #fdf2f2;
+    border: 1px solid #fecaca;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+/* Link đăng ký */
+.register-link {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e5e9;
+}
+
+.register-link a {
+    color: #F19EDC;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.register-link a:hover {
+    color: #e584c8;
+    text-decoration: underline;
+}
+
+.register-link span {
+    color: #666;
+    margin-right: 8px;
+}
+
+/* Animation slide in */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .login-container h2 {
+        font-size: 24px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    button[type="submit"] {
+        padding: 12px;
+    }
 }

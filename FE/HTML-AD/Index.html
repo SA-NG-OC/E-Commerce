@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Menu Navigation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/FE/CSS/style.css">
+</head>
+
+<body>
+    <!-- Header with horizontal navigation -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="logo-text">E-commerce</div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="nav-menu" id="navMenu">
+                <ul class="menu-list">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="TrangChu_Ad.html">
+                            <i class="fas fa-home menu-icon"></i>
+                            <span class="menu-text">Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="DoashBoard.html">
+                            <i class="fas fa-chart-line menu-icon"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="QuanLyDonHang_Ad.html">
+                            <i class="fas fa-shopping-cart menu-icon"></i>
+                            <span class="menu-text">Đơn hàng</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="QuanLyDM-TH_Ad.html">
+                            <i class="fas fa-tags menu-icon"></i>
+                            <span class="menu-text">Danh mục</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="QuanLyNguoiDung_Ad.html">
+                            <i class="fas fa-users menu-icon"></i>
+                            <span class="menu-text">Người dùng</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-page="ThemSanPham_Ad.html">
+                            <i class="fas fa-plus-circle menu-icon"></i>
+                            <span class="menu-text">Thêm sản phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Mobile menu toggle -->
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <iframe id="contentFrame" class="content-frame" style="display: none;"></iframe>
+        <div id="welcomeMessage" class="welcome-message">
+            <div class="welcome-icon">
+                <span class="welcome-arrow">👆</span>
+                <h1>Chào Mừng Đến Với Hệ Thống Quản Lý</h1>
+            </div>
+            <p>Chọn một mục từ menu phía trên để bắt đầu làm việc<br>
+                Hệ thống quản lý E-commerce hiện đại và thân thiện</p>
+            <i class="fas fa-mouse-pointer" style="font-size: 3rem; margin-top: 30px; color: #F19EDC;"></i>
+        </div>
+    </main>
+
+    <script src="/FE/ts-ad/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,538 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Header với menu thanh mảnh hơn */
+.header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 60px;
+    /* Giảm từ 80px xuống 60px */
+}
+
+/* Logo section - thu nhỏ */
+.logo-section {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    flex-shrink: 0;
+}
+
+.logo {
+    width: 36px;
+    /* Giảm từ 50px xuống 36px */
+    height: 36px;
+    background: #F19EDC;
+    border-radius: 8px;
+    /* Đổi từ tròn sang bo góc */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    /* Giảm từ 1.5rem */
+    margin-right: 12px;
+    box-shadow: 0 2px 8px rgba(241, 158, 220, 0.3);
+}
+
+.logo-text {
+    color: #333;
+    font-size: 1.3rem;
+    /* Giảm từ 1.5rem */
+    font-weight: 600;
+    letter-spacing: -0.3px;
+}
+
+/* Navigation menu - thiết kế mới với phân bố đều */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    margin: 0 40px;
+    /* Thêm margin để tạo khoảng cách với logo và mobile toggle */
+}
+
+.menu-list {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    /* Chiếm toàn bộ chiều rộng */
+    justify-content: space-between;
+    /* Phân bố đều các items */
+    gap: 8px;
+    /* Giảm gap để các items có thể trải đều hơn */
+}
+
+.menu-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    /* Cho phép mỗi item chiếm không gian bằng nhau */
+    justify-content: center;
+    /* Căn giữa nội dung trong mỗi item */
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Căn giữa nội dung */
+    padding: 8px 12px;
+    height: 40px;
+    color: #6c757d;
+    /* Màu xám cho text */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    border-radius: 8px;
+    white-space: nowrap;
+    background: transparent;
+    width: 100%;
+    /* Chiếm toàn bộ chiều rộng của menu-item */
+    max-width: 160px;
+    /* Giới hạn chiều rộng tối đa */
+    min-width: 120px;
+    /* Chiều rộng tối thiểu */
+}
+
+.menu-link:hover {
+    background: #f8f9fa;
+    color: #495057;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-link.active {
+    background: #F19EDC;
+    color: white;
+    box-shadow: 0 3px 12px rgba(241, 158, 220, 0.4);
+}
+
+.menu-link.active .menu-icon {
+    color: white;
+}
+
+.menu-icon {
+    font-size: 1rem;
+    /* Giảm từ 1.2rem */
+    margin-right: 6px;
+    /* Giảm từ 8px */
+    color: #6c757d;
+    /* Màu xám cho icon */
+    width: 16px;
+    /* Giảm từ 20px */
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.menu-text {
+    font-size: 0.8rem;
+    /* Giảm đáng kể từ 0.95rem */
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+/* Mobile menu toggle */
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.mobile-toggle:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+/* Main content */
+.main-content {
+    padding: 0;
+    min-height: calc(100vh - 60px);
+    /* Điều chỉnh theo header mới */
+    background: white;
+}
+
+.content-frame {
+    width: 100%;
+    height: calc(100vh - 60px);
+    border: none;
+    background: white;
+}
+
+.welcome-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+    text-align: center;
+    color: #666;
+    background: white;
+    padding: 0 20px;
+}
+
+.welcome-message h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #F19EDC;
+}
+
+.welcome-message p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #6c757d;
+}
+
+.welcome-icon {
+    position: relative;
+    animation: bounce 2s infinite;
+}
+
+.welcome-arrow {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #F19EDC;
+    animation: pointToMenu 2s infinite;
+}
+
+/* Menu badge */
+.menu-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #dc3545;
+    border: 2px solid white;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Animations */
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes pointToMenu {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* Responsive Design */
+@media (min-width: 1200px) {
+    .nav-menu {
+        margin: 0 60px;
+        /* Tăng margin trên màn hình lớn */
+    }
+
+    .menu-link {
+        max-width: 180px;
+        min-width: 140px;
+        padding: 8px 16px;
+    }
+
+    .menu-text {
+        font-size: 0.85rem;
+        /* Tăng kích thước text trên màn hình lớn */
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 993px) {
+    .nav-menu {
+        margin: 0 30px;
+    }
+
+    .menu-link {
+        max-width: 140px;
+        min-width: 100px;
+        padding: 8px 10px;
+    }
+
+    .menu-text {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .menu-text {
+        display: none;
+    }
+
+    .menu-link {
+        padding: 8px 6px;
+        width: 36px;
+        height: 36px;
+        justify-content: center;
+        min-width: 36px;
+        max-width: 36px;
+    }
+
+    .menu-icon {
+        margin-right: 0;
+        font-size: 1.1rem;
+    }
+
+    .nav-menu {
+        margin: 0 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding: 0 15px;
+        height: 56px;
+    }
+
+    .logo {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+
+    .logo-text {
+        font-size: 1.1rem;
+    }
+
+    .mobile-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        border-top: 1px solid #e9ecef;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        margin: 0;
+        /* Reset margin trên mobile */
+    }
+
+    .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .menu-list {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+        gap: 2px;
+        justify-content: flex-start;
+        /* Reset justify-content trên mobile */
+    }
+
+    .menu-item {
+        width: 100%;
+        height: auto;
+        flex: none;
+        /* Reset flex trên mobile */
+    }
+
+    .menu-link {
+        width: 100%;
+        height: 48px;
+        padding: 0 20px;
+        justify-content: flex-start;
+        margin: 0 8px;
+        border-radius: 8px;
+        max-width: none;
+        /* Reset max-width trên mobile */
+        min-width: none;
+        /* Reset min-width trên mobile */
+    }
+
+    .menu-text {
+        display: block;
+        font-size: 0.85rem;
+    }
+
+    .menu-icon {
+        margin-right: 12px;
+        width: 18px;
+    }
+
+    .welcome-message {
+        height: calc(100vh - 56px);
+    }
+
+    .content-frame {
+        height: calc(100vh - 56px);
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        height: 52px;
+    }
+
+    .logo-section {
+        margin-right: 20px;
+    }
+
+    .logo {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+        margin-right: 8px;
+    }
+
+    .logo-text {
+        font-size: 1rem;
+    }
+
+    .nav-menu {
+        top: 52px;
+    }
+
+    .welcome-message {
+        height: calc(100vh - 52px);
+    }
+
+    .content-frame {
+        height: calc(100vh - 52px);
+    }
+
+    .welcome-message h1 {
+        font-size: 2rem;
+    }
+
+    .welcome-message p {
+        font-size: 1rem;
+    }
+}
+
+/* Loading indicator styles */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #F19EDC;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success feedback styles */
+.success-feedback {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #F19EDC;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(241, 158, 220, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease;
+    font-size: 0.9rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
