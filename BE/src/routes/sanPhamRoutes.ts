@@ -3,6 +3,8 @@ import { SanPhamController } from '../controllers/SanPhamController';
 
 const router: Router = express.Router();
 
+router.get('/filter/:danhMucId/all', SanPhamController.getByDanhMuc);
+router.get('/filter/all/:thuongHieuId', SanPhamController.getByThuongHieu);
 // 1. Routes tĩnh (static) - ưu tiên cao nhất
 router.get('/id', SanPhamController.getIdSanPham);
 router.get('/count', SanPhamController.countSanPham);
@@ -15,8 +17,7 @@ router.put('/update-thuong-hieu', SanPhamController.updateThuongHieuSanPham);
 router.get('/filter/:danhMucId/:thuongHieuId', SanPhamController.getByDanhMuc_ThuongHieu);
 
 // 4. Routes có 1 tham số + action
-router.get('/filter/:danhMucId/all', SanPhamController.getByDanhMuc);
-router.get('/filter/all/:thuongHieuId', SanPhamController.getByThuongHieu);
+
 router.patch('/:id/soft-delete', SanPhamController.deleteSanPhamAo);
 
 // 5. Routes CRUD cơ bản với tham số - ưu tiên thấp

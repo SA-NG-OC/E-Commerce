@@ -1,223 +1,323 @@
-let isLoading = false;
 
-// Toggle password visibility
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const icon = document.getElementById(inputId + '-icon');
+// Dữ liệu địa chỉ Việt Nam
+const vietnamLocations = {
+    "Hồ Chí Minh": ["Quận 1", "Quận 2", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 9", "Quận 10", "Quận 11", "Quận 12", "Quận Bình Tân", "Quận Bình Thạnh", "Quận Gò Vấp", "Quận Phú Nhuận", "Quận Tân Bình", "Quận Tân Phú", "Quận Thủ Đức", "Huyện Bình Chánh", "Huyện Cần Giờ", "Huyện Củ Chi", "Huyện Hóc Môn", "Huyện Nhà Bè"],
+    "Hà Nội": ["Quận Ba Đình", "Quận Hoàn Kiếm", "Quận Tây Hồ", "Quận Long Biên", "Quận Cầu Giấy", "Quận Đống Đa", "Quận Hai Bà Trưng", "Quận Hoàng Mai", "Quận Thanh Xuân", "Quận Nam Từ Liêm", "Quận Bắc Từ Liêm", "Quận Hà Đông", "Thị xã Sơn Tây", "Huyện Ba Vì", "Huyện Chương Mỹ", "Huyện Dan Phượng", "Huyện Đông Anh", "Huyện Gia Lâm", "Huyện Hoài Đức", "Huyện Mê Linh", "Huyện Mỹ Đức", "Huyện Phú Xuyên", "Huyện Phúc Thọ", "Huyện Quốc Oai", "Huyện Sóc Sơn", "Huyện Thạch Thất", "Huyện Thanh Oai", "Huyện Thanh Trì", "Huyện Thường Tín", "Huyện Ứng Hòa"],
+    "Đà Nẵng": ["Quận Hải Châu", "Quận Thanh Khê", "Quận Sơn Trà", "Quận Ngũ Hành Sơn", "Quận Liên Chiểu", "Quận Cẩm Lệ", "Huyện Hòa Vang", "Huyện Hoàng Sa"],
+    "Cần Thơ": ["Quận Ninh Kiều", "Quận Ô Môn", "Quận Bình Thuỷ", "Quận Cái Răng", "Quận Thốt Nốt", "Huyện Vĩnh Thạnh", "Huyện Cờ Đỏ", "Huyện Phong Điền", "Huyện Thới Lai"],
+    "Hải Phòng": ["Quận Hồng Bàng", "Quận Ngô Quyền", "Quận Lê Chân", "Quận Hải An", "Quận Kiến An", "Quận Đồ Sơn", "Quận Dương Kinh", "Huyện Thuỷ Nguyên", "Huyện An Dương", "Huyện An Lão", "Huyện Kiến Thuỵ", "Huyện Tiên Lãng", "Huyện Vĩnh Bảo", "Huyện Cát Hải", "Huyện Bạch Long Vĩ"],
+    "An Giang": ["Thành phố Long Xuyên", "Thành phố Châu Đốc", "Huyện An Phú", "Huyện Tân Châu", "Huyện Phú Tân", "Huyện Châu Phú", "Huyện Tịnh Biên", "Huyện Tri Tôn", "Huyện Châu Thành", "Huyện Chợ Mới", "Huyện Thoại Sơn"],
+    "Bà Rịa - Vũng Tàu": ["Thành phố Vũng Tàu", "Thành phố Bà Rịa", "Thị xã Phú Mỹ", "Huyện Côn Đảo", "Huyện Tân Thành", "Huyện Châu Đức", "Huyện Xuyên Mộc", "Huyện Long Điền"],
+    "Bạc Liêu": ["Thành phố Bạc Liêu", "Huyện Hồng Dân", "Huyện Phước Long", "Huyện Vĩnh Lợi", "Huyện Giá Rai", "Huyện Đông Hải", "Huyện Hoà Bình"]
+};
 
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
-    } else {
-        input.type = 'password';
-        icon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
-    }
-}
-
-// Clear error when user starts typing
-function clearError(fieldId) {
-    const errorElement = document.getElementById(fieldId + '-error');
-    const inputElement = document.getElementById(fieldId);
-
-    if (errorElement) {
-        errorElement.style.display = 'none';
-    }
-
-    if (inputElement) {
-        inputElement.classList.remove('error');
-    }
-}
-
-// Add event listeners to clear errors
-// Sự kiện click để chuyển sang màn đăng nhập
+// Khởi tạo trang
 document.addEventListener('DOMContentLoaded', function () {
-    // Clear error khi gõ (code cũ của bạn)
-    const inputs = ['email', 'ho', 'ten', 'mat_khau', 'confirmPassword', 'so_dien_thoai'];
-    inputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.addEventListener('input', () => clearError(inputId));
-        }
-    });
-
-    // Chuyển sang màn DangNhap.html
-    const goToLogin = document.getElementById('goToLogin');
-    if (goToLogin) {
-        goToLogin.addEventListener('click', function (e) {
-            e.preventDefault(); // Không load lại trang theo link #
-            window.location.href = 'DangNhap.html';
-        });
-    }
+    initializeLocationSelects();
+    setupFormValidation();
+    setupFormSubmission();
 });
 
+// Khởi tạo dropdown địa chỉ
+function initializeLocationSelects() {
+    const provinceSelect = document.getElementById('province');
+    const districtSelect = document.getElementById('district');
 
+    // Thêm các tỉnh/thành phố
+    Object.keys(vietnamLocations).forEach(province => {
+        const option = document.createElement('option');
+        option.value = province;
+        option.textContent = province;
+        provinceSelect.appendChild(option);
+    });
 
-// Show error message
-function showError(fieldId, message) {
-    const errorElement = document.getElementById(fieldId + '-error');
-    const inputElement = document.getElementById(fieldId);
+    // Xử lý khi chọn tỉnh
+    provinceSelect.addEventListener('change', function () {
+        districtSelect.innerHTML = '<option value="">Chọn quận/huyện/thị xã</option>';
 
-    if (errorElement) {
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
+        if (this.value && vietnamLocations[this.value]) {
+            vietnamLocations[this.value].forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+    });
+}
+
+// Ngăn chặn nhập dấu phẩy
+function preventComma(input) {
+    input.value = input.value.replace(/,/g, '');
+}
+
+// Thiết lập validation form
+function setupFormValidation() {
+    const form = document.getElementById('registerForm');
+    const inputs = form.querySelectorAll('input[required]');
+
+    inputs.forEach(input => {
+        input.addEventListener('blur', function () {
+            validateField(this);
+        });
+
+        input.addEventListener('input', function () {
+            if (this.id === 'password') {
+                checkPasswordStrength(this.value);
+            }
+            if (this.id === 'confirmPassword') {
+                validatePasswordMatch();
+            }
+        });
+    });
+
+    // Validation email real-time
+    document.getElementById('email').addEventListener('input', function () {
+        validateEmail(this.value);
+    });
+
+    // Validation phone real-time
+    document.getElementById('soDienThoai').addEventListener('input', function () {
+        validatePhone(this.value);
+    });
+}
+
+// Kiểm tra độ mạnh mật khẩu
+function checkPasswordStrength(password) {
+    const strengthElement = document.getElementById('passwordStrength');
+    let strength = '';
+    let className = '';
+
+    if (password.length < 6) {
+        strength = 'Mật khẩu quá ngắn (tối thiểu 6 ký tự)';
+        className = 'weak';
+    } else if (password.length < 8) {
+        strength = 'Độ mạnh: Yếu';
+        className = 'weak';
+    } else if (password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)) {
+        strength = 'Độ mạnh: Mạnh';
+        className = 'strong';
+    } else {
+        strength = 'Độ mạnh: Trung bình';
+        className = 'medium';
     }
 
-    if (inputElement) {
-        inputElement.classList.add('error');
+    strengthElement.textContent = strength;
+    strengthElement.className = `password-strength ${className}`;
+}
+
+// Validate individual field
+function validateField(field) {
+    const validationElement = document.getElementById(field.id + 'Validation');
+    if (!validationElement) return;
+
+    if (field.validity.valueMissing) {
+        showValidation(validationElement, 'Trường này không được để trống', 'error');
+        return false;
+    } else {
+        showValidation(validationElement, '', 'success');
+        return true;
     }
 }
 
-// Show message
-function showMessage(message, type) {
-    const messageElement = document.getElementById('message');
-    messageElement.textContent = message;
-    messageElement.className = `message ${type}`;
-    messageElement.style.display = 'block';
+// Validate email
+function validateEmail(email) {
+    const validationElement = document.getElementById('emailValidation');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email && !emailRegex.test(email)) {
+        showValidation(validationElement, 'Email không hợp lệ', 'error');
+        return false;
+    } else if (email) {
+        showValidation(validationElement, 'Email hợp lệ', 'success');
+        return true;
+    }
+    return true;
 }
 
-// Validate form
+// Validate phone
+function validatePhone(phone) {
+    const validationElement = document.getElementById('phoneValidation');
+    const phoneRegex = /^[0-9]{10,11}$/;
+
+    if (phone && !phoneRegex.test(phone)) {
+        showValidation(validationElement, 'Số điện thoại không hợp lệ (10-11 số)', 'error');
+        return false;
+    } else if (phone) {
+        showValidation(validationElement, 'Số điện thoại hợp lệ', 'success');
+        return true;
+    }
+    return true;
+}
+
+// Validate password match
+function validatePasswordMatch() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const validationElement = document.getElementById('confirmPasswordValidation');
+
+    if (confirmPassword && password !== confirmPassword) {
+        showValidation(validationElement, 'Mật khẩu xác nhận không khớp', 'error');
+        return false;
+    } else if (confirmPassword && password === confirmPassword) {
+        showValidation(validationElement, 'Mật khẩu khớp', 'success');
+        return true;
+    }
+    return true;
+}
+
+// Show validation message
+function showValidation(element, message, type) {
+    element.textContent = message;
+    element.className = `form-validation ${type}`;
+}
+
+// Thiết lập xử lý form submission
+function setupFormSubmission() {
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        await handleRegistration();
+    });
+}
+
+// Xử lý đăng ký
+async function handleRegistration() {
+    // Validate toàn bộ form trước khi submit
+    if (!validateForm()) {
+        showAlert('Vui lòng kiểm tra lại thông tin đã nhập', 'error');
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    try {
+        // Hiển thị loading
+        submitBtn.disabled = true;
+        loadingIndicator.classList.add('show');
+
+        const formData = new FormData(document.getElementById('registerForm'));
+        const data = Object.fromEntries(formData.entries());
+
+        // Xây dựng địa chỉ đầy đủ
+        const detailAddress = document.getElementById('detailAddress').value.trim();
+        const district = document.getElementById('district').value;
+        const province = document.getElementById('province').value;
+
+        let fullAddress = '';
+        if (detailAddress || district || province) {
+            const addressParts = [detailAddress, district, province].filter(part => part);
+            fullAddress = addressParts.join(', ');
+        }
+
+        // Chuẩn bị dữ liệu đăng ký
+        const registerData = {
+            email: data.email,
+            mat_khau: data.password,
+            ho: data.ho,
+            ten: data.ten,
+            so_dien_thoai: data.so_dien_thoai || '',
+            dia_chi: fullAddress,
+            ngay_sinh: data.ngay_sinh || null,
+            role: 'USER' // Mặc định là USER như yêu cầu
+        };
+
+        // Gửi request đăng ký
+        const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registerData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showAlert('Đăng ký thành công! Chuyển hướng đến trang đăng nhập...', 'success');
+
+            // Reset form
+            document.getElementById('registerForm').reset();
+            document.getElementById('district').innerHTML = '<option value="">Chọn quận/huyện/thị xã</option>';
+
+            // Chuyển hướng sau 0.5 giây
+            setTimeout(() => {
+                window.location.href = 'DangNhap.html';
+            }, 500);
+        } else {
+            showAlert(result.message || 'Có lỗi xảy ra khi đăng ký!', 'error');
+        }
+
+    } catch (error) {
+        console.error('Lỗi đăng ký:', error);
+        showAlert('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+    } finally {
+        // Ẩn loading
+        submitBtn.disabled = false;
+        loadingIndicator.classList.remove('show');
+    }
+}
+
+// Validate toàn bộ form
 function validateForm() {
     let isValid = true;
 
-    // Get form values
-    const email = document.getElementById('email').value.trim();
-    const mat_khau = document.getElementById('mat_khau').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const ho = document.getElementById('ho').value.trim();
-    const ten = document.getElementById('ten').value.trim();
-    const so_dien_thoai = document.getElementById('so_dien_thoai').value.trim();
+    // Kiểm tra các trường bắt buộc
+    const requiredFields = ['ho', 'ten', 'email', 'password', 'confirmPassword'];
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-        showError('email', 'Email là bắt buộc');
-        isValid = false;
-    } else if (!emailRegex.test(email)) {
-        showError('email', 'Email không hợp lệ');
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            validateField(field);
+            isValid = false;
+        }
+    });
+
+    // Kiểm tra email
+    const email = document.getElementById('email').value;
+    if (email && !validateEmail(email)) {
         isValid = false;
     }
 
-    // Password validation
-    if (!mat_khau) {
-        showError('mat_khau', 'Mật khẩu là bắt buộc');
-        isValid = false;
-    } else if (mat_khau.length < 6) {
-        showError('mat_khau', 'Mật khẩu phải có ít nhất 6 ký tự');
+    // Kiểm tra mật khẩu
+    const password = document.getElementById('password').value;
+    if (password.length < 6) {
         isValid = false;
     }
 
-    // Confirm password validation
-    if (mat_khau !== confirmPassword) {
-        showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
+    // Kiểm tra mật khẩu khớp
+    if (!validatePasswordMatch()) {
         isValid = false;
     }
 
-    // Name validation
-    if (!ho) {
-        showError('ho', 'Họ là bắt buộc');
-        isValid = false;
-    }
-    if (!ten) {
-        showError('ten', 'Tên là bắt buộc');
-        isValid = false;
-    }
-
-    // Phone validation
-    const phoneRegex = /^[0-9]{10,11}$/;
-    if (so_dien_thoai && !phoneRegex.test(so_dien_thoai)) {
-        showError('so_dien_thoai', 'Số điện thoại không hợp lệ (10-11 số)');
+    // Kiểm tra số điện thoại nếu có
+    const phone = document.getElementById('soDienThoai').value;
+    if (phone && !validatePhone(phone)) {
         isValid = false;
     }
 
     return isValid;
 }
 
-// Handle form submission
-async function handleSubmit() {
-    if (isLoading || !validateForm()) {
-        return;
-    }
+// Hiển thị thông báo
+function showAlert(message, type) {
+    const alertId = type === 'success' ? 'successAlert' : 'errorAlert';
+    const alertElement = document.getElementById(alertId);
 
-    setLoading(true);
-    document.getElementById('message').style.display = 'none';
+    // Ẩn alert khác
+    document.getElementById('successAlert').style.display = 'none';
+    document.getElementById('errorAlert').style.display = 'none';
 
-    try {
-        const formData = {
-            email: document.getElementById('email').value.trim(),
-            mat_khau: document.getElementById('mat_khau').value,
-            ho: document.getElementById('ho').value.trim(),
-            ten: document.getElementById('ten').value.trim(),
-            so_dien_thoai: document.getElementById('so_dien_thoai').value.trim(),
-            dia_chi: document.getElementById('dia_chi').value.trim(),
-            ngay_sinh: document.getElementById('ngay_sinh').value,
-            role: 'USER' // Mặc định là USER cho đăng ký
-        };
+    alertElement.textContent = message;
+    alertElement.style.display = 'block';
 
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        });
+    // Scroll đến alert
+    alertElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        const result = await response.json();
-
-        if (response.ok) {
-            showMessage('Đăng ký tài khoản thành công!', 'success');
-            // Reset form
-            resetForm();
-            // Chuyển sang màn đăng nhập sau 1-2 giây
-            setTimeout(() => {
-                window.location.href = 'DangNhap.html';
-            }, 1500); // 1.5 giây để người dùng kịp thấy thông báo
-        }
-        else {
-            showMessage(result.message || 'Có lỗi xảy ra khi đăng ký', 'error');
-        }
-    } catch (error) {
-        console.error('Lỗi khi đăng ký:', error);
-        showMessage('Không thể kết nối đến máy chủ', 'error');
-    } finally {
-        setLoading(false);
+    // Tự động ẩn sau 5 giây (trừ success message)
+    if (type !== 'success') {
+        setTimeout(() => {
+            alertElement.style.display = 'none';
+        }, 5000);
     }
 }
-
-// Set loading state
-function setLoading(loading) {
-    isLoading = loading;
-    const submitBtn = document.getElementById('submit-btn');
-    const btnText = document.getElementById('btn-text');
-
-    if (loading) {
-        submitBtn.disabled = true;
-        btnText.innerHTML = '<div class="spinner"></div>Đang xử lý...';
-    } else {
-        submitBtn.disabled = false;
-        btnText.textContent = 'Đăng ký tài khoản';
-    }
-}
-
-// Reset form
-function resetForm() {
-    const inputs = ['email', 'mat_khau', 'confirmPassword', 'ho', 'ten', 'so_dien_thoai', 'dia_chi', 'ngay_sinh'];
-    inputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.value = '';
-            input.classList.remove('error');
-        }
-
-        const errorElement = document.getElementById(inputId + '-error');
-        if (errorElement) {
-            errorElement.style.display = 'none';
-        }
-    });
-}
-
-// Allow Enter key to submit
-document.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter' && !isLoading) {
-        handleSubmit();
-    }
-});

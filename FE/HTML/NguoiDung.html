@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Cá Nhân</title>
+    <link rel="stylesheet" href="/FE/CSS/NguoiDung.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="alert success" id="successAlert">
+            Cập nhật thông tin thành công!
+        </div>
+
+        <div class="alert error" id="errorAlert">
+            Có lỗi xảy ra. Vui lòng thử lại!
+        </div>
+
+        <div class="profile-section">
+            <div class="avatar-section">
+                <div class="avatar" id="userAvatar">
+                    <!-- Sẽ hiển thị chữ cái đầu của tên -->
+                </div>
+                <h2 id="displayName"></h2>
+                <p id="displayRole"></p>
+            </div>
+
+            <!-- Chế độ xem -->
+            <div class="view-mode" id="viewMode">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Họ:</label>
+                        <input type="text" id="displayHo" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên:</label>
+                        <input type="text" id="displayTen" disabled>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="displayEmail" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại:</label>
+                        <input type="tel" id="displayPhone" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh:</label>
+                    <input type="date" id="displayBirthday" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ:</label>
+                    <textarea id="displayAddress" rows="3" disabled></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="toggleEditMode()">
+                        Chỉnh sửa thông tin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chế độ chỉnh sửa -->
+            <div class="edit-mode" id="editMode">
+                <form id="profileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editHo">Họ <span style="color: red;">*</span>:</label>
+                            <input type="text" id="editHo" name="ho" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTen">Tên <span style="color: red;">*</span>:</label>
+                            <input type="text" id="editTen" name="ten" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEmail">Email <span style="color: red;">*</span>:</label>
+                            <input type="email" id="editEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Số điện thoại:</label>
+                            <input type="tel" id="editPhone" name="so_dien_thoai">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBirthday">Ngày sinh:</label>
+                        <input type="date" id="editBirthday" name="ngay_sinh">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Địa chỉ:</label>
+                        <div class="address-group">
+                            <select id="editProvince" name="province">
+                                <option value="">Chọn tỉnh/thành phố</option>
+                            </select>
+                            <select id="editDistrict" name="district">
+                                <option value="">Chọn quận/huyện/thị xã</option>
+                            </select>
+                        </div>
+                        <input type="text" id="editDetailAddress" name="detail_address"
+                            placeholder="Số nhà, tên đường..." oninput="preventComma(this)">
+                    </div>
+
+                    <div class="password-change">
+                        <h3>Đổi mật khẩu (Tùy chọn)</h3>
+                        <div class="form-group">
+                            <label for="oldPassword">Mật khẩu cũ:</label>
+                            <input type="password" id="oldPassword" name="old_password">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newPassword">Mật khẩu mới:</label>
+                                <input type="password" id="newPassword" name="new_password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Xác nhận mật khẩu mới:</label>
+                                <input type="password" id="confirmPassword" name="confirm_password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">
+                            Lưu thay đổi
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/FE/ts/nguoiDung.js"></script>
+</body>
+
+</html>

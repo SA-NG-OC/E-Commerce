@@ -1,4 +1,25 @@
 /* Product-related classes - kept as requested */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.navigating {
+    pointer-events: none;
+}
+
+body.navigating main,
+body.navigating .main-content {
+    opacity: 0.5;
+}
+
 .product-card {
     background: white;
     border-radius: 15px;

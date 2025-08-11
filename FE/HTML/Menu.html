@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Navigation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/FE/CSS/Menu.css">
+</head>
+
+<body>
+    <header class="header">
+        <!-- Left Section -->
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="text" class="search-input" placeholder="Tìm kiếm..." />
+            </div>
+        </div>
+
+        <!-- Center Section - Navigation -->
+        <nav class="nav-bar" id="navMenu">
+            <div class="nav-container">
+                <a href="#" class="nav-item" data-page="TrangChu.html">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Trang chủ</span>
+                </a>
+
+                <a href="#" class="nav-item" data-page="DonHang.html">
+                    <i class="fas fa-box-open nav-icon"></i>
+                    <span class="nav-text">Đơn hàng</span>
+                </a>
+
+                <a href="#" class="nav-item" data-page="GioHang.html">
+                    <i class="fas fa-shopping-cart nav-icon"></i>
+                    <span class="nav-text">Giỏ hàng</span>
+                </a>
+
+                <a href="#" class="nav-item" data-page="DanhMuc.html">
+                    <i class="fas fa-tags nav-icon"></i>
+                    <span class="nav-text">Danh mục</span>
+                </a>
+
+                <a href="#" class="nav-item" data-page="NguoiDung.html">
+                    <i class="fas fa-users nav-icon"></i>
+                    <span class="nav-text">Người dùng</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Right Section -->
+        <div class="header-right">
+            <div class="profile-icon">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+
+        <!-- Mobile menu toggle -->
+        <button class="mobile-toggle" id="mobileToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <div class="content-container">
+        <div class="welcome-message" id="welcomeMessage">
+            <div class="welcome-icon">🛠️</div>
+            <h1>Chào Mừng Đến Với Hệ Thống Quản Lý</h1>
+            <p>Chọn một mục từ menu phía trên để bắt đầu làm việc<br>
+                Hệ thống quản lý E-commerce hiện đại và thân thiện</p>
+        </div>
+
+        <iframe id="contentFrame" src="" frameborder="0"></iframe>
+    </div>
+
+    <script src="/FE/ts/menu.js"></script>
+</body>
+
+</html>

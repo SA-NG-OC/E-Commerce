@@ -37,7 +37,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 
         if (res.ok) {
             localStorage.setItem('usercontext', JSON.stringify(data.user));
-            window.location.href = '/FE/HTML/TrangChu.html';
+            window.location.href = '/FE/HTML/Menu.html';
         } else {
             if (errorDiv) errorDiv.textContent = data.message || 'Đăng nhập thất bại';
         }

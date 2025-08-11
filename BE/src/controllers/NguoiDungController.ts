@@ -3,6 +3,7 @@ import { NguoiDungService } from '../services/NguoiDungService';
 import { NguoiDungModel } from '../models/NguoiDungModel';
 
 export class NguoiDungController {
+    // Sử dụng http://localhost:3000/api/nguoi-dung/login
     static async login(req: Request, res: Response) {
         const { email, password } = req.body;
         if (!email || !password) return res.status(400).json({ message: 'Thiếu email hoặc mật khẩu' });

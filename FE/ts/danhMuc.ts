@@ -62,7 +62,7 @@ function getDefaultProductImage(): string {
     `)}`;
 }
 
-function showError(message: string): void {
+function showError3(message: string): void {
     console.error(message);
     alert(message); // Có thể thay bằng toast notification
 }
@@ -194,7 +194,7 @@ function initializeElements(): void {
 }
 
 // Event handlers
-function setupEventListeners(): void {
+function setupEventListeners3(): void {
     if (comboboxInput) {
         comboboxInput.addEventListener('focus', showDropdown);
         comboboxInput.addEventListener('click', showDropdown);
@@ -306,7 +306,7 @@ async function renderCategories(): Promise<void> {
         showLoading(false);
     } catch (error) {
         console.error('Lỗi khi render danh mục:', error);
-        showError('Không thể hiển thị danh mục');
+        showError3('Không thể hiển thị danh mục');
         showLoading(false);
     }
 }
@@ -403,7 +403,7 @@ async function showProducts(categoryId: string): Promise<void> {
         const selectedCategory = danhMucs.find(dm => dm._id === categoryId);
 
         if (!selectedCategory) {
-            showError('Không tìm thấy danh mục');
+            showError3('Không tìm thấy danh mục');
             return;
         }
 
@@ -423,7 +423,7 @@ async function showProducts(categoryId: string): Promise<void> {
         await renderProducts2();
     } catch (error) {
         console.error('Lỗi khi hiển thị sản phẩm:', error);
-        showError('Không thể tải sản phẩm. Vui lòng thử lại sau.');
+        showError3('Không thể tải sản phẩm. Vui lòng thử lại sau.');
     }
 }
 
@@ -475,7 +475,7 @@ async function initDanhMuc(): Promise<void> {
 
     try {
         initializeElements();
-        setupEventListeners();
+        setupEventListeners3();
 
         showLoading(true);
 
@@ -491,7 +491,7 @@ async function initDanhMuc(): Promise<void> {
 
     } catch (error) {
         console.error('Lỗi khi khởi tạo danh mục:', error);
-        showError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+        showError3('Không thể tải dữ liệu. Vui lòng thử lại sau.');
         showLoading(false);
     }
 }

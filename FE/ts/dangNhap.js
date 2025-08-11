@@ -78,7 +78,7 @@ if (showPasswordCheckbox && passwordInput) {
                     data = _b.sent();
                     if (res.ok) {
                         localStorage.setItem('usercontext', JSON.stringify(data.user));
-                        window.location.href = '/FE/HTML/TrangChu.html';
+                        window.location.href = '/FE/HTML/Menu.html';
                     }
                     else {
                         if (errorDiv)
