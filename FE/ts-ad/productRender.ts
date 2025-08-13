@@ -1,4 +1,4 @@
-//Product Render Script
+//Product Render Script with Search Functionality
 interface HinhAnhSPModel {
     id: string;
     san_pham_id: string;
@@ -13,6 +13,9 @@ interface SanPham {
     thuong_hieu?: string | null;
     danh_sach_hinh_anh: HinhAnhSPModel[];
 }
+
+// Biến global để lưu trữ danh sách sản phẩm gốc
+let originalProducts: SanPham[] = [];
 
 // Thêm function format giá
 function formatPriceAd2(price: number): string {
@@ -48,6 +51,115 @@ function createProductCardAd(product: SanPham): string {
     `;
 }
 
+// Hàm tìm kiếm sản phẩm theo tên
+function searchProducts(query: string): SanPham[] {
+    if (!query || query.trim() === '') {
+        return originalProducts;
+    }
+
+    const searchTerm = query.toLowerCase().trim();
+    return originalProducts.filter(product =>
+        product.ten_san_pham.toLowerCase().includes(searchTerm) ||
+        (product.danh_muc && product.danh_muc.toLowerCase().includes(searchTerm)) ||
+        (product.thuong_hieu && product.thuong_hieu.toLowerCase().includes(searchTerm))
+    );
+}
+
+// Hàm hiển thị kết quả tìm kiếm
+function displaySearchResults(products: SanPham[]) {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+
+    if (products.length === 0) {
+        grid.innerHTML = '<div class="placeholder-text">Không tìm thấy sản phẩm nào phù hợp.</div>';
+    } else {
+        grid.innerHTML = products.map(createProductCardAd).join('');
+
+        // Gán sự kiện click cho từng card
+        grid.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const id = card.getAttribute('data-id');
+                window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?id=${id}`;
+            });
+        });
+    }
+
+    // Thêm fade-in effect
+    grid.style.opacity = '0';
+    grid.style.transition = 'opacity 0.3s ease-in-out';
+    setTimeout(() => {
+        grid.style.opacity = '1';
+    }, 50);
+}
+
+// Hàm xử lý sự kiện tìm kiếm
+function handleSearch2() {
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    if (!searchInput) return;
+
+    const query = searchInput.value;
+    const filteredProducts = searchProducts(query);
+    displaySearchResults(filteredProducts);
+
+    // Thêm thông tin số lượng kết quả tìm kiếm (tùy chọn)
+    const resultInfo = document.getElementById('searchResultInfo');
+    if (resultInfo) {
+        if (query.trim() === '') {
+            resultInfo.textContent = `Hiển thị tất cả ${originalProducts.length} sản phẩm`;
+        } else {
+            resultInfo.textContent = `Tìm thấy ${filteredProducts.length} sản phẩm cho "${query}"`;
+        }
+    }
+}
+
+// Hàm khởi tạo search functionality
+function initSearchFunctionality() {
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    const searchBtn = document.getElementById('searchBtn') as HTMLButtonElement;
+
+    if (searchInput) {
+        // Tìm kiếm khi gõ (debounce)
+        let searchTimeout: NodeJS.Timeout;
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                handleSearch2();
+            }, 300); // Delay 300ms để tránh tìm kiếm quá nhiều
+        });
+
+        // Tìm kiếm khi nhấn Enter
+        searchInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearch2();
+            }
+        });
+
+        // Xóa tìm kiếm khi focus và input rỗng
+        searchInput.addEventListener('focus', function () {
+            if (this.value.trim() === '') {
+                displaySearchResults(originalProducts);
+            }
+        });
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            handleSearch2();
+        });
+    }
+}
+
+// Hàm reset về hiển thị tất cả sản phẩm
+function resetSearch() {
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    displaySearchResults(originalProducts);
+}
+
 async function renderProductsAd() {
     const loadingContainer = document.getElementById('loadingContainer');
     const grid = document.getElementById('productGrid');
@@ -78,6 +190,9 @@ async function renderProductsAd() {
             }))
         }));
 
+        // Lưu danh sách sản phẩm gốc vào biến global
+        originalProducts = products;
+
         // Ẩn loading
         if (loadingContainer) {
             loadingContainer.style.display = 'none';
@@ -88,7 +203,6 @@ async function renderProductsAd() {
         grid.style.display = 'grid';
 
         // Gán sự kiện click cho từng card
-        // Trong productRender.js hoặc nơi bạn render product cards
         grid.querySelectorAll('.product-card').forEach(card => {
             card.addEventListener('click', function () {
                 const id = card.getAttribute('data-id');
@@ -102,6 +216,9 @@ async function renderProductsAd() {
             grid.style.transition = 'opacity 0.5s ease-in-out';
             grid.style.opacity = '1';
         }, 100);
+
+        // Khởi tạo search functionality sau khi render xong
+        initSearchFunctionality();
 
     } catch (error) {
         console.error('Error loading products:', error);
@@ -124,6 +241,9 @@ function initTrangChuAd() {
 // Expose functions globally để router có thể gọi
 (window as any).renderProductsAd = renderProductsAd;
 (window as any).initTrangChuAd = initTrangChuAd;
+(window as any).searchProducts = searchProducts;
+(window as any).handleSearch2 = handleSearch2;
+(window as any).resetSearch = resetSearch;
 
 // Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
 document.addEventListener('DOMContentLoaded', initTrangChuAd);
@@ -135,15 +255,3 @@ if (document.readyState === 'loading') {
     // DOM đã ready, chạy luôn
     initTrangChuAd();
 }
-
-//Phần menu
-/*
-fetch('/FE/HTML/NavBar.html')
-    .then(res => res.text())
-    .then(html => {
-        const navbar = document.getElementById('navbar');
-        if (navbar) {
-            navbar.innerHTML = html;
-        }
-    });
-*/

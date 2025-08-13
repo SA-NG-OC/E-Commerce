@@ -7,12 +7,58 @@ class AdminNavigation {
         this.navMenu = document.getElementById('navMenu');
         this.currentPage = null;
 
+        // Search elements
+        this.searchInput = document.querySelector('.search-input');
+        this.searchBtn = document.querySelector('.search-btn');
+        this.searchResults = null;
+        this.searchTimeout = null;
+        this.allProducts = []; // Cache for products
+
         this.init();
     }
 
     init() {
         this.attachEventListeners();
         this.loadSavedPage();
+        this.createSearchResultsContainer();
+        this.loadAllProducts(); // Load products for search
+    }
+
+    createSearchResultsContainer() {
+        // Create search results dropdown
+        const searchContainer = document.querySelector('.search-container');
+        this.searchResults = document.createElement('div');
+        this.searchResults.className = 'search-results';
+        this.searchResults.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        searchContainer.appendChild(this.searchResults);
+        searchContainer.style.position = 'relative';
+    }
+
+    async loadAllProducts() {
+        try {
+            const response = await fetch('http://localhost:3000/api/san-pham/');
+            if (response.ok) {
+                this.allProducts = await response.json();
+                console.log('✅ Đã tải danh sách sản phẩm cho tìm kiếm');
+            } else {
+                console.error('❌ Không thể tải danh sách sản phẩm');
+            }
+        } catch (error) {
+            console.error('❌ Lỗi khi tải sản phẩm:', error);
+        }
     }
 
     attachEventListeners() {
@@ -31,22 +77,43 @@ class AdminNavigation {
             if (!this.navMenu.contains(e.target) && !this.mobileToggle.contains(e.target)) {
                 this.navMenu.classList.remove('active');
             }
+
+            // Close search results when clicking outside
+            if (!e.target.closest('.search-container')) {
+                this.hideSearchResults();
+            }
         });
 
         // Keyboard events
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.navMenu.classList.remove('active');
-                this.showWelcome();
+                this.hideSearchResults();
+                if (!this.currentPage) {
+                    this.showWelcome();
+                }
             }
         });
 
-        // Search functionality
-        const searchInput = document.querySelector('.search-input');
-        const searchBtn = document.querySelector('.search-btn');
+        // Enhanced search functionality
+        this.searchBtn.addEventListener('click', () => this.performSearch());
 
-        searchBtn.addEventListener('click', () => this.performSearch());
-        searchInput.addEventListener('keypress', (e) => {
+        // Real-time search with debounce
+        this.searchInput.addEventListener('input', (e) => {
+            clearTimeout(this.searchTimeout);
+            const query = e.target.value.trim();
+
+            if (query.length === 0) {
+                this.hideSearchResults();
+                return;
+            }
+
+            this.searchTimeout = setTimeout(() => {
+                this.performRealTimeSearch(query);
+            }, 300); // Debounce 300ms
+        });
+
+        this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.performSearch();
             }
@@ -60,6 +127,133 @@ class AdminNavigation {
         });
     }
 
+    performRealTimeSearch(query) {
+        if (!this.allProducts || this.allProducts.length === 0) {
+            this.showSearchMessage('Đang tải dữ liệu sản phẩm...');
+            return;
+        }
+
+        const results = this.searchProducts(query);
+        this.displaySearchResults(results, query);
+    }
+
+    searchProducts(query) {
+        const searchTerm = query.toLowerCase().trim();
+
+        return this.allProducts.filter(product => {
+            const tenSanPham = product._ten_san_pham?.toLowerCase() || '';
+            const maSanPham = product._ma_san_pham?.toLowerCase() || '';
+            const danhMuc = product._danh_muc?.toLowerCase() || '';
+            const thuongHieu = product._thuong_hieu?.toLowerCase() || '';
+
+            return tenSanPham.includes(searchTerm) ||
+                maSanPham.includes(searchTerm) ||
+                danhMuc.includes(searchTerm) ||
+                thuongHieu.includes(searchTerm);
+        }).slice(0, 8); // Limit to 8 results
+    }
+
+    displaySearchResults(results, query) {
+        if (results.length === 0) {
+            this.showSearchMessage(`Không tìm thấy sản phẩm nào cho "${query}"`);
+            return;
+        }
+
+        let html = `<div style="padding: 8px 12px; font-weight: bold; border-bottom: 1px solid #eee; color: #666;">
+            Tìm thấy ${results.length} sản phẩm
+        </div>`;
+
+        results.forEach(product => {
+            const image = product._danh_sach_hinh_anh && product._danh_sach_hinh_anh.length > 0
+                ? product._danh_sach_hinh_anh[0]._duong_dan_hinh_anh
+                : '/images/no-image.jpg';
+
+            const price = new Intl.NumberFormat('vi-VN').format(product._gia_ban);
+
+            html += `
+                <div class="search-result-item" data-product-id="${product._id}" style="
+                    display: flex;
+                    align-items: center;
+                    padding: 12px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #f0f0f0;
+                    transition: background-color 0.2s;
+                " onmouseover="this.style.backgroundColor='#f8f9fa'" 
+                   onmouseout="this.style.backgroundColor='white'">
+                    <img src="${image}" alt="${product._ten_san_pham}" style="
+                        width: 50px;
+                        height: 50px;
+                        object-fit: cover;
+                        border-radius: 6px;
+                        margin-right: 12px;
+                    " onerror="this.src='/images/no-image.jpg'">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; color: #333; margin-bottom: 4px;">
+                            ${product._ten_san_pham}
+                        </div>
+                        <div style="font-size: 0.9em; color: #666; margin-bottom: 2px;">
+                            ${product._thuong_hieu} • ${product._danh_muc}
+                        </div>
+                        <div style="font-weight: bold; color: #e74c3c;">
+                            ${price} ₫
+                        </div>
+                    </div>
+                    <i class="fas fa-arrow-right" style="color: #ccc; margin-left: 8px;"></i>
+                </div>
+            `;
+        });
+
+        this.searchResults.innerHTML = html;
+        this.searchResults.style.display = 'block';
+
+        // Add click handlers to search results
+        this.searchResults.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const productId = item.getAttribute('data-product-id');
+                this.navigateToProductDetail(productId);
+                this.hideSearchResults();
+                this.searchInput.value = '';
+            });
+        });
+    }
+
+    showSearchMessage(message) {
+        this.searchResults.innerHTML = `
+            <div style="padding: 20px; text-align: center; color: #666;">
+                <i class="fas fa-search" style="font-size: 2em; margin-bottom: 8px; opacity: 0.5;"></i>
+                <div>${message}</div>
+            </div>
+        `;
+        this.searchResults.style.display = 'block';
+    }
+
+    hideSearchResults() {
+        if (this.searchResults) {
+            this.searchResults.style.display = 'none';
+        }
+    }
+
+    navigateToProductDetail(productId) {
+        // Navigate to product detail page with ID parameter
+        const detailPage = `chiTietSanPham.html?id=${productId}`;
+
+        // Update active state (remove active from all menu items since this is a search result)
+        this.menuLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Load the product detail page
+        this.loadPage(detailPage);
+
+        // Save current page
+        this.saveCurrentPage(detailPage);
+
+        // Show success feedback
+        this.showSuccessFeedback('Chi tiết sản phẩm');
+
+        console.log(`🔍 Navigating to product detail: ${productId}`);
+    }
+
     handleMenuClick(event) {
         event.preventDefault();
 
@@ -68,8 +262,9 @@ class AdminNavigation {
 
         if (!pageName) return;
 
-        // Close mobile menu
+        // Close mobile menu and hide search results
         this.navMenu.classList.remove('active');
+        this.hideSearchResults();
 
         // Update active state
         this.updateActiveState(clickedLink);
@@ -187,6 +382,11 @@ class AdminNavigation {
                     this.updateActiveState(savedLink);
                     this.loadPage(savedPage);
                 }, 100);
+            } else if (savedPage.includes('chiTietSanPham.html')) {
+                // Handle product detail pages
+                setTimeout(() => {
+                    this.loadPage(savedPage);
+                }, 100);
             }
         }
     }
@@ -256,15 +456,17 @@ class AdminNavigation {
 
         // Clear saved page
         sessionStorage.removeItem('adminCurrentPage');
+        this.currentPage = null;
     }
 
     performSearch() {
-        const searchInput = document.querySelector('.search-input');
-        const query = searchInput.value.trim();
+        const query = this.searchInput.value.trim();
 
         if (query) {
-            this.showSuccessFeedback(`Tìm kiếm: "${query}"`);
-            console.log('Searching for:', query);
+            this.performRealTimeSearch(query);
+            console.log('🔍 Searching for:', query);
+        } else {
+            this.hideSearchResults();
         }
     }
 
@@ -277,6 +479,12 @@ class AdminNavigation {
             console.warn(`Page not found: ${pageName}`);
         }
     }
+
+    // Public method to refresh products (useful for when products are updated)
+    async refreshProducts() {
+        console.log('🔄 Refreshing product list...');
+        await this.loadAllProducts();
+    }
 }
 
 // Initialize navigation when DOM is loaded
@@ -284,5 +492,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const navigation = new AdminNavigation();
     window.adminNavigation = navigation;
 
-    console.log('🎉 Admin Navigation initialized successfully!');
+    console.log('🎉 Admin Navigation with Search initialized successfully!');
 });
