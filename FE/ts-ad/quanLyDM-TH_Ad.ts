@@ -52,7 +52,7 @@ async function fetchData() {
         // Sau khi load xong thì hiển thị
         displayCategories();
         displayBrands();
-        updateStats2();
+        updateStats3();
     } catch (err) {
         console.error('❌ Lỗi khi load dữ liệu từ server:', err);
     }
@@ -101,7 +101,7 @@ function showTab2(tabName: string) {
     (event?.target as HTMLElement)?.classList.add('active');
 }
 
-function updateStats2() {
+function updateStats3() {
     const totalProducts = danhMucs2.reduce((sum, dm) => sum + dm.san_pham.length, 0);
     (document.getElementById('totalCategories') as HTMLElement).textContent = danhMucs2.length.toString();
     (document.getElementById('totalBrands') as HTMLElement).textContent = thuongHieus2.length.toString();
@@ -249,7 +249,33 @@ function updateBrandSelect() {
 };
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     fetchData(); // Load từ API thay vì dữ liệu mẫu
 
     // Add form listeners
@@ -284,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayCategories();   // ← Hiển thị lại bảng danh mục
                 updateCategorySelect(); // ← Làm mới dropdown
 
-                updateStats2();
+                updateStats3();
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
             }
@@ -366,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayCategories();   // ← Hiển thị lại bảng danh mục
                 updateCategorySelect(); // ← Làm mới dropdown
 
-                updateStats2();
+                updateStats3();
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
             }
@@ -452,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetchData();
             }
 
-            updateStats2();
+            updateStats3();
             (document.getElementById('productModal') as HTMLElement).style.display = 'none';
             (this as HTMLFormElement).reset();
             alert('✅ Thêm sản phẩm thành công!');

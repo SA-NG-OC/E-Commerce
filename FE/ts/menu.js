@@ -1070,7 +1070,31 @@ class AdminNavigation {
 }
 
 // Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
     // Initialize navigation
     const navigation = new AdminNavigation();
     window.adminNavigation = navigation;
@@ -1086,5 +1110,40 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeunload', () => {
     if (window.notificationManager) {
         window.notificationManager.destroy();
+    }
+});
+
+const profileIcon = document.querySelector(".profile-icon");
+const profileMenu = document.getElementById("profileMenu");
+const logoutBtn = document.getElementById("logoutBtn");
+
+document.querySelector('.profile-icon').addEventListener('click', () => {
+    document.getElementById('profileMenu').classList.toggle('show');
+});
+
+// Toggle hiển thị menu khi click vào icon
+if (profileIcon) {
+    profileIcon.addEventListener("click", () => {
+        if (profileMenu) {
+            profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
+        }
+    });
+}
+
+// Đăng xuất
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("usercontext");
+        window.location.href = "/FE/HTML/DangNhap.html";
+    });
+}
+
+// Ẩn menu khi click ra ngoài
+document.addEventListener("click", (event) => {
+    if (profileIcon && profileMenu) {
+        if (!profileIcon.contains(event.target) && !profileMenu.contains(event.target)) {
+            profileMenu.style.display = "none";
+        }
     }
 });

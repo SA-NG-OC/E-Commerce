@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _a;
-// Xử lý hiển thị mật khẩu
+// Hiển thị mật khẩu
 var showPasswordCheckbox = document.getElementById('showPassword');
 var passwordInput = document.getElementById('password');
 if (showPasswordCheckbox && passwordInput) {
@@ -47,7 +47,7 @@ if (showPasswordCheckbox && passwordInput) {
 // Xử lý form đăng nhập
 (_a = document.getElementById('loginForm')) === null || _a === void 0 ? void 0 : _a.addEventListener('submit', function (e) {
     return __awaiter(this, void 0, void 0, function () {
-        var email, password, errorDiv, res, data, _a;
+        var email, password, errorDiv, res, data, redirectPath, _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -57,7 +57,6 @@ if (showPasswordCheckbox && passwordInput) {
                     errorDiv = document.getElementById('loginError');
                     if (errorDiv)
                         errorDiv.textContent = '';
-                    // Kiểm tra dữ liệu đầu vào
                     if (!email || !password) {
                         if (errorDiv)
                             errorDiv.textContent = 'Vui lòng điền đầy đủ thông tin!';
@@ -77,8 +76,21 @@ if (showPasswordCheckbox && passwordInput) {
                 case 3:
                     data = _b.sent();
                     if (res.ok) {
-                        localStorage.setItem('usercontext', JSON.stringify(data.user));
-                        window.location.href = '/FE/HTML/Menu.html';
+                        localStorage.setItem('token', data.token); // lưu token
+                        localStorage.setItem('usercontext', JSON.stringify(data.user)); // lưu user
+                        redirectPath = sessionStorage.getItem('redirectAfterLogin') ||
+                            sessionStorage.getItem('adminRedirectAfterLogin');
+                        if (redirectPath) {
+                            // Xóa redirect path
+                            sessionStorage.removeItem('redirectAfterLogin');
+                            sessionStorage.removeItem('adminRedirectAfterLogin');
+                            // Redirect về trang ban đầu
+                            window.location.href = redirectPath;
+                        }
+                        else {
+                            // Mặc định về trang chủ
+                            window.location.href = '/FE/HTML/Menu.html';
+                        }
                     }
                     else {
                         if (errorDiv)

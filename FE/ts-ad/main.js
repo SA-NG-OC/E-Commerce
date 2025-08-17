@@ -5,8 +5,16 @@ class HorizontalMenuNavigation {
         this.contentFrame = document.getElementById('contentFrame');
         this.welcomeMessage = document.getElementById('welcomeMessage');
         this.menuLinks = document.querySelectorAll('.menu-link');
+
+        // Profile menu elements
+        this.profileIcon = document.getElementById('profileIcon');
+        this.profileMenu = document.getElementById('profileMenu');
+        this.logoutBtn = document.getElementById('logoutBtn');
+
         this.currentPage = null;
         this.isMobileMenuOpen = false;
+        this.isProfileMenuOpen = false;
+        this.logoutTimer = null;
 
         this.init();
     }
@@ -14,6 +22,8 @@ class HorizontalMenuNavigation {
     init() {
         this.attachEventListeners();
         this.loadSavedPage();
+        this.checkAuthentication();
+        this.initAutoLogout();
     }
 
     attachEventListeners() {
@@ -25,26 +35,154 @@ class HorizontalMenuNavigation {
             link.addEventListener('click', (e) => this.handleMenuClick(e));
         });
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (this.isMobileMenuOpen &&
-                !this.navMenu.contains(e.target) &&
-                !this.mobileToggle.contains(e.target)) {
-                this.closeMobileMenu();
-            }
-        });
+        // Profile menu events
+        if (this.profileIcon && this.profileMenu) {
+            this.profileIcon.addEventListener('click', (e) => this.handleProfileClick(e));
+        }
+
+        // Logout button event
+        if (this.logoutBtn) {
+            this.logoutBtn.addEventListener('click', () => this.handleLogout());
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => this.handleDocumentClick(e));
 
         // Keyboard events
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isMobileMenuOpen) {
-                this.closeMobileMenu();
+            if (e.key === 'Escape') {
+                if (this.isMobileMenuOpen) this.closeMobileMenu();
+                if (this.isProfileMenuOpen) this.closeProfileMenu();
             }
         });
 
         // Window resize
         window.addEventListener('resize', () => this.handleResize());
+
+        // Activity events for auto logout
+        ['click', 'keypress', 'mousemove', 'scroll'].forEach(eventType => {
+            document.addEventListener(eventType, () => this.resetLogoutTimer());
+        });
     }
 
+    // Profile Menu Methods
+    handleProfileClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (this.isProfileMenuOpen) {
+            this.closeProfileMenu();
+        } else {
+            this.openProfileMenu();
+        }
+    }
+
+    openProfileMenu() {
+        this.isProfileMenuOpen = true;
+        if (this.profileMenu) {
+            this.profileMenu.style.display = 'block';
+            // Add animation class if needed
+            this.profileMenu.classList.add('show');
+        }
+    }
+
+    closeProfileMenu() {
+        this.isProfileMenuOpen = false;
+        if (this.profileMenu) {
+            this.profileMenu.style.display = 'none';
+            this.profileMenu.classList.remove('show');
+        }
+    }
+
+    handleDocumentClick(event) {
+        // Close mobile menu
+        if (this.isMobileMenuOpen &&
+            !this.navMenu.contains(event.target) &&
+            !this.mobileToggle.contains(event.target)) {
+            this.closeMobileMenu();
+        }
+
+        // Close profile menu
+        if (this.isProfileMenuOpen &&
+            this.profileIcon && this.profileMenu &&
+            !this.profileIcon.contains(event.target) &&
+            !this.profileMenu.contains(event.target)) {
+            this.closeProfileMenu();
+        }
+    }
+
+    // Authentication Methods
+    checkAuthentication() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            this.redirectToLogin();
+            return false;
+        }
+        return true;
+    }
+
+    handleLogout() {
+        const confirmLogout = confirm("Bạn có chắc chắn muốn đăng xuất?");
+        if (confirmLogout) {
+            this.performLogout();
+        }
+    }
+
+    performLogout() {
+        try {
+            localStorage.removeItem("token");
+            localStorage.removeItem("usercontext");
+            window.location.href = "/FE/HTML/DangNhap.html";
+
+        } catch (error) {
+            console.error('Lỗi khi đăng xuất:', error);
+            this.redirectToLogin();
+        }
+    }
+
+    showLogoutMessage() {
+        const message = document.createElement('div');
+        message.className = 'logout-message';
+        message.innerHTML = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                        background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                        z-index: 10000; text-align: center;">
+                <i class="fas fa-check-circle" style="color: #28a745; font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3 style="margin: 0 0 10px 0; color: #333;">Đăng xuất thành công!</h3>
+                <p style="margin: 0; color: #666;">Đang chuyển hướng...</p>
+            </div>
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(0,0,0,0.3); z-index: 9999;"></div>
+        `;
+        document.body.appendChild(message);
+    }
+
+    redirectToLogin() {
+        window.location.href = "/FE/HTML/DangNhap.html";
+    }
+
+    // Auto Logout Methods
+    initAutoLogout() {
+        this.resetLogoutTimer();
+    }
+
+    resetLogoutTimer() {
+        if (this.logoutTimer) {
+            clearTimeout(this.logoutTimer);
+        }
+
+        // Auto logout after 30 minutes of inactivity
+        this.logoutTimer = setTimeout(() => {
+            this.handleAutoLogout();
+        }, 30 * 60 * 1000); // 30 minutes
+    }
+
+    handleAutoLogout() {
+        alert("Phiên làm việc đã hết hạn. Bạn sẽ được đăng xuất.");
+        this.performLogout();
+    }
+
+    // Existing Mobile Menu Methods
     toggleMobileMenu() {
         if (this.isMobileMenuOpen) {
             this.closeMobileMenu();
@@ -89,6 +227,11 @@ class HorizontalMenuNavigation {
             this.closeMobileMenu();
         }
 
+        // Close profile menu if open
+        if (this.isProfileMenuOpen) {
+            this.closeProfileMenu();
+        }
+
         // Show success feedback
         this.showSuccessFeedback(clickedLink.querySelector('.menu-text').textContent);
     }
@@ -131,9 +274,9 @@ class HorizontalMenuNavigation {
         loader.id = 'pageLoader';
         loader.className = 'loading-indicator';
         loader.innerHTML = `
-                    <div class="spinner"></div>
-                    <span style="color: #666;">Đang tải trang...</span>
-                `;
+            <div class="spinner"></div>
+            <span style="color: #666;">Đang tải trang...</span>
+        `;
         document.body.appendChild(loader);
     }
 
@@ -148,9 +291,9 @@ class HorizontalMenuNavigation {
         const feedback = document.createElement('div');
         feedback.className = 'success-feedback';
         feedback.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    <span>Đã chuyển đến: ${pageName}</span>
-                `;
+            <i class="fas fa-check-circle"></i>
+            <span>Đã chuyển đến: ${pageName}</span>
+        `;
         document.body.appendChild(feedback);
 
         setTimeout(() => {
@@ -247,20 +390,21 @@ class HorizontalMenuNavigation {
     showError(message) {
         this.contentFrame.style.display = 'none';
         this.welcomeMessage.innerHTML = `
-                    <h1 style="color: #e74c3c;">Lỗi</h1>
-                    <p>${message}</p>
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-top: 30px; color: #e74c3c;"></i>
-                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; 
-                            background: #F19EDC; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        Tải lại trang
-                    </button>
-                `;
+            <h1 style="color: #e74c3c;">Lỗi</h1>
+            <p>${message}</p>
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-top: 30px; color: #e74c3c;"></i>
+            <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; 
+                    background: #F19EDC; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Tải lại trang
+            </button>
+        `;
         this.welcomeMessage.style.display = 'flex';
     }
 
     handleResize() {
-        if (window.innerWidth > 768 && this.isMobileMenuOpen) {
-            this.closeMobileMenu();
+        if (window.innerWidth > 768) {
+            if (this.isMobileMenuOpen) this.closeMobileMenu();
+            if (this.isProfileMenuOpen) this.closeProfileMenu();
         }
     }
 
@@ -270,6 +414,15 @@ class HorizontalMenuNavigation {
             link.click();
         }
     }
+
+    // Public methods for external access
+    logout() {
+        this.handleLogout();
+    }
+
+    isAuthenticated() {
+        return this.checkAuthentication();
+    }
 }
 
 // Initialize horizontal menu navigation when DOM loaded
@@ -277,5 +430,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuNav = new HorizontalMenuNavigation();
     window.menuNavigation = menuNav;
 
-    console.log('🎉 Horizontal Menu Navigation initialized successfully!');
+    console.log('🎉 Horizontal Menu Navigation với Profile Menu initialized successfully!');
 });

@@ -230,7 +230,7 @@ function setupEventListeners3() {
     if (searchInput) {
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                searchProducts();
+                searchProducts2();
             }
         });
     }
@@ -482,7 +482,7 @@ function filterByBrand(brandId) {
         renderProducts2();
     }
 }
-function searchProducts() {
+function searchProducts2() {
     if (searchInput) {
         currentSearchTerm = searchInput.value.trim();
         if (currentCategory) {
@@ -493,14 +493,42 @@ function searchProducts() {
 // Main initialization function
 function initDanhMuc() {
     return __awaiter(this, void 0, void 0, function () {
-        var error_6;
+        var token, res, error_6, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log('Initializing Danh Muc...');
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 4, , 5]);
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_6 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                case 4:
+                    console.log('Initializing Danh Muc...');
+                    _a.label = 5;
+                case 5:
+                    _a.trys.push([5, 8, , 9]);
                     initializeElements();
                     setupEventListeners3();
                     showLoading(true);
@@ -508,21 +536,21 @@ function initDanhMuc() {
                             loadDanhMucs(),
                             loadThuongHieus()
                         ])];
-                case 2:
+                case 6:
                     _a.sent();
                     return [4 /*yield*/, renderCategories()];
-                case 3:
+                case 7:
                     _a.sent();
                     renderBrandCombobox();
                     showLoading(false);
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_6 = _a.sent();
-                    console.error('Lỗi khi khởi tạo danh mục:', error_6);
+                    return [3 /*break*/, 9];
+                case 8:
+                    error_7 = _a.sent();
+                    console.error('Lỗi khi khởi tạo danh mục:', error_7);
                     showError3('Không thể tải dữ liệu. Vui lòng thử lại sau.');
                     showLoading(false);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
         });
     });
@@ -531,7 +559,7 @@ function initDanhMuc() {
 window.initDanhMuc = initDanhMuc;
 window.showProducts = showProducts;
 window.goBack = goBack;
-window.searchProducts = searchProducts;
+window.searchProducts2 = searchProducts2;
 window.filterByBrand = filterByBrand;
 // Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
 document.addEventListener('DOMContentLoaded', initDanhMuc);

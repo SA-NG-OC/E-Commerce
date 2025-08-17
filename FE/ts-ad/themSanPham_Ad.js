@@ -469,10 +469,39 @@ function setupEventListenersAd() {
 // Initialize function
 function initProductFormAd() {
     return __awaiter(this, void 0, void 0, function () {
+        var token, res, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, loadDataAd()];
+                case 0:
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_7 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                case 4: return [4 /*yield*/, loadDataAd()];
+                case 5:
                     _a.sent();
                     setupEventListenersAd();
                     setupAnimationsAd();

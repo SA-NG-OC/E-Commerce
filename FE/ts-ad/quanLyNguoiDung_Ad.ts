@@ -12,18 +12,64 @@ interface NguoiDung {
 }
 
 let users: NguoiDung[] = [];
-
 let filteredUsers: NguoiDung[] = [...users];
 const itemsPerPage = 10;
 let currentPage = 1;
 let editingUserId: string | null = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
+// Helper function để lấy headers với token
+function getAuthHeaders() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
+// Kiểm tra authentication trước khi load trang
+async function checkAuth() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return false;
+    }
+
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/');
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return false;
+        }
+        return true;
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Kiểm tra auth trước
+    const isAuth = await checkAuth();
+    if (!isAuth) return;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Không thể tải danh sách người dùng');
+
         const data = await response.json();
 
-        // Chuyển đổi dữ liệu từ server về đúng format của interface NguoiDung
         users = data.map((item: any) => ({
             id: item._id,
             email: item._email,
@@ -33,23 +79,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             so_dien_thoai: item._so_dien_thoai,
             dia_chi: item._dia_chi,
             ngay_sinh: item._ngay_sinh,
-            role_id: convertTenVaiTroToRoleId(item._role), // chuyển tên vai trò thành role_id
+            role_id: convertTenVaiTroToRoleId(item._role),
             ten_vai_tro: item._role
         }));
 
         filteredUsers = [...users];
-
         renderTable();
-        updateStats();
+        updateStats2();
         setupEventListeners();
     } catch (error) {
         console.error('Lỗi khi tải người dùng:', error);
+        alert('Không thể tải danh sách người dùng. Vui lòng thử lại.');
     }
 });
 
 async function fetchAndRenderUsers() {
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/');
+        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Không thể tải danh sách người dùng');
+
         const data = await response.json();
 
         users = data.map((item: any) => ({
@@ -72,7 +123,6 @@ async function fetchAndRenderUsers() {
     }
 }
 
-
 function convertTenVaiTroToRoleId(tenVaiTro: string): 'ADMIN' | 'MANAGER' | 'USER' | 'STAFF' {
     switch (tenVaiTro) {
         case 'Quản trị viên': return 'ADMIN';
@@ -82,7 +132,6 @@ function convertTenVaiTroToRoleId(tenVaiTro: string): 'ADMIN' | 'MANAGER' | 'USE
     }
 }
 
-
 function setupEventListeners() {
     const searchInput = document.getElementById('searchInput') as HTMLInputElement;
     const userForm = document.getElementById('userForm') as HTMLFormElement;
@@ -90,7 +139,7 @@ function setupEventListeners() {
     userForm.addEventListener('submit', handleFormSubmit);
 }
 
-function updateStats() {
+function updateStats2() {
     (document.getElementById('totalUsers') as HTMLElement).textContent = users.length.toString();
     (document.getElementById('adminUsers') as HTMLElement).textContent = users.filter(u => u.role_id === 'ADMIN').length.toString();
     (document.getElementById('regularUsers') as HTMLElement).textContent = users.filter(u => u.role_id === 'USER').length.toString();
@@ -186,12 +235,10 @@ function editUser(id: string) {
     (document.getElementById('userBirthDate') as HTMLInputElement).value = user.ngay_sinh ? new Date(user.ngay_sinh).toISOString().split('T')[0] : '';
     (document.getElementById('userRole') as HTMLSelectElement).value = user.role_id;
 
-    // Hiện phần mật khẩu với label "Mật khẩu mới"
     (document.getElementById('passwordGroup') as HTMLElement).style.display = 'block';
-    (document.getElementById('userPassword') as HTMLInputElement).value = ''; // clear
+    (document.getElementById('userPassword') as HTMLInputElement).value = '';
     (document.getElementById('userPassword') as HTMLInputElement).required = false;
 
-    // Cập nhật label nếu có phần tử label
     const passwordLabel = document.querySelector('label[for="userPassword"]') as HTMLLabelElement;
     if (passwordLabel) {
         passwordLabel.textContent = 'Mật khẩu mới (bỏ trống nếu không đổi)';
@@ -200,12 +247,12 @@ function editUser(id: string) {
     (document.getElementById('userModal') as HTMLElement).style.display = 'block';
 }
 
-
 async function deleteUser(id: string) {
     if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
         try {
             const response = await fetch(`http://localhost:3000/api/nguoi-dung/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getAuthHeaders()
             });
 
             const result = await response.json();
@@ -215,8 +262,8 @@ async function deleteUser(id: string) {
             }
 
             alert('Đã xóa người dùng thành công!');
-            await fetchAndRenderUsers(); // tải lại danh sách người dùng sau khi xóa
-            updateStats();
+            await fetchAndRenderUsers();
+            updateStats2();
         } catch (error) {
             console.error('Lỗi khi xóa người dùng:', error);
             alert('Đã xảy ra lỗi khi xóa người dùng');
@@ -224,35 +271,27 @@ async function deleteUser(id: string) {
     }
 }
 
-function closeModal() {
+function closeModal2() {
     (document.getElementById('userModal') as HTMLElement).style.display = 'none';
 }
 
 async function handleFormSubmit(e: Event) {
     e.preventDefault();
 
-    const roleMap = {
-        'ADMIN': 'Quản trị viên',
-        'MANAGER': 'Quản lý',
-        'STAFF': 'Nhân viên',
-        'USER': 'Người dùng'
-    };
-
     const selectedRole = (document.getElementById('userRole') as HTMLSelectElement).value as 'ADMIN' | 'MANAGER' | 'USER' | 'STAFF';
 
     const formData = {
         email: (document.getElementById('userEmail') as HTMLInputElement).value,
-        mat_khau: (document.getElementById('userPassword') as HTMLInputElement).value, // gửi mật khẩu để backend hash
+        mat_khau: (document.getElementById('userPassword') as HTMLInputElement).value,
         ho: (document.getElementById('userHo') as HTMLInputElement).value,
         ten: (document.getElementById('userTen') as HTMLInputElement).value,
         so_dien_thoai: (document.getElementById('userPhone') as HTMLInputElement).value,
         dia_chi: (document.getElementById('userAddress') as HTMLTextAreaElement).value,
         ngay_sinh: (document.getElementById('userBirthDate') as HTMLInputElement).value,
-        role: selectedRole // backend sẽ xử lý và gán đúng role_id
+        role: selectedRole
     };
 
     if (editingUserId) {
-        // Gọi API cập nhật
         const payload = {
             id: editingUserId,
             email: formData.email,
@@ -268,9 +307,7 @@ async function handleFormSubmit(e: Event) {
         try {
             const response = await fetch('http://localhost:3000/api/nguoi-dung/update', {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(payload)
             });
 
@@ -284,20 +321,17 @@ async function handleFormSubmit(e: Event) {
             console.error(error);
             alert('Đã có lỗi xảy ra khi cập nhật người dùng');
         }
-    }
-    else {
+    } else {
         try {
             const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(formData)
             });
 
             if (!response.ok) throw new Error('Lỗi khi tạo người dùng');
 
             alert('Thêm người dùng thành công!');
-
-            // Gọi lại API để lấy danh sách mới
             await fetchAndRenderUsers();
         } catch (error) {
             console.error(error);
@@ -305,14 +339,13 @@ async function handleFormSubmit(e: Event) {
         }
     }
 
-    updateStats();
-    closeModal();
+    updateStats2();
+    closeModal2();
 }
-
 
 window.onclick = function (event: MouseEvent) {
     const modal = document.getElementById('userModal') as HTMLElement;
     if (event.target === modal) {
-        closeModal();
+        closeModal2();
     }
 };

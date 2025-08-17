@@ -145,7 +145,15 @@ async function initStats(): Promise<void> {
         document.querySelectorAll('.stat-card .value')[0].textContent = donHangData.total ?? '0';
 
         // 2️⃣ Lấy số khách hàng (giả sử có endpoint /api/nguoi-dung/count)
-        const khachHangRes = await fetch('http://localhost:3000/api/nguoi-dung/count');
+        const token = localStorage.getItem('token');
+
+        const khachHangRes = await fetch('http://localhost:3000/api/nguoi-dung/count', {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`   // 👈 bắt buộc để qua authMiddleware
+            }
+        });
+
         const khachHangData = await khachHangRes.json();
         document.querySelectorAll('.stat-card .value')[1].textContent = khachHangData.total ?? '0';
 
@@ -240,7 +248,32 @@ function exportReport(): void {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     initStats();
     initRevenueChart();
     initCategoryChart();

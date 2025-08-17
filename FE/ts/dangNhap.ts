@@ -1,6 +1,6 @@
 // dangNhap.ts
 
-// Xử lý hiển thị mật khẩu
+// Hiển thị mật khẩu
 const showPasswordCheckbox = document.getElementById('showPassword') as HTMLInputElement | null;
 const passwordInput = document.getElementById('password') as HTMLInputElement | null;
 
@@ -20,7 +20,6 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
 
     if (errorDiv) errorDiv.textContent = '';
 
-    // Kiểm tra dữ liệu đầu vào
     if (!email || !password) {
         if (errorDiv) errorDiv.textContent = 'Vui lòng điền đầy đủ thông tin!';
         return;
@@ -36,8 +35,23 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
         const data = await res.json();
 
         if (res.ok) {
-            localStorage.setItem('usercontext', JSON.stringify(data.user));
-            window.location.href = '/FE/HTML/Menu.html';
+            localStorage.setItem('token', data.token);              // lưu token
+            localStorage.setItem('usercontext', JSON.stringify(data.user)); // lưu user
+
+            // Kiểm tra có trang redirect không
+            const redirectPath = sessionStorage.getItem('redirectAfterLogin') ||
+                sessionStorage.getItem('adminRedirectAfterLogin');
+
+            if (redirectPath) {
+                // Xóa redirect path
+                sessionStorage.removeItem('redirectAfterLogin');
+                sessionStorage.removeItem('adminRedirectAfterLogin');
+                // Redirect về trang ban đầu
+                window.location.href = redirectPath;
+            } else {
+                // Mặc định về trang chủ
+                window.location.href = '/FE/HTML/Menu.html';
+            }
         } else {
             if (errorDiv) errorDiv.textContent = data.message || 'Đăng nhập thất bại';
         }

@@ -227,7 +227,7 @@ function formatCurrency(amount: number): string {
     }).format(amount);
 }
 
-function formatDate(dateString: string): string {
+function formatDate5(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleString('vi-VN');
 }
@@ -249,7 +249,7 @@ function createOrderCard(order: Order): string {
                 </div>
                 <div class="info-row">
                     <span class="info-label">Ngày tạo:</span>
-                    <span class="info-value">${formatDate(order.ngay_tao)}</span>
+                    <span class="info-value">${formatDate5(order.ngay_tao)}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Tổng tiền:</span>
@@ -312,7 +312,7 @@ async function viewPaymentInfo(orderId: string): Promise<void> {
                 </div>
             `}
         </div>
-        <div class="info-row"><span class="info-label">Ngày thanh toán:</span><span class="info-value">${formatDate(payment._ngay_thanh_toan)}</span></div>
+        <div class="info-row"><span class="info-label">Ngày thanh toán:</span><span class="info-value">${formatDate5(payment._ngay_thanh_toan)}</span></div>
         <div class="info-row"><span class="info-label">Ghi chú:</span><span class="info-value">${payment._ghi_chu || '(Không có)'}</span></div>
         ` : '<p>Không có dữ liệu thanh toán</p>'}
 
@@ -432,7 +432,7 @@ function viewOrderDetails(orderId: string): void {
             <div class="info-row"><span class="info-label">Trạng thái:</span>
                 <span class="status-badge status-${order.trang_thai}">${getStatusText(order.trang_thai)}</span>
             </div>
-            <div class="info-row"><span class="info-label">Ngày tạo:</span><span class="info-value">${formatDate(order.ngay_tao)}</span></div>
+            <div class="info-row"><span class="info-label">Ngày tạo:</span><span class="info-value">${formatDate5(order.ngay_tao)}</span></div>
             <div class="info-row"><span class="info-label">Tổng thanh toán:</span><span class="info-value total-amount">${formatCurrency(order.tong_thanh_toan)}</span></div>
         </div>
 
@@ -477,7 +477,7 @@ function editOrderStatus(orderId: string): void {
     (document.getElementById('status-modal') as HTMLElement).style.display = 'block';
 }
 
-function closeModal2(): void {
+function closeModal5(): void {
     (document.getElementById('order-modal') as HTMLElement).style.display = 'none';
 }
 
@@ -554,6 +554,32 @@ function setupFilters(): void {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     orders = await loadOrdersData();
     updateDashboard();
     displayOrders();
@@ -605,13 +631,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     window.addEventListener('click', function (e) {
-        if (e.target === document.getElementById('order-modal')) closeModal2();
+        if (e.target === document.getElementById('order-modal')) closeModal5();
         if (e.target === document.getElementById('status-modal')) closeStatusModal();
     });
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            closeModal2();
+            closeModal5();
             closeStatusModal();
         }
         if (e.ctrlKey && e.key === 'f') {

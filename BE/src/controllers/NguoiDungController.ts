@@ -1,17 +1,33 @@
 import { Request, Response } from 'express';
 import { NguoiDungService } from '../services/NguoiDungService';
 import { NguoiDungModel } from '../models/NguoiDungModel';
+import jwt from "jsonwebtoken";
 
 export class NguoiDungController {
     // Sử dụng http://localhost:3000/api/nguoi-dung/login
     static async login(req: Request, res: Response) {
         const { email, password } = req.body;
-        if (!email || !password) return res.status(400).json({ message: 'Thiếu email hoặc mật khẩu' });
-        const user: NguoiDungModel | null = await NguoiDungService.login(email, password);
-        if (!user) return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
-        // Không trả về hash/mật khẩu
+        if (!email || !password) {
+            return res.status(400).json({ message: "Thiếu email hoặc mật khẩu" });
+        }
+
+        const user = await NguoiDungService.login(email, password);
+        if (!user) {
+            return res.status(401).json({ message: "Email hoặc mật khẩu không đúng" });
+        }
+
+        // Không trả về mật khẩu
         const { mat_khau_hash, ...userData } = user as any;
-        res.json({ user: userData });
+
+        // Tạo JWT token
+        const token = jwt.sign(
+            { id: userData.id, email: userData.email, role: userData.role },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "1h" }
+        );
+
+        // Trả về user + token
+        res.json({ user: userData, token });
     }
 
     //Sử dụng api: http://localhost:3000/api/nguoi-dung/

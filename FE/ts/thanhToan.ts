@@ -488,7 +488,7 @@ async function processOrderWithInventory(orderInfo: OrderInfo): Promise<boolean>
 }
 
 // Utility functions
-function formatCurrency(amount: number): string {
+function formatCurrency2(amount: number): string {
     return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
 }
 
@@ -695,7 +695,7 @@ function renderOrderItems(): void {
             <div class="item-details">
                 <div class="item-name">${item._ten_san_pham}</div>
                 <div class="item-variant">Màu: ${item._mau_sac} | Size: ${item._kich_co}</div>
-                <div class="item-price">${formatCurrency(item._don_gia)} x ${item._so_luong}</div>
+                <div class="item-price">${formatCurrency2(item._don_gia)} x ${item._so_luong}</div>
             </div>
         </div>
     `).join('');
@@ -722,7 +722,7 @@ function calculateTotal(): void {
 function updatePriceElement(id: string, amount: number): void {
     const element = getElement(id);
     if (element) {
-        element.textContent = formatCurrency(amount);
+        element.textContent = formatCurrency2(amount);
     }
 }
 
@@ -730,7 +730,7 @@ function updateDiscountElement(): void {
     const discountElement = getElement('discount');
     if (discountElement) {
         discountElement.textContent = orderData.discount > 0 ?
-            `-${formatCurrency(orderData.discount)}` : '0đ';
+            `-${formatCurrency2(orderData.discount)}` : '0đ';
     }
 }
 
@@ -934,7 +934,34 @@ function cleanupEventListeners(): void {
 // MAIN INITIALIZATION FUNCTIONS
 
 // Hàm khởi tạo trang thanh toán
-function initThanhToan(): void {
+async function initThanhToan() {
+
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     console.log('🚀 Initializing Thanh Toan...');
 
     // 🔧 FIX: Prevent double initialization

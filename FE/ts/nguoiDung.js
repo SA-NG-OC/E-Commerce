@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 // Dữ liệu địa chỉ Việt Nam (mẫu)
 var vietnamLocations = {
     "Hồ Chí Minh": ["Quận 1", "Quận 2", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8", "Quận 9", "Quận 10", "Quận 11", "Quận 12", "Quận Bình Tân", "Quận Bình Thạnh", "Quận Gò Vấp", "Quận Phú Nhuận", "Quận Tân Bình", "Quận Tân Phú", "Quận Thủ Đức", "Huyện Bình Chánh", "Huyện Cần Giờ", "Huyện Củ Chi", "Huyện Hóc Môn", "Huyện Nhà Bè"],
@@ -43,11 +44,46 @@ var vietnamLocations = {
     "Hải Phòng": ["Quận Hồng Bàng", "Quận Ngô Quyền", "Quận Lê Chân", "Quận Hải An", "Quận Kiến An", "Quận Đồ Sơn", "Quận Dương Kinh", "Huyện Thuỷ Nguyên", "Huyện An Dương", "Huyện An Lão", "Huyện Kiến Thuỵ", "Huyện Tiên Lãng", "Huyện Vĩnh Bảo", "Huyện Cát Hải", "Huyện Bạch Long Vĩ"]
 };
 var currentUser = null;
-document.addEventListener('DOMContentLoaded', function () {
-    loadUserData();
-    initializeLocationSelects();
-    setupFormHandlers();
-});
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+    var token, res, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                        headers: { Authorization: "Bearer ".concat(token) }
+                    })];
+            case 2:
+                res = _a.sent();
+                if (!res.ok) {
+                    localStorage.removeItem('token');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                window.location.href = '/FE/HTML/DangNhap.html';
+                return [2 /*return*/];
+            case 4:
+                loadUserData();
+                initializeLocationSelects();
+                setupFormHandlers();
+                return [2 /*return*/];
+        }
+    });
+}); });
 function loadUserData() {
     var userContext = localStorage.getItem('usercontext');
     if (!userContext) {
@@ -156,7 +192,7 @@ function setupFormHandlers() {
 }
 function updateProfile() {
     return __awaiter(this, void 0, void 0, function () {
-        var formElement, formData, data, detailAddress, district, province, fullAddress, updateData, response, result, error_1;
+        var formElement, formData, data, detailAddress, district, province, fullAddress, updateData, response, result, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -217,8 +253,8 @@ function updateProfile() {
                     }
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error('Lỗi cập nhật:', error_1);
+                    error_2 = _a.sent();
+                    console.error('Lỗi cập nhật:', error_2);
                     showAlert('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

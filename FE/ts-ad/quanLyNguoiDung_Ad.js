@@ -49,19 +49,75 @@ var filteredUsers = __spreadArray([], users, true);
 var itemsPerPage = 10;
 var currentPage = 1;
 var editingUserId = null;
+// Helper function để lấy headers với token
+function getAuthHeaders() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
+// Kiểm tra authentication trước khi load trang
+function checkAuth() {
+    return __awaiter(this, void 0, void 0, function () {
+        var token, res, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/, false];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/, false];
+                    }
+                    return [2 /*return*/, true];
+                case 3:
+                    error_1 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
-    var response, data, error_1;
+    var isAuth, response, data, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/')];
+            case 0: return [4 /*yield*/, checkAuth()];
             case 1:
-                response = _a.sent();
-                return [4 /*yield*/, response.json()];
+                isAuth = _a.sent();
+                if (!isAuth)
+                    return [2 /*return*/];
+                _a.label = 2;
             case 2:
+                _a.trys.push([2, 5, , 6]);
+                return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                        headers: getAuthHeaders()
+                    })];
+            case 3:
+                response = _a.sent();
+                if (!response.ok)
+                    throw new Error('Không thể tải danh sách người dùng');
+                return [4 /*yield*/, response.json()];
+            case 4:
                 data = _a.sent();
-                // Chuyển đổi dữ liệu từ server về đúng format của interface NguoiDung
                 users = data.map(function (item) { return ({
                     id: item._id,
                     email: item._email,
@@ -71,32 +127,37 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                     so_dien_thoai: item._so_dien_thoai,
                     dia_chi: item._dia_chi,
                     ngay_sinh: item._ngay_sinh,
-                    role_id: convertTenVaiTroToRoleId(item._role), // chuyển tên vai trò thành role_id
+                    role_id: convertTenVaiTroToRoleId(item._role),
                     ten_vai_tro: item._role
                 }); });
                 filteredUsers = __spreadArray([], users, true);
                 renderTable();
-                updateStats();
+                updateStats2();
                 setupEventListeners();
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                console.error('Lỗi khi tải người dùng:', error_1);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 5:
+                error_2 = _a.sent();
+                console.error('Lỗi khi tải người dùng:', error_2);
+                alert('Không thể tải danh sách người dùng. Vui lòng thử lại.');
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); });
 function fetchAndRenderUsers() {
     return __awaiter(this, void 0, void 0, function () {
-        var response, data, error_2;
+        var response, data, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                            headers: getAuthHeaders()
+                        })];
                 case 1:
                     response = _a.sent();
+                    if (!response.ok)
+                        throw new Error('Không thể tải danh sách người dùng');
                     return [4 /*yield*/, response.json()];
                 case 2:
                     data = _a.sent();
@@ -116,8 +177,8 @@ function fetchAndRenderUsers() {
                     renderTable();
                     return [3 /*break*/, 4];
                 case 3:
-                    error_2 = _a.sent();
-                    console.error('Không thể tải danh sách người dùng:', error_2);
+                    error_3 = _a.sent();
+                    console.error('Không thể tải danh sách người dùng:', error_3);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
@@ -138,7 +199,7 @@ function setupEventListeners() {
     searchInput.addEventListener('input', handleSearch);
     userForm.addEventListener('submit', handleFormSubmit);
 }
-function updateStats() {
+function updateStats2() {
     document.getElementById('totalUsers').textContent = users.length.toString();
     document.getElementById('adminUsers').textContent = users.filter(function (u) { return u.role_id === 'ADMIN'; }).length.toString();
     document.getElementById('regularUsers').textContent = users.filter(function (u) { return u.role_id === 'USER'; }).length.toString();
@@ -210,11 +271,9 @@ function editUser(id) {
     document.getElementById('userAddress').value = user.dia_chi;
     document.getElementById('userBirthDate').value = user.ngay_sinh ? new Date(user.ngay_sinh).toISOString().split('T')[0] : '';
     document.getElementById('userRole').value = user.role_id;
-    // Hiện phần mật khẩu với label "Mật khẩu mới"
     document.getElementById('passwordGroup').style.display = 'block';
-    document.getElementById('userPassword').value = ''; // clear
+    document.getElementById('userPassword').value = '';
     document.getElementById('userPassword').required = false;
-    // Cập nhật label nếu có phần tử label
     var passwordLabel = document.querySelector('label[for="userPassword"]');
     if (passwordLabel) {
         passwordLabel.textContent = 'Mật khẩu mới (bỏ trống nếu không đổi)';
@@ -223,7 +282,7 @@ function editUser(id) {
 }
 function deleteUser(id) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, result, error_3;
+        var response, result, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -232,7 +291,8 @@ function deleteUser(id) {
                 case 1:
                     _a.trys.push([1, 5, , 6]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/".concat(id), {
-                            method: 'DELETE'
+                            method: 'DELETE',
+                            headers: getAuthHeaders()
                         })];
                 case 2:
                     response = _a.sent();
@@ -245,12 +305,12 @@ function deleteUser(id) {
                     alert('Đã xóa người dùng thành công!');
                     return [4 /*yield*/, fetchAndRenderUsers()];
                 case 4:
-                    _a.sent(); // tải lại danh sách người dùng sau khi xóa
-                    updateStats();
+                    _a.sent();
+                    updateStats2();
                     return [3 /*break*/, 6];
                 case 5:
-                    error_3 = _a.sent();
-                    console.error('Lỗi khi xóa người dùng:', error_3);
+                    error_4 = _a.sent();
+                    console.error('Lỗi khi xóa người dùng:', error_4);
                     alert('Đã xảy ra lỗi khi xóa người dùng');
                     return [3 /*break*/, 6];
                 case 6: return [2 /*return*/];
@@ -258,32 +318,26 @@ function deleteUser(id) {
         });
     });
 }
-function closeModal() {
+function closeModal2() {
     document.getElementById('userModal').style.display = 'none';
 }
 function handleFormSubmit(e) {
     return __awaiter(this, void 0, void 0, function () {
-        var roleMap, selectedRole, formData, payload, response, result, error_4, response, error_5;
+        var selectedRole, formData, payload, response, result, error_5, response, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     e.preventDefault();
-                    roleMap = {
-                        'ADMIN': 'Quản trị viên',
-                        'MANAGER': 'Quản lý',
-                        'STAFF': 'Nhân viên',
-                        'USER': 'Người dùng'
-                    };
                     selectedRole = document.getElementById('userRole').value;
                     formData = {
                         email: document.getElementById('userEmail').value,
-                        mat_khau: document.getElementById('userPassword').value, // gửi mật khẩu để backend hash
+                        mat_khau: document.getElementById('userPassword').value,
                         ho: document.getElementById('userHo').value,
                         ten: document.getElementById('userTen').value,
                         so_dien_thoai: document.getElementById('userPhone').value,
                         dia_chi: document.getElementById('userAddress').value,
                         ngay_sinh: document.getElementById('userBirthDate').value,
-                        role: selectedRole // backend sẽ xử lý và gán đúng role_id
+                        role: selectedRole
                     };
                     if (!editingUserId) return [3 /*break*/, 7];
                     payload = {
@@ -302,9 +356,7 @@ function handleFormSubmit(e) {
                     _a.trys.push([1, 5, , 6]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/update', {
                             method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: getAuthHeaders(),
                             body: JSON.stringify(payload)
                         })];
                 case 2:
@@ -320,8 +372,8 @@ function handleFormSubmit(e) {
                     _a.sent();
                     return [3 /*break*/, 6];
                 case 5:
-                    error_4 = _a.sent();
-                    console.error(error_4);
+                    error_5 = _a.sent();
+                    console.error(error_5);
                     alert('Đã có lỗi xảy ra khi cập nhật người dùng');
                     return [3 /*break*/, 6];
                 case 6: return [3 /*break*/, 11];
@@ -329,7 +381,7 @@ function handleFormSubmit(e) {
                     _a.trys.push([7, 10, , 11]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/create', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders(),
                             body: JSON.stringify(formData)
                         })];
                 case 8:
@@ -337,20 +389,18 @@ function handleFormSubmit(e) {
                     if (!response.ok)
                         throw new Error('Lỗi khi tạo người dùng');
                     alert('Thêm người dùng thành công!');
-                    // Gọi lại API để lấy danh sách mới
                     return [4 /*yield*/, fetchAndRenderUsers()];
                 case 9:
-                    // Gọi lại API để lấy danh sách mới
                     _a.sent();
                     return [3 /*break*/, 11];
                 case 10:
-                    error_5 = _a.sent();
-                    console.error(error_5);
+                    error_6 = _a.sent();
+                    console.error(error_6);
                     alert('Đã có lỗi xảy ra khi thêm người dùng');
                     return [3 /*break*/, 11];
                 case 11:
-                    updateStats();
-                    closeModal();
+                    updateStats2();
+                    closeModal2();
                     return [2 /*return*/];
             }
         });
@@ -359,6 +409,6 @@ function handleFormSubmit(e) {
 window.onclick = function (event) {
     var modal = document.getElementById('userModal');
     if (event.target === modal) {
-        closeModal();
+        closeModal2();
     }
 };

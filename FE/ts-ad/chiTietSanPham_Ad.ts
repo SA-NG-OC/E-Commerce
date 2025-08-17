@@ -44,7 +44,33 @@ class ChiTietSanPhamManager_Ad {
     constructor() {
         // Tự động khởi tạo khi DOM ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', async () => {
+                // Kiểm tra đăng nhập
+                const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+                if (!token) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return;
+                }
+
+                try {
+                    const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return;
+                    }
+                } catch (error) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return;
+                }
                 this.init_Ad();
             });
         } else {

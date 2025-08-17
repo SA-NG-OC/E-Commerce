@@ -280,13 +280,13 @@ function formatCurrency(amount) {
         currency: 'VND'
     }).format(amount);
 }
-function formatDate(dateString) {
+function formatDate5(dateString) {
     var date = new Date(dateString);
     return date.toLocaleString('vi-VN');
 }
 // Cập nhật function createOrderCard - thêm nút thông tin thanh toán
 function createOrderCard(order) {
-    return "\n        <div class=\"order-card\">\n            <div class=\"order-header\">\n                <span class=\"order-id\">\u0110\u01A1n h\u00E0ng #".concat(order.id, "</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">\n                    ").concat(getStatusText(order.trang_thai), "\n                </span>\n            </div>\n            <div class=\"order-info\">\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span>\n                    <span class=\"info-value\">").concat(order.nguoi_dung_id, "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span>\n                    <span class=\"info-value\">").concat(formatDate(order.ngay_tao), "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">T\u1ED5ng ti\u1EC1n:</span>\n                    <span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">\n                <button class=\"btn btn-primary\" onclick=\"viewOrderDetails('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDC41\uFE0F Chi ti\u1EBFt\n                </button>\n                <button class=\"btn btn-success\" onclick=\"viewPaymentInfo('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDCB3 Thanh to\u00E1n\n                </button>\n                <button class=\"btn btn-secondary\" onclick=\"editOrderStatus('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \u270F\uFE0F S\u1EEDa\n                </button>\n                <button class=\"btn\" onclick=\"deleteOrder('").concat(order.id, "')\" style=\"background: #ff4757; color: white; flex: 1;\">\n                    \uD83D\uDDD1\uFE0F\n                </button>\n            </div>\n        </div>\n    ");
+    return "\n        <div class=\"order-card\">\n            <div class=\"order-header\">\n                <span class=\"order-id\">\u0110\u01A1n h\u00E0ng #".concat(order.id, "</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">\n                    ").concat(getStatusText(order.trang_thai), "\n                </span>\n            </div>\n            <div class=\"order-info\">\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span>\n                    <span class=\"info-value\">").concat(order.nguoi_dung_id, "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span>\n                    <span class=\"info-value\">").concat(formatDate5(order.ngay_tao), "</span>\n                </div>\n                <div class=\"info-row\">\n                    <span class=\"info-label\">T\u1ED5ng ti\u1EC1n:</span>\n                    <span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">\n                <button class=\"btn btn-primary\" onclick=\"viewOrderDetails('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDC41\uFE0F Chi ti\u1EBFt\n                </button>\n                <button class=\"btn btn-success\" onclick=\"viewPaymentInfo('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \uD83D\uDCB3 Thanh to\u00E1n\n                </button>\n                <button class=\"btn btn-secondary\" onclick=\"editOrderStatus('").concat(order.id, "')\" style=\"flex: 2;\">\n                    \u270F\uFE0F S\u1EEDa\n                </button>\n                <button class=\"btn\" onclick=\"deleteOrder('").concat(order.id, "')\" style=\"background: #ff4757; color: white; flex: 1;\">\n                    \uD83D\uDDD1\uFE0F\n                </button>\n            </div>\n        </div>\n    ");
 }
 function viewPaymentInfo(orderId) {
     return __awaiter(this, void 0, void 0, function () {
@@ -306,7 +306,7 @@ function viewPaymentInfo(orderId) {
                     currentPaymentInfo = payment;
                     currentAddressInfo = address;
                     modalBody = document.getElementById('modal-body');
-                    modalBody.innerHTML = "\n        <h3 style=\"color: #2ED573;\">Th\u00F4ng tin thanh to\u00E1n</h3>\n        ".concat(payment ? "\n        <div class=\"info-row\"><span class=\"info-label\">M\u00E3 giao d\u1ECBch:</span><span class=\"info-value\">".concat(payment._ma_giao_dich, "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ph\u01B0\u01A1ng th\u1EE9c:</span><span class=\"info-value\">").concat(getPaymentMethodText(payment._phuong_thuc_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u1ED1 ti\u1EC1n:</span><span class=\"info-value\">").concat(formatCurrency(Number(payment._so_tien)), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Tr\u1EA1ng th\u00E1i:</span>\n            ").concat(isEditingPayment ? "\n                <select id=\"edit-payment-status\" class=\"form-control\">\n                    <option value=\"cho_thanh_toan\">Ch\u1EDD thanh to\u00E1n</option>\n                    <option value=\"da_thanh_toan\">\u0110\u00E3 thanh to\u00E1n</option>\n                    <option value=\"that_bai\">Th\u1EA5t b\u1EA1i</option>\n                    <option value=\"hoan_tien\">Ho\u00E0n ti\u1EC1n</option>\n                </select>\n                <button class=\"btn btn-success\" onclick=\"savePaymentStatus('".concat(payment._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n                <button class=\"btn btn-secondary\" onclick=\"cancelEditPayment()\">\u274C H\u1EE7y</button>\n            ") : "\n                <span class=\"status-badge status-".concat(payment._trang_thai, "\">\n                ").concat(getPaymentStatusText(payment._trang_thai), "\n                </span>\n                <div style=\"margin-top: 6px;\">\n                    <button class=\"btn btn-outline small-button\" onclick=\"enableEditPayment()\">\u270F\uFE0F S\u1EEDa</button>\n                </div>\n            "), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ng\u00E0y thanh to\u00E1n:</span><span class=\"info-value\">").concat(formatDate(payment._ngay_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span><span class=\"info-value\">").concat(payment._ghi_chu || '(Không có)', "</span></div>\n        ") : '<p>Không có dữ liệu thanh toán</p>', "\n\n        <hr style=\"margin: 20px 0;\" />\n\n        <h3 style=\"color: #70A1FF;\">Th\u00F4ng tin giao h\u00E0ng</h3>\n        ").concat(address ? "\n        <div class=\"info-row\"><span class=\"info-label\">H\u1ECD t\u00EAn:</span>\n            ".concat(isEditingAddress ? "<input id=\"edit-name\" value=\"".concat(address._ho_ten_nguoi_nhan, "\" />") : "<span class=\"info-value\">".concat(address._ho_ten_nguoi_nhan, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u0110T:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-phone\" value=\"".concat(address._so_dien_thoai, "\" />") : "<span class=\"info-value\">".concat(address._so_dien_thoai, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">\u0110\u1ECBa ch\u1EC9:</span>\n            ").concat(isEditingAddress ? "\n                <input id=\"edit-detail\" value=\"".concat(address._dia_chi_chi_tiet, "\" placeholder=\"Chi ti\u1EBFt\" />\n                <input id=\"edit-ward\" value=\"").concat(address._phuong_xa, "\" placeholder=\"Ph\u01B0\u1EDDng/X\u00E3\" />\n                <input id=\"edit-city\" value=\"").concat(address._tinh_thanh, "\" placeholder=\"T\u1EC9nh/Th\u00E0nh\" />\n            ") : "<span class=\"info-value\">".concat(address._dia_chi_chi_tiet, ", ").concat(address._phuong_xa, ", ").concat(address._tinh_thanh, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-note\" value=\"".concat(address._ghi_chu, "\" />") : "<span class=\"info-value\">".concat(address._ghi_chu || '(Không có)', "</span>"), "\n        </div>\n        ").concat(isEditingAddress ? "\n            <button class=\"btn btn-success\" onclick=\"saveAddress('".concat(address._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n            <button class=\"btn btn-secondary\" onclick=\"cancelEditAddress()\">\u274C H\u1EE7y</button>\n        ") : "<button class=\"btn btn-outline\" onclick=\"enableEditAddress()\">\u270F\uFE0F S\u1EEDa</button>", "\n        ") : '<p>Không có dữ liệu địa chỉ</p>', "\n    ");
+                    modalBody.innerHTML = "\n        <h3 style=\"color: #2ED573;\">Th\u00F4ng tin thanh to\u00E1n</h3>\n        ".concat(payment ? "\n        <div class=\"info-row\"><span class=\"info-label\">M\u00E3 giao d\u1ECBch:</span><span class=\"info-value\">".concat(payment._ma_giao_dich, "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ph\u01B0\u01A1ng th\u1EE9c:</span><span class=\"info-value\">").concat(getPaymentMethodText(payment._phuong_thuc_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u1ED1 ti\u1EC1n:</span><span class=\"info-value\">").concat(formatCurrency(Number(payment._so_tien)), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Tr\u1EA1ng th\u00E1i:</span>\n            ").concat(isEditingPayment ? "\n                <select id=\"edit-payment-status\" class=\"form-control\">\n                    <option value=\"cho_thanh_toan\">Ch\u1EDD thanh to\u00E1n</option>\n                    <option value=\"da_thanh_toan\">\u0110\u00E3 thanh to\u00E1n</option>\n                    <option value=\"that_bai\">Th\u1EA5t b\u1EA1i</option>\n                    <option value=\"hoan_tien\">Ho\u00E0n ti\u1EC1n</option>\n                </select>\n                <button class=\"btn btn-success\" onclick=\"savePaymentStatus('".concat(payment._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n                <button class=\"btn btn-secondary\" onclick=\"cancelEditPayment()\">\u274C H\u1EE7y</button>\n            ") : "\n                <span class=\"status-badge status-".concat(payment._trang_thai, "\">\n                ").concat(getPaymentStatusText(payment._trang_thai), "\n                </span>\n                <div style=\"margin-top: 6px;\">\n                    <button class=\"btn btn-outline small-button\" onclick=\"enableEditPayment()\">\u270F\uFE0F S\u1EEDa</button>\n                </div>\n            "), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ng\u00E0y thanh to\u00E1n:</span><span class=\"info-value\">").concat(formatDate5(payment._ngay_thanh_toan), "</span></div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span><span class=\"info-value\">").concat(payment._ghi_chu || '(Không có)', "</span></div>\n        ") : '<p>Không có dữ liệu thanh toán</p>', "\n\n        <hr style=\"margin: 20px 0;\" />\n\n        <h3 style=\"color: #70A1FF;\">Th\u00F4ng tin giao h\u00E0ng</h3>\n        ").concat(address ? "\n        <div class=\"info-row\"><span class=\"info-label\">H\u1ECD t\u00EAn:</span>\n            ".concat(isEditingAddress ? "<input id=\"edit-name\" value=\"".concat(address._ho_ten_nguoi_nhan, "\" />") : "<span class=\"info-value\">".concat(address._ho_ten_nguoi_nhan, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">S\u0110T:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-phone\" value=\"".concat(address._so_dien_thoai, "\" />") : "<span class=\"info-value\">".concat(address._so_dien_thoai, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">\u0110\u1ECBa ch\u1EC9:</span>\n            ").concat(isEditingAddress ? "\n                <input id=\"edit-detail\" value=\"".concat(address._dia_chi_chi_tiet, "\" placeholder=\"Chi ti\u1EBFt\" />\n                <input id=\"edit-ward\" value=\"").concat(address._phuong_xa, "\" placeholder=\"Ph\u01B0\u1EDDng/X\u00E3\" />\n                <input id=\"edit-city\" value=\"").concat(address._tinh_thanh, "\" placeholder=\"T\u1EC9nh/Th\u00E0nh\" />\n            ") : "<span class=\"info-value\">".concat(address._dia_chi_chi_tiet, ", ").concat(address._phuong_xa, ", ").concat(address._tinh_thanh, "</span>"), "\n        </div>\n        <div class=\"info-row\"><span class=\"info-label\">Ghi ch\u00FA:</span>\n            ").concat(isEditingAddress ? "<input id=\"edit-note\" value=\"".concat(address._ghi_chu, "\" />") : "<span class=\"info-value\">".concat(address._ghi_chu || '(Không có)', "</span>"), "\n        </div>\n        ").concat(isEditingAddress ? "\n            <button class=\"btn btn-success\" onclick=\"saveAddress('".concat(address._id, "')\">\uD83D\uDCBE L\u01B0u</button>\n            <button class=\"btn btn-secondary\" onclick=\"cancelEditAddress()\">\u274C H\u1EE7y</button>\n        ") : "<button class=\"btn btn-outline\" onclick=\"enableEditAddress()\">\u270F\uFE0F S\u1EEDa</button>", "\n        ") : '<p>Không có dữ liệu địa chỉ</p>', "\n    ");
                     document.getElementById('order-modal').style.display = 'block';
                     return [2 /*return*/];
             }
@@ -399,7 +399,7 @@ function viewOrderDetails(orderId) {
     if (!order)
         return;
     var modalBody = document.getElementById('modal-body');
-    modalBody.innerHTML = "\n        <div class=\"order-info\">\n            <div class=\"info-row\"><span class=\"info-label\">M\u00E3 \u0111\u01A1n h\u00E0ng:</span><span class=\"info-value\">".concat(order.id, "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span><span class=\"info-value\">").concat(order.nguoi_dung_id, "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">Tr\u1EA1ng th\u00E1i:</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">").concat(getStatusText(order.trang_thai), "</span>\n            </div>\n            <div class=\"info-row\"><span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span><span class=\"info-value\">").concat(formatDate(order.ngay_tao), "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">T\u1ED5ng thanh to\u00E1n:</span><span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span></div>\n        </div>\n\n        <h3 style=\"color: #F19EDC; margin: 20px 0 10px 0;\">Chi ti\u1EBFt s\u1EA3n ph\u1EA9m:</h3>\n        <table class=\"details-table\">\n            <thead>\n                <tr>\n                    <th>\u1EA2nh</th>\n                    <th>M\u00E3 s\u1EA3n ph\u1EA9m</th>\n                    <th>T\u00EAn s\u1EA3n ph\u1EA9m</th>\n                    <th>M\u00E0u s\u1EAFc</th>\n                    <th>K\u00EDch c\u1EE1</th>\n                    <th>S\u1ED1 l\u01B0\u1EE3ng</th>\n                    <th>Gi\u00E1 b\u00E1n</th>\n                </tr>\n            </thead>\n            <tbody>\n                ").concat(order.chi_tiet.map(function (item) { return "\n                    <tr>\n                        <td><img src=\"".concat(item.hinh_anh_bien_the, "\" alt=\"").concat(item.ten_san_pham, "\" style=\"width: 60px; height: auto; border-radius: 6px;\" /></td>\n                        <td>").concat(item.id_san_pham, "</td>\n                        <td>").concat(item.ten_san_pham, "</td>\n                        <td>").concat(item.mau_sac, "</td>\n                        <td>").concat(item.kich_co, "</td>\n                        <td>").concat(item.so_luong, "</td>\n                        <td>").concat(formatCurrency(item.gia_ban), "</td>\n                    </tr>\n                "); }).join(''), "\n            </tbody>\n        </table>\n    ");
+    modalBody.innerHTML = "\n        <div class=\"order-info\">\n            <div class=\"info-row\"><span class=\"info-label\">M\u00E3 \u0111\u01A1n h\u00E0ng:</span><span class=\"info-value\">".concat(order.id, "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">Ng\u01B0\u1EDDi d\u00F9ng:</span><span class=\"info-value\">").concat(order.nguoi_dung_id, "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">Tr\u1EA1ng th\u00E1i:</span>\n                <span class=\"status-badge status-").concat(order.trang_thai, "\">").concat(getStatusText(order.trang_thai), "</span>\n            </div>\n            <div class=\"info-row\"><span class=\"info-label\">Ng\u00E0y t\u1EA1o:</span><span class=\"info-value\">").concat(formatDate5(order.ngay_tao), "</span></div>\n            <div class=\"info-row\"><span class=\"info-label\">T\u1ED5ng thanh to\u00E1n:</span><span class=\"info-value total-amount\">").concat(formatCurrency(order.tong_thanh_toan), "</span></div>\n        </div>\n\n        <h3 style=\"color: #F19EDC; margin: 20px 0 10px 0;\">Chi ti\u1EBFt s\u1EA3n ph\u1EA9m:</h3>\n        <table class=\"details-table\">\n            <thead>\n                <tr>\n                    <th>\u1EA2nh</th>\n                    <th>M\u00E3 s\u1EA3n ph\u1EA9m</th>\n                    <th>T\u00EAn s\u1EA3n ph\u1EA9m</th>\n                    <th>M\u00E0u s\u1EAFc</th>\n                    <th>K\u00EDch c\u1EE1</th>\n                    <th>S\u1ED1 l\u01B0\u1EE3ng</th>\n                    <th>Gi\u00E1 b\u00E1n</th>\n                </tr>\n            </thead>\n            <tbody>\n                ").concat(order.chi_tiet.map(function (item) { return "\n                    <tr>\n                        <td><img src=\"".concat(item.hinh_anh_bien_the, "\" alt=\"").concat(item.ten_san_pham, "\" style=\"width: 60px; height: auto; border-radius: 6px;\" /></td>\n                        <td>").concat(item.id_san_pham, "</td>\n                        <td>").concat(item.ten_san_pham, "</td>\n                        <td>").concat(item.mau_sac, "</td>\n                        <td>").concat(item.kich_co, "</td>\n                        <td>").concat(item.so_luong, "</td>\n                        <td>").concat(formatCurrency(item.gia_ban), "</td>\n                    </tr>\n                "); }).join(''), "\n            </tbody>\n        </table>\n    ");
     document.getElementById('order-modal').style.display = 'block';
 }
 function editOrderStatus(orderId) {
@@ -410,7 +410,7 @@ function editOrderStatus(orderId) {
     document.getElementById('new-status').value = order.trang_thai;
     document.getElementById('status-modal').style.display = 'block';
 }
-function closeModal2() {
+function closeModal5() {
     document.getElementById('order-modal').style.display = 'none';
 }
 function closeStatusModal() {
@@ -475,10 +475,39 @@ function setupFilters() {
     userFilter.addEventListener('input', applyFilters); // 👈 Thêm ở đây
 }
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+    var token, res, error_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, loadOrdersData()];
+            case 0:
+                token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                _a.label = 1;
             case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                        headers: { Authorization: "Bearer ".concat(token) }
+                    })];
+            case 2:
+                res = _a.sent();
+                if (!res.ok) {
+                    localStorage.removeItem('token');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error_6 = _a.sent();
+                sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                window.location.href = '/FE/HTML/DangNhap.html';
+                return [2 /*return*/];
+            case 4: return [4 /*yield*/, loadOrdersData()];
+            case 5:
                 orders = _a.sent();
                 updateDashboard();
                 displayOrders();
@@ -487,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 initOrders();
                 document.getElementById('status-form').addEventListener('submit', function (e) {
                     return __awaiter(this, void 0, void 0, function () {
-                        var newStatus, response, result, order, error_6;
+                        var newStatus, response, result, order, error_7;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -525,8 +554,8 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     }
                                     return [3 /*break*/, 5];
                                 case 4:
-                                    error_6 = _a.sent();
-                                    console.error('Lỗi khi cập nhật trạng thái:', error_6);
+                                    error_7 = _a.sent();
+                                    console.error('Lỗi khi cập nhật trạng thái:', error_7);
                                     alert('Có lỗi xảy ra khi kết nối đến máy chủ!');
                                     return [3 /*break*/, 5];
                                 case 5:
@@ -538,13 +567,13 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 });
                 window.addEventListener('click', function (e) {
                     if (e.target === document.getElementById('order-modal'))
-                        closeModal2();
+                        closeModal5();
                     if (e.target === document.getElementById('status-modal'))
                         closeStatusModal();
                 });
                 document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') {
-                        closeModal2();
+                        closeModal5();
                         closeStatusModal();
                     }
                     if (e.ctrlKey && e.key === 'f') {
@@ -577,7 +606,7 @@ function deleteOrderApi(orderId) {
 }
 function deleteOrder(orderId) {
     return __awaiter(this, void 0, void 0, function () {
-        var index, error_7;
+        var index, error_8;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -601,8 +630,8 @@ function deleteOrder(orderId) {
                     }
                     return [3 /*break*/, 4];
                 case 3:
-                    error_7 = _a.sent();
-                    console.error('Lỗi khi xóa đơn hàng:', error_7);
+                    error_8 = _a.sent();
+                    console.error('Lỗi khi xóa đơn hàng:', error_8);
                     alert('Xóa đơn hàng thất bại!');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];

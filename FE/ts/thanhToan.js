@@ -575,7 +575,7 @@ function processOrderWithInventory(orderInfo) {
     });
 }
 // Utility functions
-function formatCurrency(amount) {
+function formatCurrency2(amount) {
     return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
 }
 function getElement(id) {
@@ -757,7 +757,7 @@ function renderOrderItems() {
     }
     container.innerHTML = orderData.items.map(function (item) { return "\n        <div class=\"order-item\">\n            <div class=\"item-image\">\n                ".concat(item._duong_dan_hinh_anh ?
         "<img src=\"".concat(item._duong_dan_hinh_anh, "\" alt=\"").concat(item._ten_san_pham, "\" onerror=\"this.style.display='none'; this.parentNode.innerHTML='H\u00ECnh \u1EA3nh'\">") :
-        'Hình ảnh', "\n            </div>\n            <div class=\"item-details\">\n                <div class=\"item-name\">").concat(item._ten_san_pham, "</div>\n                <div class=\"item-variant\">M\u00E0u: ").concat(item._mau_sac, " | Size: ").concat(item._kich_co, "</div>\n                <div class=\"item-price\">").concat(formatCurrency(item._don_gia), " x ").concat(item._so_luong, "</div>\n            </div>\n        </div>\n    "); }).join('');
+        'Hình ảnh', "\n            </div>\n            <div class=\"item-details\">\n                <div class=\"item-name\">").concat(item._ten_san_pham, "</div>\n                <div class=\"item-variant\">M\u00E0u: ").concat(item._mau_sac, " | Size: ").concat(item._kich_co, "</div>\n                <div class=\"item-price\">").concat(formatCurrency2(item._don_gia), " x ").concat(item._so_luong, "</div>\n            </div>\n        </div>\n    "); }).join('');
 }
 // Calculate total amount
 function calculateTotal() {
@@ -777,14 +777,14 @@ function calculateTotal() {
 function updatePriceElement(id, amount) {
     var element = getElement(id);
     if (element) {
-        element.textContent = formatCurrency(amount);
+        element.textContent = formatCurrency2(amount);
     }
 }
 function updateDiscountElement() {
     var discountElement = getElement('discount');
     if (discountElement) {
         discountElement.textContent = orderData.discount > 0 ?
-            "-".concat(formatCurrency(orderData.discount)) : '0đ';
+            "-".concat(formatCurrency2(orderData.discount)) : '0đ';
     }
 }
 // Handle payment method selection
@@ -985,30 +985,67 @@ function cleanupEventListeners() {
 // MAIN INITIALIZATION FUNCTIONS
 // Hàm khởi tạo trang thanh toán
 function initThanhToan() {
-    console.log('🚀 Initializing Thanh Toan...');
-    // 🔧 FIX: Prevent double initialization
-    if (isInitialized) {
-        console.log('⚠️ Already initialized, cleaning up first...');
-        cleanupEventListeners();
-    }
-    // Reset orderData khi khởi tạo lại
-    orderData = {
-        items: [],
-        subtotal: 0,
-        shipping: 30000,
-        discount: 0,
-        total: 0
-    };
-    // Khởi tạo các chức năng
-    handleLocationSelection();
-    loadUserInfo();
-    loadProductInfo();
-    handlePaymentMethodSelection();
-    handleFormSubmission();
-    handleMobileScrolling();
-    // 🔧 FIX: Mark as initialized
-    isInitialized = true;
-    console.log('✅ Thanh Toan initialized successfully');
+    return __awaiter(this, void 0, void 0, function () {
+        var token, res, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_5 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                case 4:
+                    console.log('🚀 Initializing Thanh Toan...');
+                    // 🔧 FIX: Prevent double initialization
+                    if (isInitialized) {
+                        console.log('⚠️ Already initialized, cleaning up first...');
+                        cleanupEventListeners();
+                    }
+                    // Reset orderData khi khởi tạo lại
+                    orderData = {
+                        items: [],
+                        subtotal: 0,
+                        shipping: 30000,
+                        discount: 0,
+                        total: 0
+                    };
+                    // Khởi tạo các chức năng
+                    handleLocationSelection();
+                    loadUserInfo();
+                    loadProductInfo();
+                    handlePaymentMethodSelection();
+                    handleFormSubmission();
+                    handleMobileScrolling();
+                    // 🔧 FIX: Mark as initialized
+                    isInitialized = true;
+                    console.log('✅ Thanh Toan initialized successfully');
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 // Expose functions globally để router có thể gọi
 window.initThanhToan = initThanhToan;

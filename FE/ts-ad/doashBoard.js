@@ -43,6 +43,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+var _this = this;
 function groupRevenueGiaoDich(giaoDichs, type, filterDate) {
     var result = {};
     giaoDichs.forEach(function (gd) {
@@ -159,7 +160,7 @@ function initRevenueChart() {
 }
 function initStats() {
     return __awaiter(this, void 0, void 0, function () {
-        var donHangRes, donHangData, khachHangRes, khachHangData, sanPhamRes, sanPhamData, error_1;
+        var donHangRes, donHangData, token, khachHangRes, khachHangData, sanPhamRes, sanPhamData, error_1;
         var _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
@@ -172,7 +173,13 @@ function initStats() {
                 case 2:
                     donHangData = _d.sent();
                     document.querySelectorAll('.stat-card .value')[0].textContent = (_a = donHangData.total) !== null && _a !== void 0 ? _a : '0';
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/count')];
+                    token = localStorage.getItem('token');
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/count', {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': "Bearer ".concat(token) // 👈 bắt buộc để qua authMiddleware
+                            }
+                        })];
                 case 3:
                     khachHangRes = _d.sent();
                     return [4 /*yield*/, khachHangRes.json()];
@@ -283,20 +290,55 @@ function exportReport() {
     // Xuất file
     XLSX.writeFile(wb, "BaoCaoDoanhThu_".concat(new Date().toISOString().split('T')[0], ".xlsx"));
 }
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+    var token, res, error_3;
     var _a, _b, _c;
-    initStats();
-    initRevenueChart();
-    initCategoryChart();
-    (_a = document.getElementById('typeSelect')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', initRevenueChart);
-    (_b = document.getElementById('dateFilter')) === null || _b === void 0 ? void 0 : _b.addEventListener('change', initRevenueChart);
-    (_c = document.getElementById('exportBtn')) === null || _c === void 0 ? void 0 : _c.addEventListener('click', exportReport);
-    document.querySelectorAll('.stat-card').forEach(function (card) {
-        card.addEventListener('mouseenter', function () {
-            card.style.transform = 'translateY(-2px)';
-        });
-        card.addEventListener('mouseleave', function () {
-            card.style.transform = 'translateY(0)';
-        });
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                _d.label = 1;
+            case 1:
+                _d.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                        headers: { Authorization: "Bearer ".concat(token) }
+                    })];
+            case 2:
+                res = _d.sent();
+                if (!res.ok) {
+                    localStorage.removeItem('token');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _d.sent();
+                sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                window.location.href = '/FE/HTML/DangNhap.html';
+                return [2 /*return*/];
+            case 4:
+                initStats();
+                initRevenueChart();
+                initCategoryChart();
+                (_a = document.getElementById('typeSelect')) === null || _a === void 0 ? void 0 : _a.addEventListener('change', initRevenueChart);
+                (_b = document.getElementById('dateFilter')) === null || _b === void 0 ? void 0 : _b.addEventListener('change', initRevenueChart);
+                (_c = document.getElementById('exportBtn')) === null || _c === void 0 ? void 0 : _c.addEventListener('click', exportReport);
+                document.querySelectorAll('.stat-card').forEach(function (card) {
+                    card.addEventListener('mouseenter', function () {
+                        card.style.transform = 'translateY(-2px)';
+                    });
+                    card.addEventListener('mouseleave', function () {
+                        card.style.transform = 'translateY(0)';
+                    });
+                });
+                return [2 /*return*/];
+        }
     });
-});
+}); });

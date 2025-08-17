@@ -51,7 +51,7 @@ function getId(): string | null {
     }
 }
 
-function formatDate(dateString: string): string {
+function formatDate2(dateString: string): string {
     try {
         const date = new Date(dateString);
         return date.toLocaleString('vi-VN', {
@@ -66,7 +66,7 @@ function formatDate(dateString: string): string {
     }
 }
 
-function formatCurrency2(amount: number): string {
+function formatCurrency3(amount: number): string {
     return new Intl.NumberFormat('vi-VN').format(amount) + '₫';
 }
 
@@ -121,7 +121,7 @@ function renderProductsOrder(sanPhams: SanPhamDonHang[]): string {
                 <p class="product-qty">Số lượng: ${sp.so_luong}</p>
             </div>
             <div class="product-price">
-                <p class="price">${formatCurrency2(sp.gia_ban * sp.so_luong)}</p>
+                <p class="price">${formatCurrency3(sp.gia_ban * sp.so_luong)}</p>
             </div>
         </div>
     `).join('');
@@ -143,14 +143,14 @@ function renderOrderActions(trangThai: string, orderId: string): string {
     }
 }
 
-function createOrderCard(order: DonHangData): string {
+function createOrderCard2(order: DonHangData): string {
     const trangThaiInfo = TRANG_THAI_MAP[order._trang_thai] || { text: 'Không xác định', class: 'unknown' };
     return `
         <div class="order-card" data-status="${order._trang_thai}">
             <div class="order-header">
                 <div class="order-info">
                     <h3 class="order-id">Đơn hàng #${order._id}</h3>
-                    <p class="order-date">Ngày đặt: ${formatDate(order._ngay_tao)}</p>
+                    <p class="order-date">Ngày đặt: ${formatDate2(order._ngay_tao)}</p>
                 </div>
                 <span class="status ${trangThaiInfo.class}">${trangThaiInfo.text}</span>
             </div>
@@ -158,7 +158,7 @@ function createOrderCard(order: DonHangData): string {
             <div class="order-total">
                 <div class="total-row">
                     <span class="total-label">Tổng thanh toán:</span>
-                    <span class="total-amount">${formatCurrency2(order._tong_thanh_toan)}</span>
+                    <span class="total-amount">${formatCurrency3(order._tong_thanh_toan)}</span>
                 </div>
             </div>
             <div class="order-actions">${renderOrderActions(order._trang_thai, order._id)}</div>
@@ -256,7 +256,7 @@ function renderOrders(orders: DonHangData[]): void {
         return showEmptyState();
     }
 
-    const ordersHtml = orders.map(createOrderCard).join('');
+    const ordersHtml = orders.map(createOrderCard2).join('');
     console.log('Generated HTML length:', ordersHtml.length);
 
     container.innerHTML = ordersHtml;
@@ -380,7 +380,33 @@ function filterOrders(status: string): void {
 }
 
 // Init
-function initDonHang(): void {
+async function initDonHang() {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     console.log('Initializing DonHang...');
     setupEventListeners2();
     loadDonHangData();

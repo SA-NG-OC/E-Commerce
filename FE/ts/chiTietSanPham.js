@@ -1031,11 +1031,48 @@ function initReviewForm() {
 }
 // ✅ Hàm khởi tạo chính - sẽ được gọi bởi smooth router
 function initChiTietSanPham() {
-    console.log('initChiTietSanPham called');
-    renderChiTietSanPham();
-    initReviewForm();
-    initializeProductVariant();
-    initializeButtonEvents();
+    return __awaiter(this, void 0, void 0, function () {
+        var token, res, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/];
+                    }
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_2 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
+                case 4:
+                    console.log('initChiTietSanPham called');
+                    renderChiTietSanPham();
+                    initReviewForm();
+                    initializeProductVariant();
+                    initializeButtonEvents();
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 // ✅ Export functions to window để smooth router có thể gọi
 window.initChiTietSanPham = initChiTietSanPham;

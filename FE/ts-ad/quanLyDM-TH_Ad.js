@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 var danhMucs2 = [];
 var thuongHieus2 = [];
 function fetchData() {
@@ -75,7 +76,7 @@ function fetchData() {
                     // Sau khi load xong thì hiển thị
                     displayCategories();
                     displayBrands();
-                    updateStats();
+                    updateStats3();
                     return [3 /*break*/, 6];
                 case 5:
                     err_1 = _a.sent();
@@ -135,7 +136,7 @@ function showTab2(tabName) {
     (_a = document.getElementById(tabName)) === null || _a === void 0 ? void 0 : _a.classList.add('active');
     (_b = event === null || event === void 0 ? void 0 : event.target) === null || _b === void 0 ? void 0 : _b.classList.add('active');
 }
-function updateStats() {
+function updateStats3() {
     var totalProducts = danhMucs2.reduce(function (sum, dm) { return sum + dm.san_pham.length; }, 0);
     document.getElementById('totalCategories').textContent = danhMucs2.length.toString();
     document.getElementById('totalBrands').textContent = thuongHieus2.length.toString();
@@ -279,301 +280,336 @@ window.deleteBrand = function (id) {
         });
     });
 };
-document.addEventListener('DOMContentLoaded', function () {
-    fetchData(); // Load từ API thay vì dữ liệu mẫu
-    // Add form listeners
-    document.getElementById('addCategoryForm').addEventListener('submit', function (e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var name, icon, res, data, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        e.preventDefault();
-                        name = document.getElementById('categoryName').value.trim();
-                        icon = document.getElementById('categoryIcon').value.trim() || '📁';
-                        if (!name) {
-                            alert('Vui lòng nhập tên danh mục');
-                            return [2 /*return*/];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 7, , 8]);
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ icon: icon, ten_danh_muc: name })
-                            })];
-                    case 2:
-                        res = _a.sent();
-                        return [4 /*yield*/, res.json()];
-                    case 3:
-                        data = _a.sent();
-                        if (!res.ok) return [3 /*break*/, 5];
-                        alert('✅ Thêm danh mục thành công!');
-                        this.reset();
-                        // Cập nhật danhMucs2 local
-                        return [4 /*yield*/, fetchData()];
-                    case 4:
-                        // Cập nhật danhMucs2 local
-                        _a.sent(); // ← Lấy lại dữ liệu mới từ DB
-                        displayCategories(); // ← Hiển thị lại bảng danh mục
-                        updateCategorySelect(); // ← Làm mới dropdown
-                        updateStats();
-                        return [3 /*break*/, 6];
-                    case 5:
-                        alert("\u274C L\u1ED7i: ".concat(data.message));
-                        _a.label = 6;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
-                        err_2 = _a.sent();
-                        console.error(err_2);
-                        alert('❌ Không thể kết nối tới máy chủ');
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+    var token, res, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                if (!token) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
                 }
-            });
-        });
-    });
-    document.getElementById('updateCategoryForm').addEventListener('submit', function (e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var id, name, icon, res, result, err_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        e.preventDefault();
-                        id = document.getElementById('updateCategorySelect').value;
-                        name = document.getElementById('updateCategoryName').value.trim();
-                        icon = document.getElementById('updateCategoryIcon').value.trim();
-                        if (!id || !name) {
-                            alert('❌ Vui lòng chọn danh mục và nhập tên danh mục.');
-                            return [2 /*return*/];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ ten_danh_muc: name, icon: icon }),
-                            })];
-                    case 2:
-                        res = _a.sent();
-                        return [4 /*yield*/, res.json()];
-                    case 3:
-                        result = _a.sent();
-                        if (!res.ok) {
-                            throw new Error(result.message || 'Cập nhật thất bại');
-                        }
-                        alert('✅ Cập nhật danh mục thành công!');
-                        // Cập nhật danhMucs2 local
-                        return [4 /*yield*/, fetchData()];
-                    case 4:
-                        // Cập nhật danhMucs2 local
-                        _a.sent(); // ← Lấy lại dữ liệu mới từ DB
-                        displayCategories(); // ← Hiển thị lại bảng danh mục
-                        updateCategorySelect(); // ← Làm mới dropdown
-                        this.reset(); // Reset form
-                        return [3 /*break*/, 6];
-                    case 5:
-                        err_3 = _a.sent();
-                        console.error('Lỗi cập nhật danh mục:', err_3);
-                        alert('❌ Có lỗi xảy ra khi cập nhật danh mục.');
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                        headers: { Authorization: "Bearer ".concat(token) }
+                    })];
+            case 2:
+                res = _a.sent();
+                if (!res.ok) {
+                    localStorage.removeItem('token');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/];
                 }
-            });
-        });
-    });
-    document.getElementById('addBrandForm').addEventListener('submit', function (e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var name, res, data, err_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        e.preventDefault();
-                        name = document.getElementById('brandName').value.trim();
-                        if (!name) {
-                            alert('Vui lòng nhập tên thương hiệu');
-                            return [2 /*return*/];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 7, , 8]);
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ ten_thuong_hieu: name })
-                            })];
-                    case 2:
-                        res = _a.sent();
-                        return [4 /*yield*/, res.json()];
-                    case 3:
-                        data = _a.sent();
-                        if (!res.ok) return [3 /*break*/, 5];
-                        alert('✅ Thêm thương hiệu thành công!');
-                        this.reset();
-                        // Cập nhật danhMucs2 local
-                        return [4 /*yield*/, fetchData()];
-                    case 4:
-                        // Cập nhật danhMucs2 local
-                        _a.sent(); // ← Lấy lại dữ liệu mới từ DB
-                        displayCategories(); // ← Hiển thị lại bảng danh mục
-                        updateCategorySelect(); // ← Làm mới dropdown
-                        updateStats();
-                        return [3 /*break*/, 6];
-                    case 5:
-                        alert("\u274C L\u1ED7i: ".concat(data.message));
-                        _a.label = 6;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
-                        err_4 = _a.sent();
-                        console.error(err_4);
-                        alert('❌ Không thể kết nối tới máy chủ');
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
-                }
-            });
-        });
-    });
-    document.getElementById('updateBrandForm').addEventListener('submit', function (e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var id, name, res, data, th, err_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        e.preventDefault();
-                        id = document.getElementById('updateBrandSelect').value;
-                        name = document.getElementById('updateBrandName').value.trim();
-                        if (!id || !name) {
-                            alert('Vui lòng chọn thương hiệu và nhập tên mới.');
-                            return [2 /*return*/];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ ten_thuong_hieu: name })
-                            })];
-                    case 2:
-                        res = _a.sent();
-                        return [4 /*yield*/, res.json()];
-                    case 3:
-                        data = _a.sent();
-                        if (res.ok) {
-                            th = thuongHieus2.find(function (th) { return th.id === id; });
-                            if (th) {
-                                th.ten_thuong_hieu = name;
-                                displayBrands();
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                window.location.href = '/FE/HTML/DangNhap.html';
+                return [2 /*return*/];
+            case 4:
+                fetchData(); // Load từ API thay vì dữ liệu mẫu
+                // Add form listeners
+                document.getElementById('addCategoryForm').addEventListener('submit', function (e) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var name, icon, res, data, err_2;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    e.preventDefault();
+                                    name = document.getElementById('categoryName').value.trim();
+                                    icon = document.getElementById('categoryIcon').value.trim() || '📁';
+                                    if (!name) {
+                                        alert('Vui lòng nhập tên danh mục');
+                                        return [2 /*return*/];
+                                    }
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 7, , 8]);
+                                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ icon: icon, ten_danh_muc: name })
+                                        })];
+                                case 2:
+                                    res = _a.sent();
+                                    return [4 /*yield*/, res.json()];
+                                case 3:
+                                    data = _a.sent();
+                                    if (!res.ok) return [3 /*break*/, 5];
+                                    alert('✅ Thêm danh mục thành công!');
+                                    this.reset();
+                                    // Cập nhật danhMucs2 local
+                                    return [4 /*yield*/, fetchData()];
+                                case 4:
+                                    // Cập nhật danhMucs2 local
+                                    _a.sent(); // ← Lấy lại dữ liệu mới từ DB
+                                    displayCategories(); // ← Hiển thị lại bảng danh mục
+                                    updateCategorySelect(); // ← Làm mới dropdown
+                                    updateStats3();
+                                    return [3 /*break*/, 6];
+                                case 5:
+                                    alert("\u274C L\u1ED7i: ".concat(data.message));
+                                    _a.label = 6;
+                                case 6: return [3 /*break*/, 8];
+                                case 7:
+                                    err_2 = _a.sent();
+                                    console.error(err_2);
+                                    alert('❌ Không thể kết nối tới máy chủ');
+                                    return [3 /*break*/, 8];
+                                case 8: return [2 /*return*/];
                             }
-                            this.reset();
-                            alert('✅ Cập nhật thương hiệu thành công!');
-                        }
-                        else {
-                            alert("\u274C L\u1ED7i: ".concat(data.message));
-                        }
-                        return [3 /*break*/, 5];
-                    case 4:
-                        err_5 = _a.sent();
-                        console.error(err_5);
-                        alert('❌ Lỗi khi kết nối đến máy chủ.');
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    });
-    document.getElementById('addProductForm').addEventListener('submit', function (e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var select, selectedOption, id, ten_san_pham, parentId, parentType, product, res, res, error_4, err;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        e.preventDefault();
-                        select = document.getElementById('productName');
-                        selectedOption = select.options[select.selectedIndex];
-                        id = selectedOption.value;
-                        ten_san_pham = selectedOption.textContent.split(' - ').slice(1).join(' - ');
-                        parentId = document.getElementById('productParentId').value;
-                        parentType = document.getElementById('productParentType').value;
-                        product = { id: id, ten_san_pham: ten_san_pham };
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 8, , 9]);
-                        if (!(parentType === 'category')) return [3 /*break*/, 4];
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-danh-muc', {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ sanPhamId: id, danhMucId: parentId })
-                            })];
-                    case 2:
-                        res = _a.sent();
-                        if (!res.ok)
-                            throw new Error('Cập nhật danh mục thất bại');
-                        return [4 /*yield*/, fetchData()];
-                    case 3:
-                        _a.sent();
-                        return [3 /*break*/, 7];
-                    case 4: return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-thuong-hieu', {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ sanPhamId: id, thuongHieuId: parentId })
-                        })];
-                    case 5:
-                        res = _a.sent();
-                        if (!res.ok)
-                            throw new Error('Cập nhật thương hiệu thất bại');
-                        return [4 /*yield*/, fetchData()];
-                    case 6:
-                        _a.sent();
-                        _a.label = 7;
-                    case 7:
-                        updateStats();
-                        document.getElementById('productModal').style.display = 'none';
-                        this.reset();
-                        alert('✅ Thêm sản phẩm thành công!');
-                        return [3 /*break*/, 9];
-                    case 8:
-                        error_4 = _a.sent();
-                        err = error_4;
-                        alert('❌ ' + err.message);
-                        return [3 /*break*/, 9];
-                    case 9: return [2 /*return*/];
-                }
-            });
-        });
-    });
-    document.getElementById('updateCategorySelect').addEventListener('change', function () {
-        var id = this.value;
-        var dm = danhMucs2.find(function (dm) { return dm.id === id; });
-        if (dm) {
-            document.getElementById('updateCategoryName').value = dm.ten_danh_muc;
-            document.getElementById('updateCategoryIcon').value = dm.icon;
+                        });
+                    });
+                });
+                document.getElementById('updateCategoryForm').addEventListener('submit', function (e) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var id, name, icon, res, result, err_3;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    e.preventDefault();
+                                    id = document.getElementById('updateCategorySelect').value;
+                                    name = document.getElementById('updateCategoryName').value.trim();
+                                    icon = document.getElementById('updateCategoryIcon').value.trim();
+                                    if (!id || !name) {
+                                        alert('❌ Vui lòng chọn danh mục và nhập tên danh mục.');
+                                        return [2 /*return*/];
+                                    }
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 5, , 6]);
+                                    return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ ten_danh_muc: name, icon: icon }),
+                                        })];
+                                case 2:
+                                    res = _a.sent();
+                                    return [4 /*yield*/, res.json()];
+                                case 3:
+                                    result = _a.sent();
+                                    if (!res.ok) {
+                                        throw new Error(result.message || 'Cập nhật thất bại');
+                                    }
+                                    alert('✅ Cập nhật danh mục thành công!');
+                                    // Cập nhật danhMucs2 local
+                                    return [4 /*yield*/, fetchData()];
+                                case 4:
+                                    // Cập nhật danhMucs2 local
+                                    _a.sent(); // ← Lấy lại dữ liệu mới từ DB
+                                    displayCategories(); // ← Hiển thị lại bảng danh mục
+                                    updateCategorySelect(); // ← Làm mới dropdown
+                                    this.reset(); // Reset form
+                                    return [3 /*break*/, 6];
+                                case 5:
+                                    err_3 = _a.sent();
+                                    console.error('Lỗi cập nhật danh mục:', err_3);
+                                    alert('❌ Có lỗi xảy ra khi cập nhật danh mục.');
+                                    return [3 /*break*/, 6];
+                                case 6: return [2 /*return*/];
+                            }
+                        });
+                    });
+                });
+                document.getElementById('addBrandForm').addEventListener('submit', function (e) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var name, res, data, err_4;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    e.preventDefault();
+                                    name = document.getElementById('brandName').value.trim();
+                                    if (!name) {
+                                        alert('Vui lòng nhập tên thương hiệu');
+                                        return [2 /*return*/];
+                                    }
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 7, , 8]);
+                                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ ten_thuong_hieu: name })
+                                        })];
+                                case 2:
+                                    res = _a.sent();
+                                    return [4 /*yield*/, res.json()];
+                                case 3:
+                                    data = _a.sent();
+                                    if (!res.ok) return [3 /*break*/, 5];
+                                    alert('✅ Thêm thương hiệu thành công!');
+                                    this.reset();
+                                    // Cập nhật danhMucs2 local
+                                    return [4 /*yield*/, fetchData()];
+                                case 4:
+                                    // Cập nhật danhMucs2 local
+                                    _a.sent(); // ← Lấy lại dữ liệu mới từ DB
+                                    displayCategories(); // ← Hiển thị lại bảng danh mục
+                                    updateCategorySelect(); // ← Làm mới dropdown
+                                    updateStats3();
+                                    return [3 /*break*/, 6];
+                                case 5:
+                                    alert("\u274C L\u1ED7i: ".concat(data.message));
+                                    _a.label = 6;
+                                case 6: return [3 /*break*/, 8];
+                                case 7:
+                                    err_4 = _a.sent();
+                                    console.error(err_4);
+                                    alert('❌ Không thể kết nối tới máy chủ');
+                                    return [3 /*break*/, 8];
+                                case 8: return [2 /*return*/];
+                            }
+                        });
+                    });
+                });
+                document.getElementById('updateBrandForm').addEventListener('submit', function (e) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var id, name, res, data, th, err_5;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    e.preventDefault();
+                                    id = document.getElementById('updateBrandSelect').value;
+                                    name = document.getElementById('updateBrandName').value.trim();
+                                    if (!id || !name) {
+                                        alert('Vui lòng chọn thương hiệu và nhập tên mới.');
+                                        return [2 /*return*/];
+                                    }
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 4, , 5]);
+                                    return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ ten_thuong_hieu: name })
+                                        })];
+                                case 2:
+                                    res = _a.sent();
+                                    return [4 /*yield*/, res.json()];
+                                case 3:
+                                    data = _a.sent();
+                                    if (res.ok) {
+                                        th = thuongHieus2.find(function (th) { return th.id === id; });
+                                        if (th) {
+                                            th.ten_thuong_hieu = name;
+                                            displayBrands();
+                                        }
+                                        this.reset();
+                                        alert('✅ Cập nhật thương hiệu thành công!');
+                                    }
+                                    else {
+                                        alert("\u274C L\u1ED7i: ".concat(data.message));
+                                    }
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    err_5 = _a.sent();
+                                    console.error(err_5);
+                                    alert('❌ Lỗi khi kết nối đến máy chủ.');
+                                    return [3 /*break*/, 5];
+                                case 5: return [2 /*return*/];
+                            }
+                        });
+                    });
+                });
+                document.getElementById('addProductForm').addEventListener('submit', function (e) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var select, selectedOption, id, ten_san_pham, parentId, parentType, product, res, res, error_5, err;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    e.preventDefault();
+                                    select = document.getElementById('productName');
+                                    selectedOption = select.options[select.selectedIndex];
+                                    id = selectedOption.value;
+                                    ten_san_pham = selectedOption.textContent.split(' - ').slice(1).join(' - ');
+                                    parentId = document.getElementById('productParentId').value;
+                                    parentType = document.getElementById('productParentType').value;
+                                    product = { id: id, ten_san_pham: ten_san_pham };
+                                    _a.label = 1;
+                                case 1:
+                                    _a.trys.push([1, 8, , 9]);
+                                    if (!(parentType === 'category')) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-danh-muc', {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ sanPhamId: id, danhMucId: parentId })
+                                        })];
+                                case 2:
+                                    res = _a.sent();
+                                    if (!res.ok)
+                                        throw new Error('Cập nhật danh mục thất bại');
+                                    return [4 /*yield*/, fetchData()];
+                                case 3:
+                                    _a.sent();
+                                    return [3 /*break*/, 7];
+                                case 4: return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-thuong-hieu', {
+                                        method: 'PUT',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ sanPhamId: id, thuongHieuId: parentId })
+                                    })];
+                                case 5:
+                                    res = _a.sent();
+                                    if (!res.ok)
+                                        throw new Error('Cập nhật thương hiệu thất bại');
+                                    return [4 /*yield*/, fetchData()];
+                                case 6:
+                                    _a.sent();
+                                    _a.label = 7;
+                                case 7:
+                                    updateStats3();
+                                    document.getElementById('productModal').style.display = 'none';
+                                    this.reset();
+                                    alert('✅ Thêm sản phẩm thành công!');
+                                    return [3 /*break*/, 9];
+                                case 8:
+                                    error_5 = _a.sent();
+                                    err = error_5;
+                                    alert('❌ ' + err.message);
+                                    return [3 /*break*/, 9];
+                                case 9: return [2 /*return*/];
+                            }
+                        });
+                    });
+                });
+                document.getElementById('updateCategorySelect').addEventListener('change', function () {
+                    var id = this.value;
+                    var dm = danhMucs2.find(function (dm) { return dm.id === id; });
+                    if (dm) {
+                        document.getElementById('updateCategoryName').value = dm.ten_danh_muc;
+                        document.getElementById('updateCategoryIcon').value = dm.icon;
+                    }
+                });
+                document.getElementById('updateBrandSelect').addEventListener('change', function () {
+                    var id = this.value;
+                    var th = thuongHieus2.find(function (th) { return th.id === id; });
+                    if (th) {
+                        document.getElementById('updateBrandName').value = th.ten_thuong_hieu;
+                    }
+                });
+                document.querySelector('.close').addEventListener('click', function () {
+                    document.getElementById('productModal').style.display = 'none';
+                });
+                window.addEventListener('click', function (event) {
+                    var modal = document.getElementById('productModal');
+                    if (modal && event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+                return [2 /*return*/];
         }
     });
-    document.getElementById('updateBrandSelect').addEventListener('change', function () {
-        var id = this.value;
-        var th = thuongHieus2.find(function (th) { return th.id === id; });
-        if (th) {
-            document.getElementById('updateBrandName').value = th.ten_thuong_hieu;
-        }
-    });
-    document.querySelector('.close').addEventListener('click', function () {
-        document.getElementById('productModal').style.display = 'none';
-    });
-    window.addEventListener('click', function (event) {
-        var modal = document.getElementById('productModal');
-        if (modal && event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-});
+}); });

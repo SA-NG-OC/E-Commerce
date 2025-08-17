@@ -210,7 +210,7 @@ function setupEventListeners3(): void {
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                searchProducts();
+                searchProducts2();
             }
         });
     }
@@ -460,7 +460,7 @@ function filterByBrand(brandId: string): void {
     }
 }
 
-function searchProducts(): void {
+function searchProducts2(): void {
     if (searchInput) {
         currentSearchTerm = searchInput.value.trim();
         if (currentCategory) {
@@ -471,6 +471,32 @@ function searchProducts(): void {
 
 // Main initialization function
 async function initDanhMuc(): Promise<void> {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return;
+        }
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return;
+    }
     console.log('Initializing Danh Muc...');
 
     try {
@@ -500,7 +526,7 @@ async function initDanhMuc(): Promise<void> {
 (window as any).initDanhMuc = initDanhMuc;
 (window as any).showProducts = showProducts;
 (window as any).goBack = goBack;
-(window as any).searchProducts = searchProducts;
+(window as any).searchProducts2 = searchProducts2;
 (window as any).filterByBrand = filterByBrand;
 
 // Chạy khi DOMContentLoaded (cho lần đầu load trực tiếp)
