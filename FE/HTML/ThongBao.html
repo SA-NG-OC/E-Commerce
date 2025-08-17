@@ -1,0 +1,420 @@
+<!-- ThongBao.html -->
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống thông báo</title>
+    <!-- Socket.IO Client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <link rel="stylesheet" href="/FE/CSS/ThongBao.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">MyApp</div>
+
+        <div class="notification-container">
+            <!-- Nút chuông thông báo -->
+            <button class="notification-bell" id="notificationBell">
+                <svg class="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </button>
+
+            <!-- Dropdown thông báo -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="dropdown-header">
+                    <span class="dropdown-title">Thông báo</span>
+                    <button class="mark-all-read" id="markAllRead">Đánh dấu đã đọc</button>
+                </div>
+
+                <div class="notification-list" id="notificationList">
+                    <!-- Thông báo sẽ được thêm vào đây bằng JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-bottom: 10px;">Demo Controls</h3>
+        <button onclick="addSampleNotification()"
+            style="padding: 8px 16px; background: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px;">
+            Thêm thông báo mới
+        </button>
+        <button onclick="clearAllNotifications()"
+            style="padding: 8px 16px; background: #e41e3f; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Xóa tất cả
+        </button>
+    </div>
+
+    <script>
+        // Function lấy ID người dùng từ localStorage
+        function getId() {
+            try {
+                const userContext = localStorage.getItem('usercontext');
+                if (!userContext) return null;
+
+                const user = JSON.parse(userContext);
+                return user._id || null;
+            } catch (error) {
+                console.error('Error getting user ID:', error);
+                return null;
+            }
+        }
+
+        class NotificationManager {
+            constructor() {
+                this.notifications = [];
+                this.isDropdownOpen = false;
+                this.userId = getId(); // Lấy ID người dùng từ localStorage
+
+                // Kiểm tra xem user đã đăng nhập chưa
+                if (!this.userId) {
+                    console.error('User chưa đăng nhập');
+                    return;
+                }
+
+                this.initializeElements();
+                this.bindEvents();
+                this.loadNotifications();
+                this.setupSocketConnection();
+            }
+
+            initializeElements() {
+                this.bellButton = document.getElementById('notificationBell');
+                this.badge = document.getElementById('notificationBadge');
+                this.dropdown = document.getElementById('notificationDropdown');
+                this.notificationList = document.getElementById('notificationList');
+                this.markAllReadBtn = document.getElementById('markAllRead');
+            }
+
+            bindEvents() {
+                // Click chuông để mở/đóng dropdown
+                this.bellButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleDropdown();
+                });
+
+                // Click ngoài để đóng dropdown
+                document.addEventListener('click', (e) => {
+                    if (!this.dropdown.contains(e.target) && !this.bellButton.contains(e.target)) {
+                        this.closeDropdown();
+                    }
+                });
+
+                // Đánh dấu tất cả đã đọc
+                this.markAllReadBtn.addEventListener('click', () => {
+                    this.markAllAsRead();
+                });
+            }
+
+            toggleDropdown() {
+                this.isDropdownOpen = !this.isDropdownOpen;
+
+                if (this.isDropdownOpen) {
+                    this.openDropdown();
+                } else {
+                    this.closeDropdown();
+                }
+            }
+
+            openDropdown() {
+                this.dropdown.classList.add('show');
+                this.bellButton.classList.add('active');
+                this.isDropdownOpen = true;
+            }
+
+            closeDropdown() {
+                this.dropdown.classList.remove('show');
+                this.bellButton.classList.remove('active');
+                this.isDropdownOpen = false;
+            }
+
+            // Tải thông báo từ server
+            async loadNotifications() {
+                if (!this.userId) {
+                    console.error('Không có user ID để tải thông báo');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:3000/api/thong-bao/${this.userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const notifications = await response.json();
+
+                    this.notifications = notifications;
+                    this.renderNotifications();
+                    this.updateBadge();
+
+                    console.log('Đã tải thành công', notifications.length, 'thông báo');
+                } catch (error) {
+                    console.error('Lỗi khi tải thông báo:', error);
+
+                    // Hiển thị thông báo lỗi cho user
+                    this.showErrorMessage('Không thể tải thông báo. Vui lòng thử lại sau.');
+
+                    // Load empty state thay vì mock data
+                    this.notifications = [];
+                    this.renderNotifications();
+                    this.updateBadge();
+                }
+            }
+
+            showErrorMessage(message) {
+                this.notificationList.innerHTML = `
+                    <div class="empty-notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <p style="color: #e41e3f;">${message}</p>
+                        <button onclick="notificationManager.loadNotifications()" 
+                                style="margin-top: 10px; padding: 6px 12px; background: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Thử lại
+                        </button>
+                    </div>
+                `;
+            }
+
+            renderNotifications() {
+                if (this.notifications.length === 0) {
+                    this.notificationList.innerHTML = `
+                        <div class="empty-notifications">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            <p>Không có thông báo nào</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = this.notifications
+                    .sort((a, b) => new Date(b.ngay_tao) - new Date(a.ngay_tao))
+                    .map(notification => this.createNotificationHTML(notification))
+                    .join('');
+
+                this.notificationList.innerHTML = html;
+            }
+
+            createNotificationHTML(notification) {
+                const timeAgo = this.getTimeAgo(notification.ngay_tao);
+                const isUnread = !notification.da_doc;
+
+                return `
+                    <div class="notification-item ${isUnread ? 'unread' : ''}" data-id="${notification.id}">
+                        <div class="notification-content" onclick="notificationManager.markAsRead('${notification.id}')">
+                            <div class="notification-title">${notification.tieu_de}</div>
+                            <div class="notification-message">${notification.noi_dung}</div>
+                            <div class="notification-time">${timeAgo}</div>
+                        </div>
+                        <div class="notification-actions">
+                            ${isUnread ? `
+                                <button class="action-btn read" onclick="notificationManager.markAsRead('${notification.id}')" title="Đánh dấu đã đọc">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20,6 9,17 4,12"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                            <button class="action-btn delete" onclick="notificationManager.deleteNotification('${notification.id}')" title="Xóa thông báo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3,6 5,6 21,6"/>
+                                    <path d="M19,6V20a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            async markAsRead(notificationId) {
+                try {
+                    // API call để đánh dấu đã đọc
+                    // await fetch(`/api/thong-bao/${notificationId}/mark-read`, { method: 'POST' });
+
+                    // Update local state
+                    const notification = this.notifications.find(n => n.id === notificationId);
+                    if (notification && !notification.da_doc) {
+                        notification.da_doc = true;
+                        this.renderNotifications();
+                        this.updateBadge();
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi đánh dấu đã đọc:', error);
+                }
+            }
+
+            async deleteNotification(notificationId) {
+                try {
+                    // API call để xóa thông báo
+                    // await fetch(`/api/thong-bao/${notificationId}`, { method: 'DELETE' });
+
+                    // Update local state
+                    this.notifications = this.notifications.filter(n => n.id !== notificationId);
+                    this.renderNotifications();
+                    this.updateBadge();
+                } catch (error) {
+                    console.error('Lỗi khi xóa thông báo:', error);
+                }
+            }
+
+            async markAllAsRead() {
+                try {
+                    // API call để đánh dấu tất cả đã đọc
+                    // await fetch(`/api/thong-bao/mark-all-read/${this.userId}`, { method: 'POST' });
+
+                    // Update local state
+                    this.notifications.forEach(n => n.da_doc = true);
+                    this.renderNotifications();
+                    this.updateBadge();
+                } catch (error) {
+                    console.error('Lỗi khi đánh dấu tất cả đã đọc:', error);
+                }
+            }
+
+            updateBadge() {
+                const unreadCount = this.notifications.filter(n => !n.da_doc).length;
+
+                if (unreadCount > 0) {
+                    this.badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    this.badge.classList.add('show');
+                } else {
+                    this.badge.classList.remove('show');
+                }
+            }
+
+            animateBadge() {
+                this.badge.classList.add('bounce');
+                setTimeout(() => {
+                    this.badge.classList.remove('bounce');
+                }, 600);
+            }
+
+            addNewNotification(notification) {
+                // Thêm thông báo mới vào đầu danh sách
+                this.notifications.unshift({
+                    ...notification,
+                    da_doc: false
+                });
+
+                this.renderNotifications();
+                this.updateBadge();
+                this.animateBadge();
+
+                // Highlight thông báo mới
+                setTimeout(() => {
+                    const newItem = document.querySelector(`[data-id="${notification.id}"]`);
+                    if (newItem) {
+                        newItem.classList.add('new-notification');
+                    }
+                }, 100);
+            }
+
+            setupSocketConnection() {
+                // Setup Socket.IO connection để nhận thông báo real-time
+                try {
+                    // Kết nối đến server Socket.IO
+                    this.socket = io('http://localhost:3000'); // Thay đổi URL server của bạn
+
+                    // Join room theo userId để nhận thông báo riêng
+                    this.socket.emit('join-room', this.userId);
+
+                    // Lắng nghe thông báo mới
+                    this.socket.on('thong-bao-moi', (notification) => {
+                        console.log('Nhận thông báo mới:', notification);
+                        this.addNewNotification(notification);
+                    });
+
+                    // Xử lý kết nối thành công
+                    this.socket.on('connect', () => {
+                        console.log('Đã kết nối Socket.IO:', this.socket.id);
+                    });
+
+                    // Xử lý mất kết nối
+                    this.socket.on('disconnect', () => {
+                        console.log('Mất kết nối Socket.IO');
+                    });
+
+                    // Xử lý lỗi
+                    this.socket.on('connect_error', (error) => {
+                        console.error('Lỗi kết nối Socket.IO:', error);
+                    });
+
+                } catch (error) {
+                    console.error('Lỗi khởi tạo Socket.IO:', error);
+                }
+            }
+
+            getTimeAgo(dateString) {
+                const now = new Date();
+                const date = new Date(dateString);
+                const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+                if (diffInMinutes < 1) return 'Vừa xong';
+                if (diffInMinutes < 60) return `${diffInMinutes} phút trước`;
+
+                const diffInHours = Math.floor(diffInMinutes / 60);
+                if (diffInHours < 24) return `${diffInHours} giờ trước`;
+
+                const diffInDays = Math.floor(diffInHours / 24);
+                if (diffInDays < 7) return `${diffInDays} ngày trước`;
+
+                return date.toLocaleDateString('vi-VN');
+            }
+        }
+
+        // Khởi tạo notification manager
+        const notificationManager = new NotificationManager();
+
+        // Cleanup khi đóng trang
+        window.addEventListener('beforeunload', () => {
+            if (notificationManager.socket) {
+                notificationManager.socket.disconnect();
+            }
+        });
+
+        // Demo functions
+        function addSampleNotification() {
+            const sampleNotifications = [
+                {
+                    id: 'TB' + Date.now(),
+                    tieu_de: 'Đơn hàng mới',
+                    noi_dung: 'Bạn có đơn hàng mới #DH' + Math.floor(Math.random() * 1000),
+                    ngay_tao: new Date().toISOString()
+                },
+                {
+                    id: 'TB' + Date.now(),
+                    tieu_de: 'Khuyến mãi đặc biệt',
+                    noi_dung: 'Giảm giá 50% cho tất cả sản phẩm trong tuần này!',
+                    ngay_tao: new Date().toISOString()
+                }
+            ];
+
+            const randomNotification = sampleNotifications[Math.floor(Math.random() * sampleNotifications.length)];
+            notificationManager.addNewNotification(randomNotification);
+        }
+
+        function clearAllNotifications() {
+            notificationManager.notifications = [];
+            notificationManager.renderNotifications();
+            notificationManager.updateBadge();
+        }
+    </script>
+</body>
+
+</html>

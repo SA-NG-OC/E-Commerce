@@ -1,7 +1,55 @@
 import pool from '../config/db';
 import { DonHangModel } from '../models/DonHangModel';
+import { Server } from 'socket.io';
+import { ThongBaoService } from './ThongBaoService';
 
 export class DonHangService {
+    private thongBaoService: ThongBaoService;
+
+    constructor(io: Server) {
+        this.thongBaoService = new ThongBaoService(io);
+    }
+
+    // Mapping trạng thái để hiển thị thông báo dễ hiểu
+    private getTrangThaiMessage(trangThai: string): { title: string; message: string } {
+        const statusMessages: { [key: string]: { title: string; message: string } } = {
+            'cho_xac_nhan': {
+                title: 'Đơn hàng chờ xác nhận',
+                message: 'Đơn hàng của bạn đang chờ được xác nhận từ cửa hàng'
+            },
+            'da_xac_nhan': {
+                title: 'Đơn hàng đã xác nhận',
+                message: 'Đơn hàng của bạn đã được xác nhận và đang chuẩn bị hàng'
+            },
+            'dang_chuan_bi': {
+                title: 'Đang chuẩn bị hàng',
+                message: 'Cửa hàng đang chuẩn bị hàng hóa cho đơn hàng của bạn'
+            },
+            'dang_giao_hang': {
+                title: 'Đang giao hàng',
+                message: 'Đơn hàng của bạn đang được giao đến địa chỉ nhận hàng'
+            },
+            'da_giao_hang': {
+                title: 'Giao hàng thành công',
+                message: 'Đơn hàng của bạn đã được giao thành công. Cảm ơn bạn đã mua hàng!'
+            },
+            'da_huy': {
+                title: 'Đơn hàng đã hủy',
+                message: 'Đơn hàng của bạn đã được hủy thành công'
+            },
+            'hoan_tra': {
+                title: 'Đơn hàng hoàn trả',
+                message: 'Đơn hàng của bạn đang trong quá trình hoàn trả'
+            }
+        };
+
+        return statusMessages[trangThai] || {
+            title: 'Cập nhật đơn hàng',
+            message: `Trạng thái đơn hàng của bạn đã được cập nhật thành "${trangThai}"`
+        };
+    }
+
+    // GET METHOD - Trả về data thuần
     async getDonHangByNguoiDungId(nguoi_dung_id: string): Promise<DonHangModel[]> {
         const query = `
             SELECT 
@@ -53,7 +101,6 @@ export class DonHangService {
 
         if (result.rows.length === 0) return [];
 
-        // Nhóm theo don_hang_id
         const donHangMap = new Map<string, DonHangModel>();
 
         for (const row of result.rows) {
@@ -68,7 +115,7 @@ export class DonHangService {
                         parseFloat(row.tong_thanh_toan),
                         row.trang_thai,
                         row.ngay_tao,
-                        [] // Danh sách sản phẩm sẽ được đẩy vào sau
+                        []
                     )
                 );
             }
@@ -88,111 +135,109 @@ export class DonHangService {
         return Array.from(donHangMap.values());
     }
 
-    async huyDonHang(don_hang_id: string, nguoi_dung_id?: string): Promise<{ success: boolean; message: string }> {
-        const client = await pool.connect();
+    // GET METHOD - Trả về data thuần
+    async getAllDonHang(): Promise<DonHangModel[]> {
+        const query = `
+            SELECT 
+                dh.id AS don_hang_id,
+                dh.nguoi_dung_id,
+                dh.tong_thanh_toan,
+                dh.trang_thai,
+                dh.ngay_tao,
 
-        try {
-            await client.query('BEGIN');
+                sp.ten_san_pham,
+                sp.id AS san_pham_id,
+                bts.id AS bien_the_id,
+                ct.gia_ban,
+                ms.ten_mau AS mau_sac,
+                kc.so_kich_co AS kich_co,
+                hasp.duong_dan_hinh_anh AS hinh_anh_bien_the,
+                ct.so_luong
 
-            // Kiểm tra trạng thái đơn hàng và quyền sở hữu (nếu có nguoi_dung_id)
-            let checkQuery = `
-            SELECT trang_thai, nguoi_dung_id 
-            FROM don_hang 
-            WHERE id = $1
+            FROM don_hang dh
+            JOIN chi_tiet_don_hang ct ON ct.don_hang_id = dh.id
+            JOIN bien_the_san_pham bts ON ct.bien_the_id = bts.id
+            JOIN san_pham sp ON sp.id = bts.san_pham_id
+            JOIN mau_sac ms ON ms.id = bts.mau_sac_id
+            JOIN kich_co kc ON kc.id = bts.kich_co_id
+
+            LEFT JOIN (
+                SELECT 
+                    san_pham_id, 
+                    mau_sac_id, 
+                    duong_dan_hinh_anh
+                FROM (
+                    SELECT *, 
+                        ROW_NUMBER() OVER (
+                            PARTITION BY san_pham_id, mau_sac_id 
+                            ORDER BY id
+                        ) AS rn
+                    FROM hinh_anh_san_pham
+                ) AS ranked
+                WHERE rn = 1
+            ) AS hasp 
+                ON hasp.san_pham_id = sp.id 
+                AND hasp.mau_sac_id = bts.mau_sac_id
+
+            ORDER BY dh.ngay_tao DESC;
         `;
-            let checkParams = [don_hang_id];
 
-            if (nguoi_dung_id) {
-                checkQuery += ' AND nguoi_dung_id = $2';
-                checkParams.push(nguoi_dung_id);
+        const result = await pool.query(query);
+
+        if (result.rows.length === 0) return [];
+
+        const donHangMap = new Map<string, DonHangModel>();
+
+        for (const row of result.rows) {
+            const donHangId = row.don_hang_id;
+
+            if (!donHangMap.has(donHangId)) {
+                donHangMap.set(
+                    donHangId,
+                    new DonHangModel(
+                        donHangId,
+                        row.nguoi_dung_id,
+                        parseFloat(row.tong_thanh_toan),
+                        row.trang_thai,
+                        row.ngay_tao,
+                        []
+                    )
+                );
             }
 
-            const checkResult = await client.query(checkQuery, checkParams);
-
-            if (checkResult.rows.length === 0) {
-                await client.query('ROLLBACK');
-                return {
-                    success: false,
-                    message: 'Không tìm thấy đơn hàng hoặc bạn không có quyền hủy đơn hàng này'
-                };
-            }
-
-            const donHang = checkResult.rows[0];
-
-            if (donHang.trang_thai !== 'cho_xac_nhan') {
-                await client.query('ROLLBACK');
-                return {
-                    success: false,
-                    message: 'Chỉ có thể hủy đơn hàng đang ở trạng thái "Chờ xác nhận"'
-                };
-            }
-
-            // Cập nhật trạng thái đơn hàng thành 'da_huy'
-            await client.query(`
-            UPDATE don_hang 
-            SET trang_thai = 'da_huy' 
-            WHERE id = $1
-        `, [don_hang_id]);
-
-            await client.query('COMMIT');
-
-            return {
-                success: true,
-                message: 'Đơn hàng đã được hủy thành công'
-            };
-
-        } catch (error) {
-            await client.query('ROLLBACK');
-            console.error('Lỗi khi hủy đơn hàng:', error);
-
-            return {
-                success: false,
-                message: 'Có lỗi xảy ra khi hủy đơn hàng'
-            };
-        } finally {
-            client.release();
+            donHangMap.get(donHangId)?.san_pham.push({
+                ten_san_pham: row.ten_san_pham,
+                id_san_pham: row.san_pham_id,
+                id_bien_the: row.bien_the_id,
+                gia_ban: parseFloat(row.gia_ban),
+                mau_sac: row.mau_sac,
+                kich_co: row.kich_co,
+                hinh_anh_bien_the: row.hinh_anh_bien_the,
+                so_luong: row.so_luong
+            });
         }
+
+        return Array.from(donHangMap.values());
     }
 
-    async xoaDonHang(don_hang_id: string): Promise<{ success: boolean; message: string }> {
+    // GET METHOD - Trả về data thuần (số)
+    async countDonHang(): Promise<number> {
         const client = await pool.connect();
-
         try {
-            await client.query('BEGIN');
-
-            const result = await client.query(
-                `DELETE FROM don_hang WHERE id = $1`,
-                [don_hang_id]
-            );
-
-            if (result.rowCount === 0) {
-                await client.query('ROLLBACK');
-                return {
-                    success: false,
-                    message: 'Không tìm thấy đơn hàng để xóa'
-                };
-            }
-
-            await client.query('COMMIT');
-            return {
-                success: true,
-                message: 'Đơn hàng đã được xóa thành công'
-            };
-
-        } catch (error) {
-            await client.query('ROLLBACK');
-            console.error('Lỗi khi xóa đơn hàng:', error);
-
-            return {
-                success: false,
-                message: 'Có lỗi xảy ra khi xóa đơn hàng'
-            };
+            const result = await client.query(`
+                SELECT COUNT(*) AS total
+                FROM don_hang
+            `);
+            return parseInt(result.rows[0].total, 10);
+        } catch (err) {
+            console.error('Lỗi khi đếm số đơn hàng:', err);
+            return 0;
         } finally {
             client.release();
         }
     }
 
-
+    // CREATE METHOD - Trả về ID của đơn hàng mới hoặc null
     async createDonHang(nguoi_dung_id: string): Promise<string | null> {
         const client = await pool.connect();
         try {
@@ -232,42 +277,7 @@ export class DonHangService {
         }
     }
 
-    async countDonHang(): Promise<number> {
-        const client = await pool.connect();
-        try {
-            const result = await client.query(`
-            SELECT COUNT(*) AS total
-            FROM don_hang
-        `);
-            return parseInt(result.rows[0].total, 10);
-        } catch (err) {
-            console.error('Lỗi khi đếm số đơn hàng:', err);
-            return 0;
-        } finally {
-            client.release();
-        }
-    }
-
-    async capNhatTrangThai(donHangId: string, trangThai: string): Promise<boolean> {
-        const client = await pool.connect();
-        try {
-            const result = await client.query(
-                `
-                UPDATE don_hang
-                SET trang_thai = $1
-                WHERE id = $2
-            `,
-                [trangThai, donHangId]
-            );
-            return result.rowCount! > 0;
-        } catch (err) {
-            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', err);
-            return false;
-        } finally {
-            client.release();
-        }
-    }
-
+    // CREATE METHOD - Trả về ID chi tiết đơn hàng mới hoặc null
     async addChiTietDonHang(
         don_hang_id: string,
         bien_the_id: string,
@@ -349,88 +359,188 @@ export class DonHangService {
         }
     }
 
-    async getAllDonHang(): Promise<DonHangModel[]> {
-        const query = `
-        SELECT 
-            dh.id AS don_hang_id,
-            dh.nguoi_dung_id,
-            dh.tong_thanh_toan,
-            dh.trang_thai,
-            dh.ngay_tao,
+    // UPDATE/DELETE METHODS - Giữ nguyên format success/message
+    async huyDonHang(don_hang_id: string, nguoi_dung_id?: string): Promise<{ success: boolean; message: string }> {
+        const client = await pool.connect();
 
-            sp.ten_san_pham,
-            sp.id AS san_pham_id,
-            bts.id AS bien_the_id,
-            ct.gia_ban,
-            ms.ten_mau AS mau_sac,
-            kc.so_kich_co AS kich_co,
-            hasp.duong_dan_hinh_anh AS hinh_anh_bien_the,
-            ct.so_luong
+        try {
+            await client.query('BEGIN');
 
-        FROM don_hang dh
-        JOIN chi_tiet_don_hang ct ON ct.don_hang_id = dh.id
-        JOIN bien_the_san_pham bts ON ct.bien_the_id = bts.id
-        JOIN san_pham sp ON sp.id = bts.san_pham_id
-        JOIN mau_sac ms ON ms.id = bts.mau_sac_id
-        JOIN kich_co kc ON kc.id = bts.kich_co_id
+            let checkQuery = `
+                SELECT trang_thai, nguoi_dung_id 
+                FROM don_hang 
+                WHERE id = $1
+            `;
+            let checkParams = [don_hang_id];
 
-        LEFT JOIN (
-            SELECT 
-                san_pham_id, 
-                mau_sac_id, 
-                duong_dan_hinh_anh
-            FROM (
-                SELECT *, 
-                    ROW_NUMBER() OVER (
-                        PARTITION BY san_pham_id, mau_sac_id 
-                        ORDER BY id
-                    ) AS rn
-                FROM hinh_anh_san_pham
-            ) AS ranked
-            WHERE rn = 1
-        ) AS hasp 
-            ON hasp.san_pham_id = sp.id 
-            AND hasp.mau_sac_id = bts.mau_sac_id
-
-        ORDER BY dh.ngay_tao DESC;
-    `;
-
-        const result = await pool.query(query);
-
-        if (result.rows.length === 0) return [];
-
-        const donHangMap = new Map<string, DonHangModel>();
-
-        for (const row of result.rows) {
-            const donHangId = row.don_hang_id;
-
-            if (!donHangMap.has(donHangId)) {
-                donHangMap.set(
-                    donHangId,
-                    new DonHangModel(
-                        donHangId,
-                        row.nguoi_dung_id,
-                        parseFloat(row.tong_thanh_toan),
-                        row.trang_thai,
-                        row.ngay_tao,
-                        []
-                    )
-                );
+            if (nguoi_dung_id) {
+                checkQuery += ' AND nguoi_dung_id = $2';
+                checkParams.push(nguoi_dung_id);
             }
 
-            donHangMap.get(donHangId)?.san_pham.push({
-                ten_san_pham: row.ten_san_pham,
-                id_san_pham: row.san_pham_id,
-                id_bien_the: row.bien_the_id,
-                gia_ban: parseFloat(row.gia_ban),
-                mau_sac: row.mau_sac,
-                kich_co: row.kich_co,
-                hinh_anh_bien_the: row.hinh_anh_bien_the,
-                so_luong: row.so_luong
-            });
-        }
+            const checkResult = await client.query(checkQuery, checkParams);
 
-        return Array.from(donHangMap.values());
+            if (checkResult.rows.length === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không tìm thấy đơn hàng hoặc bạn không có quyền hủy đơn hàng này'
+                };
+            }
+
+            const donHang = checkResult.rows[0];
+
+            if (donHang.trang_thai !== 'cho_xac_nhan') {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Chỉ có thể hủy đơn hàng đang ở trạng thái "Chờ xác nhận"'
+                };
+            }
+
+            // Cập nhật trạng thái đơn hàng thành 'da_huy'
+            await client.query(`
+                UPDATE don_hang 
+                SET trang_thai = 'da_huy' 
+                WHERE id = $1
+            `, [don_hang_id]);
+
+            await client.query('COMMIT');
+
+            // Gửi thông báo sau khi commit thành công
+            const { title, message } = this.getTrangThaiMessage('da_huy');
+            await this.thongBaoService.guiThongBao(
+                donHang.nguoi_dung_id,
+                title,
+                `${message} - Mã đơn hàng: ${don_hang_id}`
+            );
+
+            return {
+                success: true,
+                message: 'Đơn hàng đã được hủy thành công'
+            };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi hủy đơn hàng:', error);
+
+            return {
+                success: false,
+                message: 'Có lỗi xảy ra khi hủy đơn hàng'
+            };
+        } finally {
+            client.release();
+        }
     }
 
+    async xoaDonHang(don_hang_id: string): Promise<{ success: boolean; message: string }> {
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const result = await client.query(
+                `DELETE FROM don_hang WHERE id = $1`,
+                [don_hang_id]
+            );
+
+            if (result.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không tìm thấy đơn hàng để xóa'
+                };
+            }
+
+            await client.query('COMMIT');
+            return {
+                success: true,
+                message: 'Đơn hàng đã được xóa thành công'
+            };
+
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi xóa đơn hàng:', error);
+
+            return {
+                success: false,
+                message: 'Có lỗi xảy ra khi xóa đơn hàng'
+            };
+        } finally {
+            client.release();
+        }
+    }
+
+    async capNhatTrangThai(donHangId: string, trangThai: string): Promise<{ success: boolean; message: string }> {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // Lấy trạng thái hiện tại để so sánh
+            const currentResult = await client.query(
+                `SELECT trang_thai, nguoi_dung_id FROM don_hang WHERE id = $1`,
+                [donHangId]
+            );
+
+            if (currentResult.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không tìm thấy đơn hàng'
+                };
+            }
+
+            const currentStatus = currentResult.rows[0].trang_thai;
+            const nguoi_dung_id = currentResult.rows[0].nguoi_dung_id;
+
+            // Nếu trạng thái không thay đổi thì không cần thông báo
+            if (currentStatus === trangThai) {
+                await client.query('ROLLBACK');
+                return {
+                    success: true,
+                    message: 'Trạng thái đơn hàng không thay đổi'
+                };
+            }
+
+            // Cập nhật trạng thái
+            const updateResult = await client.query(
+                `UPDATE don_hang
+                 SET trang_thai = $1
+                 WHERE id = $2`,
+                [trangThai, donHangId]
+            );
+
+            if (updateResult.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return {
+                    success: false,
+                    message: 'Không thể cập nhật trạng thái đơn hàng'
+                };
+            }
+
+            await client.query('COMMIT');
+
+            // Gửi thông báo realtime với nội dung tùy chỉnh theo trạng thái
+            const { title, message } = this.getTrangThaiMessage(trangThai);
+            await this.thongBaoService.guiThongBao(
+                nguoi_dung_id,
+                title,
+                `${message} - Mã đơn hàng: ${donHangId}`
+            );
+
+            return {
+                success: true,
+                message: 'Cập nhật trạng thái đơn hàng thành công'
+            };
+        } catch (err) {
+            await client.query('ROLLBACK');
+            console.error('Lỗi khi cập nhật trạng thái đơn hàng:', err);
+            return {
+                success: false,
+                message: 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng'
+            };
+        } finally {
+            client.release();
+        }
+    }
 }

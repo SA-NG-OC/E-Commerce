@@ -1,15 +1,18 @@
 import { Router } from 'express';
 import { DonHangController } from '../controllers/DonHangController';
+import { Server } from 'socket.io';
 
-const router = Router();
+export function createDonHangRoutes(io: Server): Router {
+    const router = Router();
+    const donHangController = new DonHangController(io);
 
-// Lấy giỏ hàng theo người dùng
-router.get('/', DonHangController.getAllDonHang);
-router.get('/count', DonHangController.countDonHang);
-router.post('/tao', DonHangController.createDonHang);
-router.post('/chi-tiet/them', DonHangController.addChiTietDonHang);
-router.put('/cap-nhat-trang-thai/:id', DonHangController.capNhatTrangThai);
-router.get('/:nguoi_dung_id', DonHangController.getByNguoiDungId);
-router.patch('/:don_hang_id/:nguoi_dung_id', DonHangController.huyDonHang);
-router.delete('/:id', DonHangController.deleteDonHang);
-export default router;
+    router.get('/', donHangController.getAllDonHang);
+    router.get('/count', donHangController.countDonHang);
+    router.post('/tao', donHangController.createDonHang);
+    router.post('/chi-tiet/them', donHangController.addChiTietDonHang);
+    router.put('/cap-nhat-trang-thai/:id', donHangController.capNhatTrangThai);
+    router.get('/:nguoi_dung_id', donHangController.getByNguoiDungId);
+    router.patch('/:don_hang_id/:nguoi_dung_id', donHangController.huyDonHang);
+    router.delete('/:id', donHangController.xoaDonHang);
+    return router;
+}
