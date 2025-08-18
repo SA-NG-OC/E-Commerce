@@ -345,7 +345,4 @@ async function handleFormSubmit(e: Event) {
 
 window.onclick = function (event: MouseEvent) {
     const modal = document.getElementById('userModal') as HTMLElement;
-    if (event.target === modal) {
-        closeModal2();
-    }
 };

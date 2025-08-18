@@ -222,3 +222,133 @@ button[type="submit"]:active {
         padding: 12px;
     }
 }
+
+.forgot-password-link {
+    color: blue;
+    /* màu chữ giống link */
+    text-decoration: underline;
+    /* gạch chân nếu muốn */
+    cursor: default;
+    /* con trỏ không đổi thành tay */
+}
+
+/* Modal styles */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 30px;
+    border: none;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* Form styles trong modal */
+.modal .form-group {
+    margin-bottom: 15px;
+}
+
+.modal input[type="email"],
+.modal input[type="text"],
+.modal input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.modal input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.modal .btn-primary,
+.modal .btn-secondary {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.modal .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.modal .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.modal .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal .btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.modal .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
+}
+
+.modal p {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+/* Forgot password link styling */
+.forgot-password-link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.forgot-password-link:hover {
+    color: #0056b3;
+}

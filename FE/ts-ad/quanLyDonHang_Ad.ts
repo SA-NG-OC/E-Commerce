@@ -630,11 +630,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         closeStatusModal();
     });
 
-    window.addEventListener('click', function (e) {
-        if (e.target === document.getElementById('order-modal')) closeModal5();
-        if (e.target === document.getElementById('status-modal')) closeStatusModal();
-    });
-
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             closeModal5();

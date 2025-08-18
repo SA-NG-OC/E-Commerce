@@ -1,8 +1,77 @@
 import pool from '../config/db';
 import { NguoiDungModel } from '../models/NguoiDungModel';
+import { sendMail } from '../middlewares/mailer';
 import bcrypt from 'bcryptjs';
 
 export class NguoiDungService {
+    // Tạo và gửi OTP
+    static async sendOTP(email: string): Promise<boolean> {
+        // Kiểm tra email có tồn tại không
+        const user = await this.findByEmail(email);
+        if (!user) return false;
+
+        // Tạo OTP 6 số
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expires = new Date(Date.now() + 5 * 60 * 1000); // Hết hạn sau 5 phút
+
+        // Lưu OTP vào database
+        await pool.query(
+            `INSERT INTO password_reset_otp (email, otp, expires_at) 
+             VALUES ($1, $2, $3)
+             ON CONFLICT (email) 
+             DO UPDATE SET otp = $2, expires_at = $3, created_at = NOW()`,
+            [email, otp, expires]
+        );
+
+        // Gửi email
+        await sendMail({
+            to: email,
+            subject: 'Mã OTP khôi phục mật khẩu',
+            html: `
+                <h3>Mã OTP khôi phục mật khẩu</h3>
+                <p>Mã OTP của bạn là: <strong>${otp}</strong></p>
+                <p>Mã có hiệu lực trong 5 phút.</p>
+            `
+        });
+
+        return true;
+    }
+
+    // Xác thực OTP
+    static async verifyOTP(email: string, otp: string): Promise<boolean> {
+        const result = await pool.query(
+            `SELECT * FROM password_reset_otp 
+             WHERE email = $1 AND otp = $2 AND expires_at > NOW()`,
+            [email, otp]
+        );
+
+        return result.rows.length > 0;
+    }
+
+    // Đổi mật khẩu sau khi xác thực OTP
+    static async resetPassword(email: string, otp: string, newPassword: string): Promise<boolean> {
+        // Kiểm tra OTP còn hợp lệ
+        const isValidOTP = await this.verifyOTP(email, otp);
+        if (!isValidOTP) return false;
+
+        // Hash mật khẩu mới
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Cập nhật mật khẩu
+        await pool.query(
+            `UPDATE nguoi_dung SET mat_khau_hash = $1 WHERE email = $2`,
+            [hashedPassword, email]
+        );
+
+        // Xóa OTP đã sử dụng
+        await pool.query(
+            `DELETE FROM password_reset_otp WHERE email = $1`,
+            [email]
+        );
+
+        return true;
+    }
+
     static async findByEmail(email: string): Promise<NguoiDungModel | null> {
         const result = await pool.query(
             `SELECT 

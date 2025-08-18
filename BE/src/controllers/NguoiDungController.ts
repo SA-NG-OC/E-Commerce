@@ -4,6 +4,69 @@ import { NguoiDungModel } from '../models/NguoiDungModel';
 import jwt from "jsonwebtoken";
 
 export class NguoiDungController {
+
+    static async sendOTP(req: Request, res: Response) {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ message: 'Email là bắt buộc' });
+            }
+
+            const success = await NguoiDungService.sendOTP(email);
+
+            if (success) {
+                res.json({ message: 'OTP đã được gửi đến email của bạn' });
+            } else {
+                res.status(404).json({ message: 'Email không tồn tại' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Lỗi server' });
+        }
+    }
+
+    // Xác thực OTP
+    static async verifyOTP(req: Request, res: Response) {
+        try {
+            const { email, otp } = req.body;
+
+            if (!email || !otp) {
+                return res.status(400).json({ message: 'Email và OTP là bắt buộc' });
+            }
+
+            const isValid = await NguoiDungService.verifyOTP(email, otp);
+
+            if (isValid) {
+                res.json({ message: 'OTP hợp lệ' });
+            } else {
+                res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Lỗi server' });
+        }
+    }
+
+    // Đặt lại mật khẩu
+    static async resetPassword(req: Request, res: Response) {
+        try {
+            const { email, otp, newPassword } = req.body;
+
+            if (!email || !otp || !newPassword) {
+                return res.status(400).json({ message: 'Thiếu thông tin bắt buộc' });
+            }
+
+            const success = await NguoiDungService.resetPassword(email, otp, newPassword);
+
+            if (success) {
+                res.json({ message: 'Mật khẩu đã được đặt lại thành công' });
+            } else {
+                res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Lỗi server' });
+        }
+    }
+
     // Sử dụng http://localhost:3000/api/nguoi-dung/login
     static async login(req: Request, res: Response) {
         const { email, password } = req.body;

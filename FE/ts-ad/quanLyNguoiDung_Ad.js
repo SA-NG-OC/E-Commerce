@@ -408,7 +408,4 @@ function handleFormSubmit(e) {
 }
 window.onclick = function (event) {
     var modal = document.getElementById('userModal');
-    if (event.target === modal) {
-        closeModal2();
-    }
 };

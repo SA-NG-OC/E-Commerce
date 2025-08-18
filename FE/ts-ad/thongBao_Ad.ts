@@ -17,8 +17,53 @@ let currentNotifications: Notification2[] = [];
 let socket: any = null;
 let isSocketReady = false; // ✅ Thêm flag để track socket ready
 
+// Helper function để lấy headers với token cho quản lý thông báo
+function getAuthHeaders_Ad() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
+// Kiểm tra authentication trước khi load trang quản lý thông báo
+async function checkAuth_Ad() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (!token) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return false;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+            window.location.href = '/FE/HTML/DangNhap.html';
+            return false;
+        }
+        return true;
+    } catch (error) {
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        window.location.href = '/FE/HTML/DangNhap.html';
+        return false;
+    }
+}
+
+
 // Khởi tạo
-document.addEventListener('DOMContentLoaded', () => {
+// Sửa đổi hàm DOMContentLoaded để thêm check auth
+document.addEventListener('DOMContentLoaded', async () => {
+    // ✅ Kiểm tra auth trước khi load
+    const isAuth = await checkAuth_Ad();
+    if (!isAuth) return;
+
     initializeSocket();
     loadUsers();
     loadStats();
@@ -179,10 +224,12 @@ function leaveUserRoom(userId: string): void {
     console.log('🚪 Admin left room for user:', userId);
 }
 
-// Tải danh sách người dùng từ API
+// Sửa đổi hàm loadUsers để sử dụng auth headers
 async function loadUsers(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/');
+        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
+        });
         if (!response.ok) throw new Error('Không thể tải danh sách người dùng');
 
         const rawUsers = await response.json();
@@ -207,7 +254,6 @@ async function loadUsers(): Promise<void> {
     displayUsers(allUsers);
     updateStats();
 }
-
 // Hiển thị danh sách người dùng
 function displayUsers(users: User_Ad[]): void {
     const userList = document.getElementById('userList') as HTMLElement;
@@ -301,7 +347,9 @@ async function loadUserNotifications(userId: string): Promise<void> {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/thong-bao/${userId}`);
+        const response = await fetch(`http://localhost:3000/api/thong-bao/${userId}`, {
+            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
+        });
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }

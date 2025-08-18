@@ -43,26 +43,86 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+var _this = this;
 var selectedUserId = null;
 var allUsers = [];
 var currentNotifications = [];
 var socket = null;
 var isSocketReady = false; // ✅ Thêm flag để track socket ready
+// Helper function để lấy headers với token cho quản lý thông báo
+function getAuthHeaders_Ad() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
+// Kiểm tra authentication trước khi load trang quản lý thông báo
+function checkAuth_Ad() {
+    return __awaiter(this, void 0, void 0, function () {
+        var token, res, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    token = localStorage.getItem('token') || sessionStorage.getItem('token');
+                    if (!token) {
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/, false];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            headers: { Authorization: "Bearer ".concat(token) }
+                        })];
+                case 2:
+                    res = _a.sent();
+                    if (!res.ok) {
+                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('token');
+                        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                        window.location.href = '/FE/HTML/DangNhap.html';
+                        return [2 /*return*/, false];
+                    }
+                    return [2 /*return*/, true];
+                case 3:
+                    error_1 = _a.sent();
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+                    window.location.href = '/FE/HTML/DangNhap.html';
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
 // Khởi tạo
-document.addEventListener('DOMContentLoaded', function () {
-    initializeSocket();
-    loadUsers();
-    loadStats();
-    var userSearchInput = document.getElementById('userSearch');
-    userSearchInput === null || userSearchInput === void 0 ? void 0 : userSearchInput.addEventListener('input', function (e) {
-        filterUsers(e.target.value);
+// Sửa đổi hàm DOMContentLoaded để thêm check auth
+document.addEventListener('DOMContentLoaded', function () { return __awaiter(_this, void 0, void 0, function () {
+    var isAuth, userSearchInput, sendNotificationForm;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, checkAuth_Ad()];
+            case 1:
+                isAuth = _a.sent();
+                if (!isAuth)
+                    return [2 /*return*/];
+                initializeSocket();
+                loadUsers();
+                loadStats();
+                userSearchInput = document.getElementById('userSearch');
+                userSearchInput === null || userSearchInput === void 0 ? void 0 : userSearchInput.addEventListener('input', function (e) {
+                    filterUsers(e.target.value);
+                });
+                sendNotificationForm = document.getElementById('sendNotificationForm');
+                sendNotificationForm === null || sendNotificationForm === void 0 ? void 0 : sendNotificationForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    sendNotification();
+                });
+                return [2 /*return*/];
+        }
     });
-    var sendNotificationForm = document.getElementById('sendNotificationForm');
-    sendNotificationForm === null || sendNotificationForm === void 0 ? void 0 : sendNotificationForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        sendNotification();
-    });
-});
+}); });
 // ✅ Khởi tạo Socket.IO connection với error handling tốt hơn
 function initializeSocket() {
     try {
@@ -188,15 +248,17 @@ function leaveUserRoom(userId) {
     socket.emit('leave-user-room', userId);
     console.log('🚪 Admin left room for user:', userId);
 }
-// Tải danh sách người dùng từ API
+// Sửa đổi hàm loadUsers để sử dụng auth headers
 function loadUsers() {
     return __awaiter(this, void 0, void 0, function () {
-        var response, rawUsers, error_1;
+        var response, rawUsers, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok)
@@ -216,8 +278,8 @@ function loadUsers() {
                     console.log('✅ Loaded', allUsers.length, 'users');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _a.sent();
-                    console.error('❌ Lỗi khi tải danh sách người dùng:', error_1);
+                    error_2 = _a.sent();
+                    console.error('❌ Lỗi khi tải danh sách người dùng:', error_2);
                     showToast('Không thể tải danh sách người dùng', 'error');
                     allUsers = [];
                     return [3 /*break*/, 4];
@@ -264,7 +326,7 @@ function filterUsers(searchTerm) {
 // ✅ Chọn người dùng với validation tốt hơn
 function selectUser(userId) {
     return __awaiter(this, void 0, void 0, function () {
-        var notificationsSection, error_2;
+        var notificationsSection, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -297,8 +359,8 @@ function selectUser(userId) {
                     _a.sent();
                     return [3 /*break*/, 4];
                 case 3:
-                    error_2 = _a.sent();
-                    console.error('❌ Lỗi khi chọn user:', error_2);
+                    error_3 = _a.sent();
+                    console.error('❌ Lỗi khi chọn user:', error_3);
                     showToast('Lỗi khi tải thông tin người dùng', 'error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -309,7 +371,7 @@ function selectUser(userId) {
 // Tải thông báo của người dùng từ API
 function loadUserNotifications(userId) {
     return __awaiter(this, void 0, void 0, function () {
-        var notificationsSection, response, rawNotis, error_3;
+        var notificationsSection, response, rawNotis, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -321,7 +383,9 @@ function loadUserNotifications(userId) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/thong-bao/".concat(userId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/thong-bao/".concat(userId), {
+                            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
+                        })];
                 case 2:
                     response = _a.sent();
                     if (!response.ok) {
@@ -343,9 +407,9 @@ function loadUserNotifications(userId) {
                     console.log('✅ Loaded', currentNotifications.length, 'notifications for user:', userId);
                     return [3 /*break*/, 5];
                 case 4:
-                    error_3 = _a.sent();
-                    console.error('❌ Lỗi khi tải thông báo:', error_3);
-                    notificationsSection.innerHTML = "\n            <div class=\"empty-state\">\n                <p style=\"color: #e41e3f;\">\u274C L\u1ED7i khi t\u1EA3i th\u00F4ng b\u00E1o: ".concat(error_3.message, "</p>\n                <button onclick=\"loadUserNotifications('").concat(userId, "')\" style=\"margin-top: 10px; padding: 8px 16px; background: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer;\">\n                    \uD83D\uDD04 Th\u1EED l\u1EA1i\n                </button>\n            </div>\n        ");
+                    error_4 = _a.sent();
+                    console.error('❌ Lỗi khi tải thông báo:', error_4);
+                    notificationsSection.innerHTML = "\n            <div class=\"empty-state\">\n                <p style=\"color: #e41e3f;\">\u274C L\u1ED7i khi t\u1EA3i th\u00F4ng b\u00E1o: ".concat(error_4.message, "</p>\n                <button onclick=\"loadUserNotifications('").concat(userId, "')\" style=\"margin-top: 10px; padding: 8px 16px; background: #1877f2; color: white; border: none; border-radius: 4px; cursor: pointer;\">\n                    \uD83D\uDD04 Th\u1EED l\u1EA1i\n                </button>\n            </div>\n        ");
                     currentNotifications = [];
                     return [2 /*return*/];
                 case 5:
@@ -376,7 +440,7 @@ function displayNotifications(notifications) {
 // ✅ Gửi thông báo với validation tốt hơn
 function sendNotification() {
     return __awaiter(this, void 0, void 0, function () {
-        var titleInput, contentInput, title, content, sendButton, response, errorData, result, error_4;
+        var titleInput, contentInput, title, content, sendButton, response, errorData, result, error_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -444,9 +508,9 @@ function sendNotification() {
                     showToast('✅ Gửi thông báo thành công!', 'success');
                     return [3 /*break*/, 8];
                 case 6:
-                    error_4 = _a.sent();
-                    console.error('❌ Lỗi khi gửi thông báo:', error_4);
-                    showToast("\u274C L\u1ED7i khi g\u1EEDi th\u00F4ng b\u00E1o: ".concat(error_4.message), 'error');
+                    error_5 = _a.sent();
+                    console.error('❌ Lỗi khi gửi thông báo:', error_5);
+                    showToast("\u274C L\u1ED7i khi g\u1EEDi th\u00F4ng b\u00E1o: ".concat(error_5.message), 'error');
                     return [3 /*break*/, 8];
                 case 7:
                     // Re-enable form
@@ -476,7 +540,7 @@ function confirmDelete(notificationId) {
 // Xóa thông báo
 function deleteNotification(notificationId) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, errorData, error_5;
+        var response, errorData, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -501,9 +565,9 @@ function deleteNotification(notificationId) {
                     showToast('✅ Xóa thông báo thành công!', 'success');
                     return [3 /*break*/, 5];
                 case 4:
-                    error_5 = _a.sent();
-                    console.error('❌ Lỗi khi xóa thông báo:', error_5);
-                    showToast("\u274C L\u1ED7i khi x\u00F3a: ".concat(error_5.message), 'error');
+                    error_6 = _a.sent();
+                    console.error('❌ Lỗi khi xóa thông báo:', error_6);
+                    showToast("\u274C L\u1ED7i khi x\u00F3a: ".concat(error_6.message), 'error');
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
