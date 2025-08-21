@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import { ThongBaoController } from '../controllers/ThongBaoController';
 import { Server } from 'socket.io';
+import { authMiddleware } from "../middlewares/auth";
 
 // Factory function để tạo routes với Socket.IO instance
 export function createThongBaoRoutes(io: Server): Router {

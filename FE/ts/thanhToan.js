@@ -35,6 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function getAuthHeaders10() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // Global variables
 var orderData = {
     items: [],
@@ -83,9 +90,7 @@ function createDonHang(nguoiDungId) {
                     _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/tao', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders10(),
                             body: JSON.stringify({
                                 nguoi_dung_id: nguoiDungId
                             })
@@ -121,9 +126,7 @@ function addChiTietDonHang(donHangId, bienTheId, soLuong) {
                     _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/chi-tiet/them', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders10(),
                             body: JSON.stringify({
                                 don_hang_id: donHangId,
                                 bien_the_id: bienTheId,
@@ -155,9 +158,7 @@ function createGiaoDichThanhToan(donHangId_1, phuongThucThanhToan_1) {
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/giao-dich/', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders10(),
                             body: JSON.stringify({
                                 don_hang_id: donHangId,
                                 phuong_thuc_thanh_toan: phuongThucThanhToan,
@@ -193,9 +194,7 @@ function createDiaChiGiaoHang(donHangId_1, hoTenNguoiNhan_1, soDienThoai_1, diaC
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/dia-chi/', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders10(),
                             body: JSON.stringify({
                                 don_hang_id: donHangId,
                                 ho_ten_nguoi_nhan: hoTenNguoiNhan,
@@ -234,9 +233,7 @@ function deleteDonHang(donHangId) {
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/".concat(donHangId), {
                             method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
+                            headers: getAuthHeaders10()
                         })];
                 case 1:
                     response = _a.sent();
@@ -259,9 +256,7 @@ function getBienTheById(bienTheId) {
                     _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(bienTheId), {
                             method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
+                            headers: getAuthHeaders10()
                         })];
                 case 1:
                     response = _a.sent();
@@ -298,9 +293,7 @@ function updateBienTheSoLuong(bienTheId, soLuongMoi) {
                     _a.trys.push([0, 5, , 6]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(bienTheId), {
                             method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders10(),
                             body: JSON.stringify({
                                 so_luong_ton_kho: soLuongMoi
                             })

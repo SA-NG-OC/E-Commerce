@@ -481,10 +481,7 @@ function sendNotification() {
                     console.log('📤 Sending notification to user:', selectedUserId);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/thong-bao', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                // ✅ Thêm headers khác nếu cần (auth token, etc.)
-                            },
+                            headers: getAuthHeaders_Ad(), // ✅ Thêm auth headers
                             body: JSON.stringify({
                                 nguoi_dung_id: selectedUserId,
                                 tieu_de: title,
@@ -547,7 +544,8 @@ function deleteNotification(notificationId) {
                     _a.trys.push([0, 4, , 5]);
                     console.log('🗑️ Deleting notification:', notificationId);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/thong-bao/".concat(notificationId), {
-                            method: 'DELETE'
+                            method: 'DELETE',
+                            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
                         })];
                 case 1:
                     response = _a.sent();

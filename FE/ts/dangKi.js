@@ -1,3 +1,4 @@
+const { get } = require("http");
 
 // Dữ liệu địa chỉ Việt Nam
 const vietnamLocations = {
@@ -17,6 +18,14 @@ document.addEventListener('DOMContentLoaded', function () {
     setupFormValidation();
     setupFormSubmission();
 });
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
 
 // Khởi tạo dropdown địa chỉ
 function initializeLocationSelects() {
@@ -225,9 +234,7 @@ async function handleRegistration() {
         // Gửi request đăng ký
         const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(registerData)
         });
 

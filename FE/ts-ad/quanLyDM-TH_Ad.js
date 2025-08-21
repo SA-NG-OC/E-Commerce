@@ -37,6 +37,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 var danhMucs2 = [];
 var thuongHieus2 = [];
+function getAuthHeaders5() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 function fetchData() {
     return __awaiter(this, void 0, void 0, function () {
         var resDanhMuc, rawDanhMucs, resThuongHieu, rawThuongHieus, err_1;
@@ -44,7 +51,9 @@ function fetchData() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 5, , 6]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                            headers: getAuthHeaders5()
+                        })];
                 case 1:
                     resDanhMuc = _a.sent();
                     return [4 /*yield*/, resDanhMuc.json()];
@@ -59,7 +68,9 @@ function fetchData() {
                             ten_san_pham: sp._ten_san_pham
                         }); })
                     }); });
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                            headers: getAuthHeaders5()
+                        })];
                 case 3:
                     resThuongHieu = _a.sent();
                     return [4 /*yield*/, resThuongHieu.json()];
@@ -94,7 +105,9 @@ function loadProductOptions() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/id')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/id', {
+                            headers: getAuthHeaders5()
+                        })];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];
@@ -211,6 +224,7 @@ window.deleteCategory = function (id) {
                 case 1:
                     _a.trys.push([1, 7, , 8]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
+                            headers: getAuthHeaders5(),
                             method: 'DELETE',
                         })];
                 case 2:
@@ -251,6 +265,7 @@ window.deleteBrand = function (id) {
                 case 1:
                     _a.trys.push([1, 7, , 8]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
+                            headers: getAuthHeaders5(),
                             method: 'DELETE',
                         })];
                 case 2:
@@ -333,9 +348,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.trys.push([1, 7, , 8]);
                                     return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
                                             method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
+                                            headers: getAuthHeaders5(),
                                             body: JSON.stringify({ icon: icon, ten_danh_muc: name })
                                         })];
                                 case 2:
@@ -388,9 +401,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.trys.push([1, 5, , 6]);
                                     return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
                                             method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
+                                            headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_danh_muc: name, icon: icon }),
                                         })];
                                 case 2:
@@ -438,9 +449,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.trys.push([1, 7, , 8]);
                                     return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
                                             method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
+                                            headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_thuong_hieu: name })
                                         })];
                                 case 2:
@@ -492,9 +501,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.trys.push([1, 4, , 5]);
                                     return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
                                             method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
+                                            headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_thuong_hieu: name })
                                         })];
                                 case 2:
@@ -545,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     if (!(parentType === 'category')) return [3 /*break*/, 4];
                                     return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-danh-muc', {
                                             method: 'PUT',
-                                            headers: { 'Content-Type': 'application/json' },
+                                            headers: getAuthHeaders5(),
                                             body: JSON.stringify({ sanPhamId: id, danhMucId: parentId })
                                         })];
                                 case 2:
@@ -558,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     return [3 /*break*/, 7];
                                 case 4: return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-thuong-hieu', {
                                         method: 'PUT',
-                                        headers: { 'Content-Type': 'application/json' },
+                                        headers: getAuthHeaders5(),
                                         body: JSON.stringify({ sanPhamId: id, thuongHieuId: parentId })
                                     })];
                                 case 5:

@@ -37,6 +37,14 @@ const TRANG_THAI_MAP: Record<string, { text: string; class: string }> = {
     [TrangThaiDonHang.DA_HUY]: { text: 'Đã hủy', class: 'cancelled' }
 };
 
+function getAuthHeaders50() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // Utility functions
 function getId(): string | null {
     try {
@@ -212,7 +220,9 @@ async function loadDonHangData(): Promise<void> {
         const url = `${API_BASE_URL}/don-hang/${currentUserId}`;
         console.log('Fetching from URL:', url);
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: getAuthHeaders50(),
+        });
         console.log('Response status:', response.status);
 
         if (!response.ok) {
@@ -284,9 +294,7 @@ async function huyDonHang(orderId: string): Promise<void> {
         // Sử dụng DELETE method thay vì PUT
         const res = await fetch(`${API_BASE_URL}/don-hang/${orderId}/${currentUserId}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: getAuthHeaders50(),
         });
 
         // Parse response JSON để lấy thông tin chi tiết

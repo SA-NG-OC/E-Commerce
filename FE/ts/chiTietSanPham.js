@@ -38,6 +38,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var selectedColor = null;
 var selectedSize = null;
 var currentBienThe = null;
+function getAuthHeaders20() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // ✅ Thêm các function xử lý button vào file TypeScript
 // ✅ Cập nhật hàm addToCart
 function addToCart() {
@@ -82,7 +89,9 @@ function addToCart() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 5, , 6]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColor.id, "/").concat(selectedSize.id, "/").concat(sanPhamId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColor.id, "/").concat(selectedSize.id, "/").concat(sanPhamId), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 2:
                     res = _a.sent();
                     if (!res.ok) {
@@ -100,16 +109,14 @@ function addToCart() {
                         renderBienTheInfo(selectedColor.id, selectedSize.id);
                         return [2 /*return*/];
                     }
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/gio-hang/them', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/them", {
+                            method: "POST",
+                            headers: getAuthHeaders20(),
                             body: JSON.stringify({
                                 nguoi_dung_id: nguoi_dung_id,
                                 bien_the_id: bien_the_id,
-                                so_luong: quantity
-                            })
+                                so_luong: quantity,
+                            }),
                         })];
                 case 4:
                     response = _a.sent();
@@ -235,7 +242,9 @@ function fetchSanPhamById(id) {
             switch (_e.label) {
                 case 0:
                     _e.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 1:
                     res = _e.sent();
                     if (!res.ok)
@@ -280,7 +289,9 @@ function fetchBienTheBySanPhamId(selectedColorId, selectedSizeId) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColorId, "/").concat(selectedSizeId, "/").concat(sanPhamId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColorId, "/").concat(selectedSizeId, "/").concat(sanPhamId), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 2:
                     response = _a.sent();
                     if (!response.ok)
@@ -385,7 +396,9 @@ function fetchMauSac() {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
                     sanPhamId = getSanPhamIdFromUrl();
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/mau-sac/".concat(sanPhamId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/mau-sac/".concat(sanPhamId), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 1:
                     res = _b.sent();
                     if (!res.ok)
@@ -415,7 +428,9 @@ function fetchKichCo() {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
                     sanPhamId = getSanPhamIdFromUrl();
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/kich-co/".concat(sanPhamId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/kich-co/".concat(sanPhamId), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 1:
                     res = _b.sent();
                     if (!res.ok)
@@ -593,7 +608,9 @@ function fetchDanhGiaBySanPhamId(id) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id, "/danh-gia"))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id, "/danh-gia"), {
+                            headers: getAuthHeaders20()
+                        })];
                 case 1:
                     res = _b.sent();
                     if (!res.ok)
@@ -723,9 +740,7 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
                         _b.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
                                 method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
+                                headers: getAuthHeaders20(),
                                 body: JSON.stringify({
                                     diem_danh_gia: selectedRating,
                                     noi_dung_danh_gia: newContent
@@ -765,6 +780,7 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
                     case 1:
                         _b.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                                headers: getAuthHeaders20(),
                                 method: 'DELETE'
                             })];
                     case 2:
@@ -993,9 +1009,7 @@ function initReviewForm() {
                             _b.trys.push([1, 6, , 7]);
                             return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(sanPhamId, "/danh-gia"), {
                                     method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
+                                    headers: getAuthHeaders20(),
                                     body: JSON.stringify({
                                         san_pham_id: sanPhamId,
                                         nguoi_dung_id: user._id,

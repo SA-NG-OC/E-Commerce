@@ -1,4 +1,3 @@
-// dangNhap.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,6 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _a, _b;
+// dangNhap.ts
+function getAuthHeaders0() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // Hiển thị mật khẩu
 var showPasswordCheckbox = document.getElementById('showPassword');
 var passwordInput = document.getElementById('password');
@@ -47,7 +54,7 @@ if (showPasswordCheckbox && passwordInput) {
 // Xử lý form đăng nhập
 (_a = document.getElementById('loginForm')) === null || _a === void 0 ? void 0 : _a.addEventListener('submit', function (e) {
     return __awaiter(this, void 0, void 0, function () {
-        var email, password, errorDiv, res, data, redirectPath, _a;
+        var email, password, errorDiv, res, data, redirectPath, role, _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -67,7 +74,7 @@ if (showPasswordCheckbox && passwordInput) {
                     _b.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/login', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: email, password: password })
                         })];
                 case 2:
@@ -86,7 +93,13 @@ if (showPasswordCheckbox && passwordInput) {
                             window.location.href = redirectPath;
                         }
                         else {
-                            window.location.href = '/FE/HTML/Menu.html';
+                            role = data.user._role || data.user.role;
+                            if (role === "Khách hàng") {
+                                window.location.href = '/FE/HTML/Menu.html';
+                            }
+                            else {
+                                window.location.href = '/FE/HTML-AD/Index.html';
+                            }
                         }
                     }
                     else {
@@ -200,7 +213,7 @@ function handleEmailSubmit(e) {
                     _a.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/send-otp', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: email })
                         })];
                 case 2:
@@ -245,7 +258,7 @@ function handleOTPSubmit(e) {
                     _a.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/verify-otp', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: userEmail, otp: otp })
                         })];
                 case 2:
@@ -300,7 +313,7 @@ function handlePasswordSubmit(e) {
                     _a.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/reset-password', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders0(),
                             body: JSON.stringify({
                                 email: userEmail,
                                 otp: userOtp, // ✅ dùng lại OTP đã lưu

@@ -34,6 +34,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function getAuthHeaders6() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // API Functions
 function getAllDanhMucAd() {
     return __awaiter(this, void 0, void 0, function () {
@@ -42,7 +49,10 @@ function getAllDanhMucAd() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                            method: 'GET',
+                            headers: getAuthHeaders6()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {
@@ -73,7 +83,10 @@ function getAllThuongHieuAd() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                            method: 'GET',
+                            headers: getAuthHeaders6()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {
@@ -117,9 +130,7 @@ function createProductAd(product) {
                     };
                     return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: getAuthHeaders6(),
                             body: JSON.stringify(apiData)
                         })];
                 case 1:
@@ -353,7 +364,10 @@ function getProductIdByCode(maSanPham) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham?ma_san_pham=".concat(maSanPham))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham?ma_san_pham=".concat(maSanPham), {
+                            method: 'GET',
+                            headers: getAuthHeaders6()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {

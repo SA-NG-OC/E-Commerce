@@ -1,3 +1,5 @@
+
+
 interface OrderDetail {
     bien_the_id: string;
     so_luong: number;
@@ -51,6 +53,14 @@ let isEditingAddress: boolean = false;
 
 let orders: Order[] = [];
 
+function getAuthHeaders61() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 async function initOrders() {
     orders = await loadOrdersData();
     displayOrders(orders); // nếu bạn muốn hiển thị ngay sau khi load
@@ -62,7 +72,11 @@ let currentEditingOrder: string | null = null;
 // API functions mới
 async function getPaymentInfoApi(orderId: string): Promise<PaymentInfo | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/giao-dich/${orderId}`);
+        const response = await fetch(`http://localhost:3000/api/giao-dich/${orderId}`,
+            {
+                headers: getAuthHeaders61()
+            }
+        );
         if (!response.ok) {
             if (response.status === 404) {
                 return null;
@@ -79,7 +93,9 @@ async function getPaymentInfoApi(orderId: string): Promise<PaymentInfo | null> {
 
 async function getAddressInfoApi(orderId: string): Promise<AddressInfo | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/dia-chi/${orderId}`);
+        const response = await fetch(`http://localhost:3000/api/dia-chi/${orderId}`, {
+            headers: getAuthHeaders61()
+        });
         if (!response.ok) {
             if (response.status === 404) {
                 return null;
@@ -98,9 +114,7 @@ async function updatePaymentStatusApi(paymentId: string, newStatus: string): Pro
     try {
         const response = await fetch(`http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/${paymentId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getAuthHeaders61(),
             body: JSON.stringify({ trang_thai: newStatus })
         });
 
@@ -116,9 +130,7 @@ async function updateAddressApi(addressId: string, addressData: Partial<AddressI
     try {
         const response = await fetch(`http://localhost:3000/api/dia-chi/cap-nhat/${addressId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getAuthHeaders61(),
             body: JSON.stringify(addressData)
         });
 
@@ -153,7 +165,9 @@ function getPaymentMethodText(method: string): string {
 
 async function getAllOrdersApi(): Promise<Order[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/don-hang/');
+        const response = await fetch('http://localhost:3000/api/don-hang/', {
+            headers: getAuthHeaders61()
+        });
         if (!response.ok) {
             throw new Error('Lỗi khi gọi API lấy đơn hàng');
         }
@@ -565,7 +579,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: getAuthHeaders61()
         });
 
         if (!res.ok) {
@@ -596,9 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(`http://localhost:3000/api/don-hang/cap-nhat-trang-thai/${currentEditingOrder}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAuthHeaders61(),
                     body: JSON.stringify({ trang_thai: newStatus })
                 });
 
@@ -645,6 +657,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 //Xóa đơn hàng 
 async function deleteOrderApi(orderId: string): Promise<void> {
     const response = await fetch(`http://localhost:3000/api/don-hang/${orderId}`, {
+        headers: getAuthHeaders61(),
         method: 'DELETE',
     });
 

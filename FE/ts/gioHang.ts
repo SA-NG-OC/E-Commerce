@@ -1,3 +1,10 @@
+function getAuthHeaders60() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
 // --- Các hàm xử lý tương tác giỏ hàng ---
 
 function selectAllItems() {
@@ -64,6 +71,7 @@ function removeItem(button: HTMLElement) {
 async function removeItemFromCart(gioHangId: string, bienTheId: string) {
     try {
         const response = await fetch(`http://localhost:3000/api/gio-hang/${gioHangId}/bien-the/${bienTheId}`, {
+            headers: getAuthHeaders60(),
             method: 'DELETE'
         });
 
@@ -195,7 +203,7 @@ async function saveQuantityChanges(): Promise<void> {
         if (soLuong !== originalQuantity) {
             const response = await fetch(`http://localhost:3000/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getAuthHeaders60(),
                 body: JSON.stringify({ so_luong: soLuong })
             });
 
@@ -250,7 +258,9 @@ async function loadGioHang() {
 
     // Gọi API lấy giỏ hàng
     try {
-        const res = await fetch(`http://localhost:3000/api/gio-hang/${userId}`);
+        const res = await fetch(`http://localhost:3000/api/gio-hang/${userId}`, {
+            headers: getAuthHeaders60()
+        });
         console.log('User ID:', userId);
 
         if (!res.ok) throw new Error('Không thể lấy dữ liệu giỏ hàng');
@@ -391,7 +401,7 @@ function renderCart(gioHang: any) {
                     if (bienTheId) {
                         const response = await fetch(`http://localhost:3000/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
                             method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: getAuthHeaders60(),
                             body: JSON.stringify({ so_luong: soLuong })
                         });
 

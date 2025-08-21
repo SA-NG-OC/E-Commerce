@@ -45,6 +45,14 @@ let productsView: HTMLElement;
 let searchInput: HTMLInputElement;
 let loadingContainer: HTMLElement;
 
+function getAuthHeaders4() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // Utility functions
 function formatPrice2(price: number | string): string {
     let numPrice = price;
@@ -76,7 +84,11 @@ function showLoading(show: boolean): void {
 // API functions
 async function loadDanhMucs(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/danh-muc/');
+        const response = await fetch('http://localhost:3000/api/danh-muc/',
+            {
+                headers: getAuthHeaders4()
+            }
+        );
         const rawData = await response.json();
 
         if (!response.ok) {
@@ -97,7 +109,11 @@ async function loadDanhMucs(): Promise<void> {
 
 async function loadThuongHieus(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/thuong-hieu/');
+        const response = await fetch('http://localhost:3000/api/thuong-hieu/',
+            {
+                headers: getAuthHeaders4()
+            }
+        );
         const rawData = await response.json();
 
         if (!response.ok) {
@@ -122,7 +138,11 @@ async function loadProductsByFilter(): Promise<SanPham[]> {
 
         let url = `http://localhost:3000/api/san-pham/filter/${danhMucId}/${thuongHieuId}`;
 
-        const response = await fetch(url);
+        const response = await fetch(url,
+            {
+                headers: getAuthHeaders4()
+            }
+        );
         const rawProducts = await response.json();
 
         if (!response.ok) {

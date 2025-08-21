@@ -474,10 +474,7 @@ async function sendNotification(): Promise<void> {
 
         const response = await fetch('http://localhost:3000/api/thong-bao', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // ✅ Thêm headers khác nếu cần (auth token, etc.)
-            },
+            headers: getAuthHeaders_Ad(), // ✅ Thêm auth headers
             body: JSON.stringify({
                 nguoi_dung_id: selectedUserId,
                 tieu_de: title,
@@ -533,7 +530,8 @@ async function deleteNotification(notificationId: string): Promise<void> {
         console.log('🗑️ Deleting notification:', notificationId);
 
         const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
         });
 
         if (!response.ok) {

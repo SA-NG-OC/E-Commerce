@@ -1,3 +1,11 @@
+
+function getAuthHeaders7() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
 // Fixed Notification Manager Class
 class NotificationManager {
     constructor() {
@@ -278,11 +286,7 @@ class NotificationManager {
         try {
             const response = await fetch(`http://localhost:3000/api/thong-bao/${this.userId}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // ✅ Thêm Authorization header nếu cần
-                    // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+                headers: getAuthHeaders7()
             });
 
             if (!response.ok) {
@@ -389,9 +393,7 @@ class NotificationManager {
         try {
             const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}/mark-read`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders7()
             });
 
             if (!response.ok) {
@@ -415,6 +417,7 @@ class NotificationManager {
 
         try {
             const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}`, {
+                headers: getAuthHeaders7(),
                 method: 'DELETE'
             });
 
@@ -437,9 +440,7 @@ class NotificationManager {
         try {
             const response = await fetch(`http://localhost:3000/api/thong-bao/mark-all-read/${this.userId}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: getAuthHeaders7()
             });
 
             if (!response.ok) {
@@ -612,7 +613,11 @@ class AdminNavigation {
 
     async loadAllProducts() {
         try {
-            const response = await fetch('http://localhost:3000/api/san-pham/');
+            const response = await fetch('http://localhost:3000/api/san-pham/',
+                {
+                    header: getAuthHeaders7()
+                }
+            );
             if (response.ok) {
                 this.allProducts = await response.json();
                 console.log('✅ Đã tải danh sách sản phẩm cho tìm kiếm');

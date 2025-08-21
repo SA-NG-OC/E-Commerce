@@ -1,5 +1,7 @@
 // thanhToan.ts - Fixed for duplicate submissions
 
+
+
 // Types/Interfaces
 interface User {
     _ho: string;
@@ -50,6 +52,14 @@ interface OrderInfo {
     };
 }
 
+function getAuthHeaders10() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // Global variables
 let orderData: OrderData = {
     items: [],
@@ -96,9 +106,7 @@ async function createDonHang(nguoiDungId: string): Promise<string | null> {
     try {
         const response = await fetch('http://localhost:3000/api/don-hang/tao', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders10(),
             body: JSON.stringify({
                 nguoi_dung_id: nguoiDungId
             })
@@ -122,9 +130,7 @@ async function addChiTietDonHang(donHangId: string, bienTheId: string, soLuong: 
     try {
         const response = await fetch('http://localhost:3000/api/don-hang/chi-tiet/them', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders10(),
             body: JSON.stringify({
                 don_hang_id: donHangId,
                 bien_the_id: bienTheId,
@@ -144,9 +150,7 @@ async function createGiaoDichThanhToan(donHangId: string, phuongThucThanhToan: s
     try {
         const response = await fetch('http://localhost:3000/api/giao-dich/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders10(),
             body: JSON.stringify({
                 don_hang_id: donHangId,
                 phuong_thuc_thanh_toan: phuongThucThanhToan,
@@ -178,9 +182,7 @@ async function createDiaChiGiaoHang(
     try {
         const response = await fetch('http://localhost:3000/api/dia-chi/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders10(),
             body: JSON.stringify({
                 don_hang_id: donHangId,
                 ho_ten_nguoi_nhan: hoTenNguoiNhan,
@@ -208,9 +210,7 @@ async function deleteDonHang(donHangId: string): Promise<boolean> {
     try {
         const response = await fetch(`http://localhost:3000/api/don-hang/${donHangId}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: getAuthHeaders10()
         });
         return response.ok;
     } catch (err) {
@@ -223,9 +223,7 @@ async function getBienTheById(bienTheId: string): Promise<any | null> {
     try {
         const response = await fetch(`http://localhost:3000/api/bien-the/${bienTheId}`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: getAuthHeaders10()
         });
 
         if (!response.ok) {
@@ -251,9 +249,7 @@ async function updateBienTheSoLuong(bienTheId: string, soLuongMoi: number): Prom
     try {
         const response = await fetch(`http://localhost:3000/api/bien-the/${bienTheId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders10(),
             body: JSON.stringify({
                 so_luong_ton_kho: soLuongMoi
             })

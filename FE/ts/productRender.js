@@ -34,6 +34,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function getAuthHeaders9() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // Thêm function format giá
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price);
@@ -70,7 +77,9 @@ function renderProducts() {
                         loadingContainer.style.display = 'flex';
                     }
                     grid.style.display = 'none';
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/', {
+                            headers: getAuthHeaders9()
+                        })];
                 case 2:
                     res = _a.sent();
                     return [4 /*yield*/, res.json()];

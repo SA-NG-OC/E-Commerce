@@ -1,3 +1,5 @@
+
+
 interface HinhAnhSPModel {
     id: string;
     san_pham_id: string;
@@ -51,6 +53,13 @@ let selectedColor: MauSacModel | null = null;
 let selectedSize: KichCoModel | null = null;
 let currentBienThe: BienTheSPModel | null = null;
 
+function getAuthHeaders20() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
 
 // ✅ Thêm các function xử lý button vào file TypeScript
 
@@ -99,7 +108,9 @@ async function addToCart(): Promise<void> {
 
     try {
         // 1. Lấy biến thể sản phẩm từ API
-        const res = await fetch(`http://localhost:3000/api/bien-the/${selectedColor.id}/${selectedSize.id}/${sanPhamId}`);
+        const res = await fetch(`http://localhost:3000/api/bien-the/${selectedColor.id}/${selectedSize.id}/${sanPhamId}`, {
+            headers: getAuthHeaders20()
+        });
         if (!res.ok) {
             alert('Không tìm thấy biến thể sản phẩm!');
             return;
@@ -116,17 +127,16 @@ async function addToCart(): Promise<void> {
         }
 
         // 2. Gọi API thêm vào giỏ hàng
-        const response = await fetch('http://localhost:3000/api/gio-hang/them', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+        const response = await fetch("http://localhost:3000/api/gio-hang/them", {
+            method: "POST",
+            headers: getAuthHeaders20(),
             body: JSON.stringify({
                 nguoi_dung_id,
                 bien_the_id,
-                so_luong: quantity
-            })
+                so_luong: quantity,
+            }),
         });
+
 
         if (!response.ok) {
             alert('Không thể thêm vào giỏ hàng');
@@ -265,7 +275,11 @@ function getSanPhamIdFromUrl(): string | null {
 
 async function fetchSanPhamById(id: string): Promise<SanPham | null> {
     try {
-        const res = await fetch(`http://localhost:3000/api/san-pham/${id}`);
+        const res = await fetch(`http://localhost:3000/api/san-pham/${id}`,
+            {
+                headers: getAuthHeaders20()
+            }
+        );
         if (!res.ok) return null;
         const p = await res.json();
         return {
@@ -296,7 +310,11 @@ async function fetchBienTheBySanPhamId(selectedColorId: string, selectedSizeId: 
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/bien-the/${selectedColorId}/${selectedSizeId}/${sanPhamId}`);
+        const response = await fetch(`http://localhost:3000/api/bien-the/${selectedColorId}/${selectedSizeId}/${sanPhamId}`,
+            {
+                headers: getAuthHeaders20()
+            }
+        );
         if (!response.ok) return null;
 
         const data = await response.json();
@@ -391,7 +409,9 @@ async function renderBienTheInfo(selectedColorId: string, selectedSizeId: string
 async function fetchMauSac(): Promise<MauSacModel[]> {
     try {
         const sanPhamId: string | null = getSanPhamIdFromUrl();
-        const res = await fetch(`http://localhost:3000/api/mau-sac/${sanPhamId}`);
+        const res = await fetch(`http://localhost:3000/api/mau-sac/${sanPhamId}`, {
+            headers: getAuthHeaders20()
+        });
         if (!res.ok) return [];
         const data = await res.json();
         return data.map((item: any) => ({
@@ -408,7 +428,11 @@ async function fetchMauSac(): Promise<MauSacModel[]> {
 async function fetchKichCo(): Promise<KichCoModel[]> {
     try {
         const sanPhamId: string | null = getSanPhamIdFromUrl();
-        const res = await fetch(`http://localhost:3000/api/kich-co/${sanPhamId}`);
+        const res = await fetch(`http://localhost:3000/api/kich-co/${sanPhamId}`,
+            {
+                headers: getAuthHeaders20()
+            }
+        );
         if (!res.ok) return [];
         const data = await res.json();
         return data.map((item: any) => ({
@@ -585,7 +609,11 @@ function updateSelectionInfo() {
 //Review//
 async function fetchDanhGiaBySanPhamId(id: string): Promise<DanhGiaSPModel[]> {
     try {
-        const res = await fetch(`http://localhost:3000/api/san-pham/${id}/danh-gia`);
+        const res = await fetch(`http://localhost:3000/api/san-pham/${id}/danh-gia`,
+            {
+                headers: getAuthHeaders20()
+            }
+        );
         if (!res.ok) return [];
         const data = await res.json();
         // Map lại field cho đúng interface
@@ -749,9 +777,7 @@ function showCommentDialog(reviewId: string, currentContent: string, currentRati
         try {
             const res = await fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders20(),
                 body: JSON.stringify({
                     diem_danh_gia: selectedRating,
                     noi_dung_danh_gia: newContent
@@ -776,6 +802,7 @@ function showCommentDialog(reviewId: string, currentContent: string, currentRati
         if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
             try {
                 const res = await fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
+                    headers: getAuthHeaders20(),
                     method: 'DELETE'
                 });
 
@@ -1013,9 +1040,7 @@ function initReviewForm() {
             try {
                 const res = await fetch(`http://localhost:3000/api/san-pham/${sanPhamId}/danh-gia`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAuthHeaders20(),
                     body: JSON.stringify({
                         san_pham_id: sanPhamId,
                         nguoi_dung_id: user._id,

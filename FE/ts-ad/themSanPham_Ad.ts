@@ -1,3 +1,5 @@
+
+
 // Interfaces cho dữ liệu từ API
 interface DanhMuc {
     id?: string;
@@ -20,10 +22,21 @@ interface SanPham2 {
     thuong_hieu?: string | null;
 }
 
+function getAuthHeaders6() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // API Functions
 async function getAllDanhMucAd(): Promise<DanhMuc[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/danh-muc');
+        const response = await fetch('http://localhost:3000/api/danh-muc', {
+            method: 'GET',
+            headers: getAuthHeaders6()
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -43,7 +56,10 @@ async function getAllDanhMucAd(): Promise<DanhMuc[]> {
 
 async function getAllThuongHieuAd(): Promise<ThuongHieu[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/thuong-hieu');
+        const response = await fetch('http://localhost:3000/api/thuong-hieu', {
+            method: 'GET',
+            headers: getAuthHeaders6()
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -79,9 +95,7 @@ async function createProductAd(product: SanPham2): Promise<string | null> {
 
         const response = await fetch('http://localhost:3000/api/san-pham', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders6(),
             body: JSON.stringify(apiData)
         });
 
@@ -324,7 +338,10 @@ async function loadDataAd(): Promise<void> {
 // Hàm lấy ID sản phẩm từ mã sản phẩm (nếu cần)
 async function getProductIdByCode(maSanPham: string): Promise<string | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/san-pham?ma_san_pham=${maSanPham}`);
+        const response = await fetch(`http://localhost:3000/api/san-pham?ma_san_pham=${maSanPham}`, {
+            method: 'GET',
+            headers: getAuthHeaders6()
+        });
         if (!response.ok) {
             return null;
         }

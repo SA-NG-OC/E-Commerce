@@ -17,6 +17,14 @@ interface GiaoDich {
     _ghi_chu: string;
 }
 
+function getAuthHeaders3() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 function groupRevenueGiaoDich(
     giaoDichs: GiaoDich[],
     type: 'day' | 'month',
@@ -73,7 +81,9 @@ async function initRevenueChart(): Promise<void> {
     const typeSelect = document.getElementById('typeSelect') as HTMLSelectElement;
     const dateFilter = document.getElementById('dateFilter') as HTMLInputElement;
 
-    const res = await fetch('http://localhost:3000/api/giao-dich');
+    const res = await fetch('http://localhost:3000/api/giao-dich', {
+        headers: getAuthHeaders3()
+    });
     if (!res.ok) throw new Error(`Lỗi tải giao dịch: ${res.status}`);
     const giaoDichs: GiaoDich[] = await res.json();
 
@@ -140,7 +150,11 @@ async function initRevenueChart(): Promise<void> {
 async function initStats(): Promise<void> {
     try {
         // 1️⃣ Lấy số đơn hàng
-        const donHangRes = await fetch('http://localhost:3000/api/don-hang/count');
+        const donHangRes = await fetch('http://localhost:3000/api/don-hang/count',
+            {
+                headers: getAuthHeaders3()
+            }
+        );
         const donHangData = await donHangRes.json();
         document.querySelectorAll('.stat-card .value')[0].textContent = donHangData.total ?? '0';
 
@@ -158,7 +172,9 @@ async function initStats(): Promise<void> {
         document.querySelectorAll('.stat-card .value')[1].textContent = khachHangData.total ?? '0';
 
         // 3️⃣ Lấy số sản phẩm
-        const sanPhamRes = await fetch('http://localhost:3000/api/san-pham/count');
+        const sanPhamRes = await fetch('http://localhost:3000/api/san-pham/count', {
+            headers: getAuthHeaders3()
+        });
         const sanPhamData = await sanPhamRes.json();
         document.querySelectorAll('.stat-card .value')[2].textContent = sanPhamData.total ?? '0';
 
@@ -184,7 +200,9 @@ async function initCategoryChart(): Promise<void> {
     if (!ctx) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/danh-muc');
+        const res = await fetch('http://localhost:3000/api/danh-muc', {
+            headers: getAuthHeaders3()
+        });
         if (!res.ok) throw new Error('Lỗi tải danh mục');
         const danhMucs: any[] = await res.json();
 

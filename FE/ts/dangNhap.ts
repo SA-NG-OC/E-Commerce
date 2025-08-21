@@ -1,5 +1,12 @@
-// dangNhap.ts
 
+// dangNhap.ts
+function getAuthHeaders0() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
 // Hiển thị mật khẩu
 const showPasswordCheckbox = document.getElementById('showPassword') as HTMLInputElement | null;
 const passwordInput = document.getElementById('password') as HTMLInputElement | null;
@@ -28,7 +35,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
     try {
         const res = await fetch('http://localhost:3000/api/nguoi-dung/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders0(),
             body: JSON.stringify({ email, password })
         });
 
@@ -46,7 +53,12 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
                 sessionStorage.removeItem('adminRedirectAfterLogin');
                 window.location.href = redirectPath;
             } else {
-                window.location.href = '/FE/HTML/Menu.html';
+                const role = data.user._role || data.user.role;
+                if (role === "Khách hàng") {
+                    window.location.href = '/FE/HTML/Menu.html';
+                } else {
+                    window.location.href = '/FE/HTML-AD/Index.html';
+                }
             }
         } else {
             if (errorDiv) errorDiv.textContent = data.message || 'Đăng nhập thất bại';
@@ -199,7 +211,7 @@ async function handleEmailSubmit(e: Event) {
     try {
         const response = await fetch('http://localhost:3000/api/nguoi-dung/forgot-password/send-otp', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders0(),
             body: JSON.stringify({ email })
         });
 
@@ -232,7 +244,7 @@ async function handleOTPSubmit(e: Event) {
     try {
         const response = await fetch('http://localhost:3000/api/nguoi-dung/forgot-password/verify-otp', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders0(),
             body: JSON.stringify({ email: userEmail, otp })
         });
 
@@ -278,7 +290,7 @@ async function handlePasswordSubmit(e: Event) {
     try {
         const response = await fetch('http://localhost:3000/api/nguoi-dung/forgot-password/reset-password', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getAuthHeaders0(),
             body: JSON.stringify({
                 email: userEmail,
                 otp: userOtp,   // ✅ dùng lại OTP đã lưu

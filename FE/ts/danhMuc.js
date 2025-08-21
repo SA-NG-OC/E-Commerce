@@ -61,6 +61,13 @@ var categoriesView;
 var productsView;
 var searchInput;
 var loadingContainer;
+function getAuthHeaders4() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // Utility functions
 function formatPrice2(price) {
     var numPrice = price;
@@ -90,7 +97,9 @@ function loadDanhMucs() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc/', {
+                            headers: getAuthHeaders4()
+                        })];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];
@@ -121,7 +130,9 @@ function loadThuongHieus() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu/', {
+                            headers: getAuthHeaders4()
+                        })];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];
@@ -154,7 +165,9 @@ function loadProductsByFilter() {
                     danhMucId = currentCategory && currentCategory !== 'all' ? currentCategory : 'all';
                     thuongHieuId = currentBrandFilter && currentBrandFilter !== 'all' ? currentBrandFilter : 'all';
                     url = "http://localhost:3000/api/san-pham/filter/".concat(danhMucId, "/").concat(thuongHieuId);
-                    return [4 /*yield*/, fetch(url)];
+                    return [4 /*yield*/, fetch(url, {
+                            headers: getAuthHeaders4()
+                        })];
                 case 1:
                     response = _a.sent();
                     return [4 /*yield*/, response.json()];

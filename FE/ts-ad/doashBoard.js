@@ -44,6 +44,13 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 var _this = this;
+function getAuthHeaders3() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 function groupRevenueGiaoDich(giaoDichs, type, filterDate) {
     var result = {};
     giaoDichs.forEach(function (gd) {
@@ -94,7 +101,9 @@ function initRevenueChart() {
                         return [2 /*return*/];
                     typeSelect = document.getElementById('typeSelect');
                     dateFilter = document.getElementById('dateFilter');
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/giao-dich')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/giao-dich', {
+                            headers: getAuthHeaders3()
+                        })];
                 case 1:
                     res = _c.sent();
                     if (!res.ok)
@@ -166,7 +175,9 @@ function initStats() {
             switch (_d.label) {
                 case 0:
                     _d.trys.push([0, 7, , 8]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/count')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/count', {
+                            headers: getAuthHeaders3()
+                        })];
                 case 1:
                     donHangRes = _d.sent();
                     return [4 /*yield*/, donHangRes.json()];
@@ -186,7 +197,9 @@ function initStats() {
                 case 4:
                     khachHangData = _d.sent();
                     document.querySelectorAll('.stat-card .value')[1].textContent = (_b = khachHangData.total) !== null && _b !== void 0 ? _b : '0';
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/count')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/count', {
+                            headers: getAuthHeaders3()
+                        })];
                 case 5:
                     sanPhamRes = _d.sent();
                     return [4 /*yield*/, sanPhamRes.json()];
@@ -225,7 +238,9 @@ function initCategoryChart() {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                            headers: getAuthHeaders3()
+                        })];
                 case 2:
                     res = _b.sent();
                     if (!res.ok)

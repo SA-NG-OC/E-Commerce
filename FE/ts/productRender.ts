@@ -14,6 +14,14 @@ interface SanPham {
     danh_sach_hinh_anh: HinhAnhSPModel[];
 }
 
+function getAuthHeaders9() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // Thêm function format giá
 function formatPrice(price: number): string {
     return new Intl.NumberFormat('vi-VN').format(price);
@@ -61,7 +69,9 @@ async function renderProducts() {
         }
         grid.style.display = 'none';
 
-        const res = await fetch('http://localhost:3000/api/san-pham/');
+        const res = await fetch('http://localhost:3000/api/san-pham/', {
+            headers: getAuthHeaders9()
+        });
         const rawProducts = await res.json();
 
         // Chuyển đổi dữ liệu

@@ -14,6 +14,14 @@ interface SanPham {
     danh_sach_hinh_anh: HinhAnhSPModel[];
 }
 
+function getAuthHeaders4() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 // Biến global để lưu trữ danh sách sản phẩm gốc
 let originalProducts: SanPham[] = [];
 
@@ -173,7 +181,9 @@ async function renderProductsAd() {
         }
         grid.style.display = 'none';
 
-        const res = await fetch('http://localhost:3000/api/san-pham/');
+        const res = await fetch('http://localhost:3000/api/san-pham/', {
+            headers: getAuthHeaders4()
+        });
         const rawProducts = await res.json();
 
         // Chuyển đổi dữ liệu

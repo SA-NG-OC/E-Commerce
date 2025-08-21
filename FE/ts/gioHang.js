@@ -1,4 +1,3 @@
-// --- Các hàm xử lý tương tác giỏ hàng ---
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,6 +34,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function getAuthHeaders60() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
+// --- Các hàm xử lý tương tác giỏ hàng ---
 function selectAllItems() {
     var selectAllCheckbox = document.getElementById('selectAll');
     var itemCheckboxes = document.querySelectorAll('.item-check');
@@ -98,6 +105,7 @@ function removeItemFromCart(gioHangId, bienTheId) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(gioHangId, "/bien-the/").concat(bienTheId), {
+                            headers: getAuthHeaders60(),
                             method: 'DELETE'
                         })];
                 case 1:
@@ -229,7 +237,7 @@ function saveQuantityChanges() {
                                     if (!(soLuong !== originalQuantity)) return [3 /*break*/, 2];
                                     return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
                                             method: 'PUT',
-                                            headers: { 'Content-Type': 'application/json' },
+                                            headers: getAuthHeaders60(),
                                             body: JSON.stringify({ so_luong: soLuong })
                                         })];
                                 case 1:
@@ -299,7 +307,9 @@ function loadGioHang() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId), {
+                            headers: getAuthHeaders60()
+                        })];
                 case 2:
                     res = _a.sent();
                     console.log('User ID:', userId);
@@ -378,7 +388,7 @@ function renderCart(gioHang) {
                             if (!bienTheId) return [3 /*break*/, 3];
                             return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
                                     method: 'PUT',
-                                    headers: { 'Content-Type': 'application/json' },
+                                    headers: getAuthHeaders60(),
                                     body: JSON.stringify({ so_luong: soLuong })
                                 })];
                         case 2:

@@ -41,6 +41,13 @@ var currentAddressInfo = null;
 var isEditingPayment = false;
 var isEditingAddress = false;
 var orders = [];
+function getAuthHeaders61() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 function initOrders() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -63,7 +70,9 @@ function getPaymentInfoApi(orderId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/".concat(orderId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/".concat(orderId), {
+                            headers: getAuthHeaders61()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {
@@ -92,7 +101,9 @@ function getAddressInfoApi(orderId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/".concat(orderId))];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/".concat(orderId), {
+                            headers: getAuthHeaders61()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {
@@ -123,9 +134,7 @@ function updatePaymentStatusApi(paymentId, newStatus) {
                     _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/".concat(paymentId), {
                             method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: getAuthHeaders61(),
                             body: JSON.stringify({ trang_thai: newStatus })
                         })];
                 case 1:
@@ -152,9 +161,7 @@ function updateAddressApi(addressId, addressData) {
                     _a.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/cap-nhat/".concat(addressId), {
                             method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: getAuthHeaders61(),
                             body: JSON.stringify(addressData)
                         })];
                 case 1:
@@ -198,7 +205,9 @@ function getAllOrdersApi() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/')];
+                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/', {
+                            headers: getAuthHeaders61()
+                        })];
                 case 1:
                     response = _a.sent();
                     if (!response.ok) {
@@ -489,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
-                        headers: { Authorization: "Bearer ".concat(token) }
+                        headers: getAuthHeaders61()
                     })];
             case 2:
                 res = _a.sent();
@@ -528,9 +537,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.trys.push([1, 4, , 5]);
                                     return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/cap-nhat-trang-thai/".concat(currentEditingOrder), {
                                             method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
+                                            headers: getAuthHeaders61(),
                                             body: JSON.stringify({ trang_thai: newStatus })
                                         })];
                                 case 2:
@@ -586,6 +593,7 @@ function deleteOrderApi(orderId) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/".concat(orderId), {
+                        headers: getAuthHeaders61(),
                         method: 'DELETE',
                     })];
                 case 1:

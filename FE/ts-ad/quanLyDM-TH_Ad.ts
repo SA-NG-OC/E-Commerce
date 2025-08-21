@@ -1,3 +1,4 @@
+
 interface SanPham4 {
     id: string;
     ten_san_pham: string;
@@ -20,10 +21,20 @@ let danhMucs2: DanhMuc2[] = [];
 
 let thuongHieus2: ThuongHieu2[] = [];
 
+function getAuthHeaders5() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
 async function fetchData() {
     try {
         // Lấy danh mục
-        const resDanhMuc = await fetch('http://localhost:3000/api/danh-muc');
+        const resDanhMuc = await fetch('http://localhost:3000/api/danh-muc', {
+            headers: getAuthHeaders5()
+        });
         const rawDanhMucs = await resDanhMuc.json();
 
         danhMucs2 = rawDanhMucs.map((dm: any): DanhMuc2 => ({
@@ -37,7 +48,9 @@ async function fetchData() {
         }));
 
         // Lấy thương hiệu
-        const resThuongHieu = await fetch('http://localhost:3000/api/thuong-hieu');
+        const resThuongHieu = await fetch('http://localhost:3000/api/thuong-hieu', {
+            headers: getAuthHeaders5()
+        });
         const rawThuongHieus = await resThuongHieu.json();
 
         thuongHieus2 = rawThuongHieus.map((th: any): ThuongHieu2 => ({
@@ -60,7 +73,9 @@ async function fetchData() {
 
 async function loadProductOptions() {
     try {
-        const response = await fetch('http://localhost:3000/api/san-pham/id');
+        const response = await fetch('http://localhost:3000/api/san-pham/id', {
+            headers: getAuthHeaders5()
+        });
         const data: { id: string, ten_san_pham: string }[] = await response.json();
 
         const select = document.getElementById('productName') as HTMLSelectElement;
@@ -203,6 +218,7 @@ function updateBrandSelect() {
     if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
         try {
             const response = await fetch(`http://localhost:3000/api/danh-muc/${id}`, {
+                headers: getAuthHeaders5(),
                 method: 'DELETE',
             });
 
@@ -228,6 +244,7 @@ function updateBrandSelect() {
     if (confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) {
         try {
             const response = await fetch(`http://localhost:3000/api/thuong-hieu/${id}`, {
+                headers: getAuthHeaders5(),
                 method: 'DELETE',
             });
 
@@ -293,9 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch('http://localhost:3000/api/danh-muc', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders5(),
                 body: JSON.stringify({ icon, ten_danh_muc: name })
             });
 
@@ -335,9 +350,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch(`http://localhost:3000/api/danh-muc/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: getAuthHeaders5(),
                 body: JSON.stringify({ ten_danh_muc: name, icon }),
             });
 
@@ -375,9 +388,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch('http://localhost:3000/api/thuong-hieu', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders5(),
                 body: JSON.stringify({ ten_thuong_hieu: name })
             });
 
@@ -416,9 +427,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const res = await fetch(`http://localhost:3000/api/thuong-hieu/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getAuthHeaders5(),
                 body: JSON.stringify({ ten_thuong_hieu: name })
             });
 
@@ -459,7 +468,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (parentType === 'category') {
                 const res = await fetch('http://localhost:3000/api/san-pham/update-danh-muc', {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders5(),
                     body: JSON.stringify({ sanPhamId: id, danhMucId: parentId })
                 });
 
@@ -469,7 +478,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 const res = await fetch('http://localhost:3000/api/san-pham/update-thuong-hieu', {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders5(),
                     body: JSON.stringify({ sanPhamId: id, thuongHieuId: parentId })
                 });
 

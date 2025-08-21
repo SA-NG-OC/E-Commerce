@@ -79,19 +79,24 @@ export class NguoiDungController {
             return res.status(401).json({ message: "Email hoặc mật khẩu không đúng" });
         }
 
-        // Không trả về mật khẩu
-        const { mat_khau_hash, ...userData } = user as any;
+        // Bỏ mật khẩu trước khi trả về
+        const { _mat_khau_hash, ...userData } = user as any;
 
         // Tạo JWT token
         const token = jwt.sign(
-            { id: userData.id, email: userData.email, role: userData.role },
+            {
+                id: userData.id ?? userData._id,
+                email: userData.email ?? userData._email,
+                role: userData.role ?? userData._role,
+            },
             process.env.JWT_SECRET as string,
             { expiresIn: "1h" }
         );
 
         // Trả về user + token
-        res.json({ user: userData, token });
+        return res.json({ user: userData, token });
     }
+
 
     //Sử dụng api: http://localhost:3000/api/nguoi-dung/
     static async getAll(req: Request, res: Response) {

@@ -52,6 +52,13 @@ var TRANG_THAI_MAP = (_a = {},
     _a[TrangThaiDonHang.DA_GIAO] = { text: 'Đã giao', class: 'delivered' },
     _a[TrangThaiDonHang.DA_HUY] = { text: 'Đã hủy', class: 'cancelled' },
     _a);
+function getAuthHeaders50() {
+    var token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ".concat(token)
+    };
+}
 // Utility functions
 function getId() {
     try {
@@ -178,7 +185,9 @@ function loadDonHangData() {
                     _a.trys.push([1, 4, , 5]);
                     url = "".concat(API_BASE_URL, "/don-hang/").concat(currentUserId);
                     console.log('Fetching from URL:', url);
-                    return [4 /*yield*/, fetch(url)];
+                    return [4 /*yield*/, fetch(url, {
+                            headers: getAuthHeaders50(),
+                        })];
                 case 2:
                     response = _a.sent();
                     console.log('Response status:', response.status);
@@ -256,9 +265,7 @@ function huyDonHang(orderId) {
                     _a.trys.push([1, 7, , 8]);
                     return [4 /*yield*/, fetch("".concat(API_BASE_URL, "/don-hang/").concat(orderId, "/").concat(currentUserId), {
                             method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
+                            headers: getAuthHeaders50(),
                         })];
                 case 2:
                     res = _a.sent();
