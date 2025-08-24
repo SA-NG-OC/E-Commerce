@@ -16,15 +16,60 @@ class HorizontalMenuNavigation {
         this.isProfileMenuOpen = false;
         this.logoutTimer = null;
 
+        this.userRole = null;
+
         this.init();
     }
 
     init() {
+        console.log(this.userRole);
+        this.getUserRole(); // Lấy role người dùng
         this.attachEventListeners();
-        this.loadSavedPage();
+        //this.loadSavedPage();
         this.checkAuthentication();
         this.initAutoLogout();
+        this.setupRoleBasedAccess();
     }
+
+    // Hàm mới: Lấy role người dùng
+    getUserRole() {
+        try {
+            const userContext = localStorage.getItem("usercontext");
+            if (userContext) {
+                const userData = JSON.parse(userContext);
+                this.userRole = userData.role || userData._role;
+            }
+        } catch (error) {
+            console.error('Lỗi khi lấy role người dùng:', error);
+        }
+    }
+
+    // Hàm mới: Thiết lập quyền truy cập theo role
+    setupRoleBasedAccess() {
+        if (this.userRole === "Nhân viên") {
+            this.hideMenuItemsForEmployee();
+        }
+    }
+
+    // Hàm mới: Ẩn các menu item cho Nhân viên
+    hideMenuItemsForEmployee() {
+        // Danh sách các menu item cần ẩn cho Nhân viên
+        const restrictedMenus = [
+            'QuanLyNguoiDung_Ad.html', // Quản lý người dùng
+            'DoashBoard.html'          // Dashboard (tuỳ chọn)
+        ];
+
+        restrictedMenus.forEach(pageName => {
+            const menuItem = document.querySelector(`[data-page="${pageName}"]`);
+            if (menuItem) {
+                const menuItemParent = menuItem.closest('.menu-item');
+                if (menuItemParent) {
+                    menuItemParent.style.display = 'none';
+                }
+            }
+        });
+    }
+
 
     attachEventListeners() {
         // Mobile menu toggle
@@ -376,7 +421,7 @@ class HorizontalMenuNavigation {
         }
     }
 
-    loadSavedPage() {
+    /*loadSavedPage() {
         const savedPage = localStorage.getItem('currentPage');
         if (savedPage) {
             const savedLink = document.querySelector(`[data-page="${savedPage}"]`);
@@ -385,7 +430,7 @@ class HorizontalMenuNavigation {
                 this.loadPage(savedPage);
             }
         }
-    }
+    }*/
 
     showError(message) {
         this.contentFrame.style.display = 'none';

@@ -131,7 +131,7 @@ function renderOrderActions(trangThai, orderId, sanPhams) {
         case TrangThaiDonHang.CHO_XAC_NHAN:
             return "\n                <button class=\"btn danger\" onclick=\"huyDonHang('".concat(orderId, "')\">H\u1EE7y \u0111\u01A1n h\u00E0ng</button>\n            ");
         case TrangThaiDonHang.DANG_GIAO:
-            return "\n                <button class=\"btn primary\" onclick=\"theoDoiDonHang('".concat(orderId, "')\">Theo d\u00F5i \u0111\u01A1n h\u00E0ng</button>\n                <button class=\"btn secondary\" onclick=\"lienHeHoTro('").concat(orderId, "')\">Li\u00EAn h\u1EC7 h\u1ED7 tr\u1EE3</button>\n            ");
+            return "\n                <span>Li\u00EAn h\u1EC7 h\u1ED7 tr\u1EE3 s\u1ED1 \u0111i\u1EC7n tho\u1EA1i: 09120930000</span>\n            ";
         default:
             return "<button class=\"btn outline\" onclick=\"muaLai('".concat(bienTheIds, "', '").concat(soLuongList, "')\">Mua l\u1EA1i</button>");
     }

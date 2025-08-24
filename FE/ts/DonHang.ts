@@ -147,8 +147,7 @@ function renderOrderActions(trangThai: string, orderId: string, sanPhams: SanPha
             `;
         case TrangThaiDonHang.DANG_GIAO:
             return `
-                <button class="btn primary" onclick="theoDoiDonHang('${orderId}')">Theo dõi đơn hàng</button>
-                <button class="btn secondary" onclick="lienHeHoTro('${orderId}')">Liên hệ hỗ trợ</button>
+                <span>Liên hệ hỗ trợ số điện thoại: 09120930000</span>
             `;
         default:
             return `<button class="btn outline" onclick="muaLai('${bienTheIds}', '${soLuongList}')">Mua lại</button>`;

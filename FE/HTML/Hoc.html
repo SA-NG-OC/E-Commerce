@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <p></p>
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://www.youtube.com/s/desktop/e5522eef/img/logos/favicon_32x32.png"
+        type="image/x-icon">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Các thẻ quan trọng trong html</h1>
+
+    <ol>
+        <li>thẻ h từ h1 đến h6 để chứa tiêu đề</li>
+        <li>thẻ p để chứa văn bản nếu ko dùng thì các không phân thành các đoạn được <br>
+            trong đó thẻ br là để xuống dòng trong một đoạn văn còn thẻ hr là để gạch chân xuống dòng</li>
+        <li><b>thẻ b để in đậm</b> <br>
+            <i>thẻ i để in nghiên</i> <br>
+            <u>thẻ u là để gạch chân</u>
+        </li>
+        <li>
+            ol là sắp danh sách có sắp xếp còn ul là danh sách ko sắp xếp
+        </li>
+        <li>thẻ a dùng để gắn đường link với <br>
+            href là link để chuyển hướng nếu để trống thì sẽ load lại trang còn để # thì sẽ quay lại đầu trang<br>
+            target là phương thức chuyển màn chuyển sang tab mới hay load lại tab cũ <br>
+            tel:"..." là để gọi đến <br>
+            mailto: "..." là để mail đến
+        </li>
+        <li>thẻ img để hiển thị hình ảnh :
+        </li>
+        <img src="https://i.pinimg.com/736x/bf/ba/4d/bfba4df228e5639b62dce1aa764ecdf0.jpg" alt="ảnh hoa" width="100px"
+            height="100px">
+        </li>
+        <li>thẻ pre để mà đưa văn bản đã định dạng sẵn rồi html ko tự sửa nữa ví dụ:
+            <pre>Có      nhiều    khoảng     trắng</pre>
+        </li>
+        <li>thẻ code để hiển thị mã code </li>
+        <li>thẻ table để hiển thị bảng với nhiều thành phần như
+            <ol>
+                <li>thead phần đầu của bảng thường là tiêu khái niệm với thẻ tr là để hiển thị dữ liệu dòng, th là tên
+                    tiêu đề</li>
+                <li>tbody phần thân bảng để hiển thị tất cả dự liêu thẻ td để hiển thị các dữ liệu tương ứng</li>
+                <li>tfoot để hiển thị phần tổng kết bảng</li>
+                <p>ví dụ một bảng nhé</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>tên</th>
+                            <th>mã lớp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Sang</td>
+                            <td>SE001</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Tú</td>
+                            <td>SE004</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>tổng cộng</td>
+                            <td>3</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </ol>
+        </li>
+
+    </ol>
+    <h2>Một số thẻ khác cần học thêm</h2>
+    <ul>
+        <li>thẻ nav</li>
+        <li>thẻ div, span</li>
+        <li>tất cả các loại thẻ trong form</li>
+    </ul>
+    <h2 style="color: red;">CSS cơ bản </h2>
+    <ol>
+        <li>Favicon</li>
+        <li>Đơn vị theo phần tử: <br>
+            rem là tỉ lệ theo phần tử gốc <br>
+            em là phần tử con sẽ tỉ lệ theo phần tử cha </li>
+        <li>vw và vh với 1vw = 1% chiều rộng cửa sổ trình duyệt và 1vh = 1% chiều cao cửa sổ trình duyệt <br>
+            ví dụ width = 50vh, height = 80vw</li>
+        <li>% dùng khi muốn kích thước phần tử con thay đổi theo cha </li>
+        <li>
+            <p>Thao tác với chữ cái, văn bản</p>
+            <ol type="a">
+                <li>font-size: kích cỡ chữ</li>
+                <li>color: màu chữ</li>
+                <li>font-family: kiểu chữ (Arial,...)</li>
+                <li>font-weight: điều chỉnh độ đậm của chữ (100-900) có thể ở dạng từ khóa</li>
+                <li>line-height điều chỉnh khoảng cách giữa các <b>dòng</b> trong văn bản </li>
+                <li>letter-spacing điều chỉnh khoảng cách giữa các <b>chữ</b></li>
+                <li>text-transform: thay đổi cách hiển thị chữ hoa và thường mà không cần chỉnh nội dung với none,
+                    uppercase, lowercase, capitalize</li>
+                <li>text-align dùng để căn văn bản với left là giá trị mặc định ngoài ra còn right, center, justify (để
+                    chữ cách đều giúp văn bản căng thẳng cả hai bên lề)</li>
+            </ol>
+        </li>
+        <li>Model box: margin, border, padding, content. Đặc biệt border-radius: để bo tròn </li>
+        <li>box-sizing: bình thường chỉ bao gồm content bên trong box nhưng nếu set box-sizing=border-box; thì nó sẽ tự
+            cộng thêm padding và border vào sẵn</li>
+        <li>Thuộc tính css để kiểm soát ảnh:
+            <ol type="a">
+                <li>width chỉnh chiều rộng và height chỉnh chiều cao </li>
+                <li>object-fit: chỉnh cách ảnh hiển thị trong phần tử chứa nó ví dụ với cover (lấp đầy khung những giữ
+                    tỉ lệ), contain (thu nhỏ để vừa với khung), fill (kéo dãn ảnh để lấp đầy khung những ảnh có thể bị
+                    méo), none</li>
+                <li>object-position X%, Y%: giúp căn chỉnh vị trí của ảnh trong phần tử chứa nó</li>
+            </ol>
+        </li>
+        <li>background-image: lấy ảnh làm hình nền với background-repeat (chỉnh cho ảnh lặp lại) <br>
+            background-size giống object-fit, background-position giống object-position, background-attachment</li>
+        <li>display: quản lý cách hiển thị nếu là block sẽ chiếm hết 1 dòng dù có quy định width hay height <br>
+            inline là không chiếm hết 1 dòng nhưng không thê quy đinh width <br>
+            inline-block: giống inline nhưng có thể quy định width <br>
+            none: là để ẩn khỏi giao diện </li>
+        <li>overflow: quy định phần từ bị tràn sẽ hiển thị như nào <br>
+            overflow: hidden là ẩn hẳn, scroll hay auto là cuộn <br>
+            overflow-x: hay overflow-y là để kiểm soát theo chiều ngang hoặc dọc <br>
+            overflow: clip cũng ẩn giống hidden nhưng có vài điểm khác biệt</li>
+        <li>position
+            <ol type="a">
+                <li>static: mặc định sắp xếp theo luồng bình thường</li>
+                <li>relative: phần tử chiếm chỗ trong luồng bth nhưng có thể chỉnh vị trí bằng top left,...</li>
+                <li>absolute: phần tử không chiếm chỗ trong luồng nữa, ví trí tương đối theo cha gần nhất có position
+                    khác static</li>
+                <li>fixed: giống absolute nhưng luôn cố định theo viewport (cửa sổ trình duyệt), không cuộn theo trang
+                </li>
+            </ol>
+        </li>
+        <li>shadow</li>
+        <li>opacity có giá trị từ 0 đến 1 là để chỉnh độ trong suốt </li>
+        <li>visibility: khả năng hiển thị nếu chỉnh thành none thì sẽ biến mất nhưng vẫn chiếm không gian</li>
+        <li>z-index: là chỉnh phần tử hiện theo chiều sâu theo trục z (phần tử có z-index lớn hơn sẽ chồng lên phần tử
+            khác)</li>
+        <li>flex-box
+            <ol type="a">
+                <li><b>display</b> gồm display: flex là xếp item theo hàng ngang mặc định <br>
+                    display: inline-flex; giống flex nhưng container hiển thị như inline</li>
+                <li><b>flex-direction</b> với row là mặc định (từ trái sang phải), row-reserve: từ phải sang trái <br>
+                    column: từ trên xuống dưới, column-reserve: từ dưới lên trên</li>
+                <li><b>justify-content</b>: căn chỉnh theo trục chính <br>
+                    flex-start: dồn về đầu <br>
+                    flex-end: dồn về cuối <br>
+                    center: căn giữa <br>
+                    space-between: khoảng cách đều với hai đầu dính container <br>
+                    space-around: khoảng cách đều nhưng hai đầu có khoảng trống bằng 1/2 khoảng ở giữa
+                    space-evenly: khoảng cách đều và hai đầu cũng bằng nhau</li>
+                <li>
+                    <b>align-items</b>: căn chỉnh theo trục phụ <br>
+                    flex-start: dồn về đầu <br>
+                    flex-end: dồn về cuối <br>
+                    center: căn giữa <br>
+                    stretch: giãn đều theo trục phụ (mặc định) <br>
+                    baseline: căn theo dòng cơ sở của chữ
+                </li>
+        </li>
+        <li>
+            <b>align-content</b>: giống jutify-content nhưng theo trục phụ (chỉ hoạt động khi có nhiều dòng)
+        </li>
+        <li><b>flex-wrap</b>: xuống dòng
+            <br>nowrap: không xuống dòng (mặc định)
+            <br>wrap: xuống dòng
+            <br>wrap-reverse: xuống dòng ngược lại
+        </li>
+        <li>
+            <b>gap</b> : Tạo khoang cách giữa các item
+        </li>
+        <li>
+            các thuộc tính cho item trong flexbox
+            <ol type="a">
+                <li><b>order</b>: sắp xếp thứ tự hiển thị item (mặc định là 0) order nhỏ hơn sẽ được xếp trước</li>
+                <li><b>flex-grow</b>: khả năng mở rộng của item (mặc định là 0)</li>
+                <li><b>flex-shrink</b>: khả năng thu nhỏ của item (mặc định là 1)</li>
+                <li><b>flex-basis</b>: kích thước ban đầu của item (mặc định là auto)</li>
+                <li><b>flex</b>: là viết tắt của flex-grow, flex-shrink, flex-basis với giá trị mặc định là 0 1 auto
+                </li>
+                <li><b>align-self</b>: căn chỉnh theo trục phụ cho từng item riêng biệt với auto là mặc định (theo
+                    align-items của container), flex-start, flex-end, center, stretch, baseline
+                </li>
+            </ol>
+        </li>
+        <li>transform gồm nhiều thuộc tính nhưng hay dùng <br>
+            scale: phóng to thu nhỏ scale(1.5) là phóng to 1.5 lần <br>
+            translate: dịch chuyển theo trục x và y translate(20px, 30px) <br>
+            rotate: xoay rotate(45deg) là xoay 45 độ <br>
+        </li>
+    </ol>
+</body>
+
+</html>
