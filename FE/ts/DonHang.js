@@ -123,19 +123,22 @@ function renderProductsOrder(sanPhams) {
         "<img src=\"".concat(sp.hinh_anh_bien_the, "\" alt=\"").concat(sp.ten_san_pham, "\" \n                  style=\"width: 60px; height: 60px; object-fit: cover; border-radius: 8px;\"\n                  onerror=\"this.style.display='none'; this.nextElementSibling.style.display='flex';\" />\n                  <span class=\"shoe-icon\" style=\"display: none;\">\uD83D\uDC5F</span>") :
         '<span class="shoe-icon">👟</span>', "\n            </div>\n            <div class=\"product-info\">\n                <h4 class=\"product-name\">").concat(sp.ten_san_pham, "</h4>\n                <p class=\"product-variant\">M\u00E0u: ").concat(sp.mau_sac, " | Size: ").concat(sp.kich_co, "</p>\n                <p class=\"product-qty\">S\u1ED1 l\u01B0\u1EE3ng: ").concat(sp.so_luong, "</p>\n            </div>\n            <div class=\"product-price\">\n                <p class=\"price\">").concat(formatCurrency3(sp.gia_ban * sp.so_luong), "</p>\n            </div>\n        </div>\n    "); }).join('');
 }
-function renderOrderActions(trangThai, orderId) {
+function renderOrderActions(trangThai, orderId, sanPhams) {
+    // Tạo chuỗi bien_the_ids và so_luong từ mảng sản phẩm
+    var bienTheIds = sanPhams.map(function (sp) { return sp.id_bien_the; }).join(',');
+    var soLuongList = sanPhams.map(function (sp) { return sp.so_luong; }).join(',');
     switch (trangThai) {
         case TrangThaiDonHang.CHO_XAC_NHAN:
             return "\n                <button class=\"btn danger\" onclick=\"huyDonHang('".concat(orderId, "')\">H\u1EE7y \u0111\u01A1n h\u00E0ng</button>\n            ");
         case TrangThaiDonHang.DANG_GIAO:
             return "\n                <button class=\"btn primary\" onclick=\"theoDoiDonHang('".concat(orderId, "')\">Theo d\u00F5i \u0111\u01A1n h\u00E0ng</button>\n                <button class=\"btn secondary\" onclick=\"lienHeHoTro('").concat(orderId, "')\">Li\u00EAn h\u1EC7 h\u1ED7 tr\u1EE3</button>\n            ");
         default:
-            return "<button class=\"btn outline\" onclick=\"muaLai('".concat(orderId, "')\">Mua l\u1EA1i</button>");
+            return "<button class=\"btn outline\" onclick=\"muaLai('".concat(bienTheIds, "', '").concat(soLuongList, "')\">Mua l\u1EA1i</button>");
     }
 }
 function createOrderCard2(order) {
     var trangThaiInfo = TRANG_THAI_MAP[order._trang_thai] || { text: 'Không xác định', class: 'unknown' };
-    return "\n        <div class=\"order-card\" data-status=\"".concat(order._trang_thai, "\">\n            <div class=\"order-header\">\n                <div class=\"order-info\">\n                    <h3 class=\"order-id\">\u0110\u01A1n h\u00E0ng #").concat(order._id, "</h3>\n                    <p class=\"order-date\">Ng\u00E0y \u0111\u1EB7t: ").concat(formatDate2(order._ngay_tao), "</p>\n                </div>\n                <span class=\"status ").concat(trangThaiInfo.class, "\">").concat(trangThaiInfo.text, "</span>\n            </div>\n            <div class=\"products\">").concat(renderProductsOrder(order._san_pham), "</div>\n            <div class=\"order-total\">\n                <div class=\"total-row\">\n                    <span class=\"total-label\">T\u1ED5ng thanh to\u00E1n:</span>\n                    <span class=\"total-amount\">").concat(formatCurrency3(order._tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">").concat(renderOrderActions(order._trang_thai, order._id), "</div>\n        </div>\n    ");
+    return "\n        <div class=\"order-card\" data-status=\"".concat(order._trang_thai, "\">\n            <div class=\"order-header\">\n                <div class=\"order-info\">\n                    <h3 class=\"order-id\">\u0110\u01A1n h\u00E0ng #").concat(order._id, "</h3>\n                    <p class=\"order-date\">Ng\u00E0y \u0111\u1EB7t: ").concat(formatDate2(order._ngay_tao), "</p>\n                </div>\n                <span class=\"status ").concat(trangThaiInfo.class, "\">").concat(trangThaiInfo.text, "</span>\n            </div>\n            <div class=\"products\">").concat(renderProductsOrder(order._san_pham), "</div>\n            <div class=\"order-total\">\n                <div class=\"total-row\">\n                    <span class=\"total-label\">T\u1ED5ng thanh to\u00E1n:</span>\n                    <span class=\"total-amount\">").concat(formatCurrency3(order._tong_thanh_toan), "</span>\n                </div>\n            </div>\n            <div class=\"order-actions\">").concat(renderOrderActions(order._trang_thai, order._id, order._san_pham), "</div>\n        </div>\n    ");
 }
 // Thêm function để setup event listeners cho products
 function setupProductClickEvents() {
@@ -318,8 +321,8 @@ function danhGiaSanPham(orderId) {
         window.location.href = "/FE/HTML/DanhGia.html?orderId=".concat(orderId);
     }
 }
-function muaLai(orderId) {
-    window.location.href = "/FE/HTML/ThanhToan.html?orderId=".concat(orderId);
+function muaLai(bienTheIds, soLuongList) {
+    window.location.href = "/FE/HTML/ThanhToan.html?bien_the_id=".concat(bienTheIds, "&so_luong=").concat(soLuongList);
 }
 function tiepTucMuaSam() {
     if (window.smoothRouter) {

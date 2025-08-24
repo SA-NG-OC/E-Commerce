@@ -135,7 +135,11 @@ function renderProductsOrder(sanPhams: SanPhamDonHang[]): string {
     `).join('');
 }
 
-function renderOrderActions(trangThai: string, orderId: string): string {
+function renderOrderActions(trangThai: string, orderId: string, sanPhams: SanPhamDonHang[]): string {
+    // Tạo chuỗi bien_the_ids và so_luong từ mảng sản phẩm
+    const bienTheIds = sanPhams.map(sp => sp.id_bien_the).join(',');
+    const soLuongList = sanPhams.map(sp => sp.so_luong).join(',');
+
     switch (trangThai) {
         case TrangThaiDonHang.CHO_XAC_NHAN:
             return `
@@ -147,7 +151,7 @@ function renderOrderActions(trangThai: string, orderId: string): string {
                 <button class="btn secondary" onclick="lienHeHoTro('${orderId}')">Liên hệ hỗ trợ</button>
             `;
         default:
-            return `<button class="btn outline" onclick="muaLai('${orderId}')">Mua lại</button>`;
+            return `<button class="btn outline" onclick="muaLai('${bienTheIds}', '${soLuongList}')">Mua lại</button>`;
     }
 }
 
@@ -169,7 +173,7 @@ function createOrderCard2(order: DonHangData): string {
                     <span class="total-amount">${formatCurrency3(order._tong_thanh_toan)}</span>
                 </div>
             </div>
-            <div class="order-actions">${renderOrderActions(order._trang_thai, order._id)}</div>
+            <div class="order-actions">${renderOrderActions(order._trang_thai, order._id, order._san_pham)}</div>
         </div>
     `;
 }
@@ -339,8 +343,8 @@ function danhGiaSanPham(orderId: string) {
     }
 }
 
-function muaLai(orderId: string) {
-    window.location.href = `/FE/HTML/ThanhToan.html?orderId=${orderId}`
+function muaLai(bienTheIds: string, soLuongList: string) {
+    window.location.href = `/FE/HTML/ThanhToan.html?bien_the_id=${bienTheIds}&so_luong=${soLuongList}`;
 }
 
 function tiepTucMuaSam() {
