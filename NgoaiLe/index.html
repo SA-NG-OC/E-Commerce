@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM</title>
+</head>
+
+<body>
+    <h1>Chuỗi bài học về DOM (ôn về date đi: setInterval)</h1>
+    <ul>
+        <li class="list" id="item1">
+            <a href="https://www.youtube.com/watch?v=yRVy-gKPSZo&list=PLPt6-BtUI22pYwpfmkP4EuJkf6GRe63KU&index=113"
+                target="_blank">
+                link nè</a>
+            Get element by tag name, id, class name là để chọn phần tử HTML
+        </li>
+        <li class="list">document.querySelector(".class"), document.querySelector("#id"), document.querySelector("ul
+            a"):
+            <br>
+            chỉ trả về 1 phần tử đầu tiên thỏa mãn điều kiện
+        </li>
+        <li class="list">document.querySelectorAll để lấy tất cả item thỏa mãn điều kiện</li>
+        <li>getAttribute và setAttribute(hai tham số đầu vào là tên thuộc tính và giá trị cần đổi) là để xem và sửa
+            thuộc tính của phần tử </li>
+        <li>textContent, innerContent: chuyển vể mỗi chuỗi thôi , innerHTML: chuyển về định dạng HTML</li>
+        <li>phần tử chấm style thì nó để thay đổi style của phần tử ví dụ heading.style.backgroundColor (không dùng
+            background-color) chỉ cho inline css thôi</li>
+        <li> Thuộc tính classList của phần tử <br>
+            classList.add() thêm một lớp mới vào phần tử. <br>
+            classList.remove() xoá một lớp khỏi phần tử. <br>
+            classList.toggle() loại bỏ một lớp nếu nó đã tồn tại và thêm nó nếu chưa có. <br>
+            classList.replace(mới, cũ) thay thế một lớp cũ bằng một lớp mới. <br>
+            classList.contains() kiểm tra xem phần tử có chứa một lớp cụ thể không. <br>
+            ví dụ: heading.classList.add("red") để thêm class red vào thẻ heading
+        </li>
+        <li>Truy cập phần tử cha: ptu.parentElement <br>
+            Truy cập danh sách phần tử con: ptu.children (trả về HTMLCollection) <br>
+            Truy cập phần tử con đầu tiên: ptu.firstElementChild <br>
+            Truy cập phần tử con cuối cùng: ptu.lastElementChild <br>
+            Truy cập phần tử anh chị em trước đó: ptu.previousElementSibling <br>
+            Truy cập phần tử anh chị em tiếp theo: ptu.nextElementSibling <br>
+        </li>
+        <li>
+            Tạo phần tử mới: const newDiv = document.createElement("div"); <br>
+            newDiv.textContent = "Hello DOM!"; <br>
+            Thêm phần tử vào cuối phần tử cha: ptu.append(newDiv, ...); <br>
+            Thêm phần tử vào đầu phần tử cha: ptu.prepend(newDiv,...); <br>
+        </li>
+        <li>
+            addEventListener("sự kiện", function, useCapture) <br>
+            e.target để lấy phần tử đang được click <br>
+            e.preventDefault() để ngăn hành vi mặc định của thẻ (thường dùng với thẻ a và form) <br>
+            e.stopPropagation() để ngăn chặn sự kiện nổi bọt (bubbling) <br>
+            e.stopImmediatePropagation() để ngăn chặn sự kiện nổi bọt và ngăn chặn các trình xử lý sự kiện khác trên
+            cùng một phần tử được gọi. <br>
+
+        </li>
+    </ul>
+
+    <form action="">
+        <input type="checkbox" name="agree" id="agree"> Đồng ý thỏa thuận
+    </form>
+    <script src="./main.js"></script>
+
+</body>
+
+</html>

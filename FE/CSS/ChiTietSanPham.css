@@ -455,20 +455,12 @@ body {
 }
 
 .original-price {
-    font-size: 1.2em;
-    text-decoration: line-through;
-    color: #999;
-    margin-right: 15px;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #F19EDC;
+    margin-bottom: 10px;
 }
 
-.discount-badge {
-    background: #F19EDC;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.9em;
-    font-weight: bold;
-}
 
 .stock-status {
     margin-bottom: 20px;
