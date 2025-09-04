@@ -106,7 +106,7 @@ npm start          # Hoặc: node BE/dist/index.js
 
 > **Lưu ý:**  
 > - Đảm bảo đã tạo database PostgreSQL và cấu hình đúng thông tin trong file `.env`.
-> - Nếu dùng Docker, cần cài [Docker](https://www.docker.com/) và (tùy chọn) [docker-compose](https://docs.docker.com/compose/).
+
 
 ---
 
