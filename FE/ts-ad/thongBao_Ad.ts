@@ -32,12 +32,12 @@ async function checkAuth_Ad() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return false;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -45,13 +45,13 @@ async function checkAuth_Ad() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return false;
         }
         return true;
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return false;
     }
 }
@@ -91,7 +91,7 @@ function initializeSocket(): void {
 
         console.log('🔌 Initializing Socket.IO connection...');
 
-        socket = (window as any).io('http://localhost:3000', {
+        socket = (window as any).io('', {
             transports: ['websocket', 'polling'],
             timeout: 20000,
             forceNew: true
@@ -227,7 +227,7 @@ function leaveUserRoom(userId: string): void {
 // Sửa đổi hàm loadUsers để sử dụng auth headers
 async function loadUsers(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+        const response = await fetch('/api/nguoi-dung/', {
             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
         });
         if (!response.ok) throw new Error('Không thể tải danh sách người dùng');
@@ -347,7 +347,7 @@ async function loadUserNotifications(userId: string): Promise<void> {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/thong-bao/${userId}`, {
+        const response = await fetch(`/api/thong-bao/${userId}`, {
             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
         });
         if (!response.ok) {
@@ -472,7 +472,7 @@ async function sendNotification(): Promise<void> {
     try {
         console.log('📤 Sending notification to user:', selectedUserId);
 
-        const response = await fetch('http://localhost:3000/api/thong-bao', {
+        const response = await fetch('/api/thong-bao', {
             method: 'POST',
             headers: getAuthHeaders_Ad(), // ✅ Thêm auth headers
             body: JSON.stringify({
@@ -529,7 +529,7 @@ async function deleteNotification(notificationId: string): Promise<void> {
     try {
         console.log('🗑️ Deleting notification:', notificationId);
 
-        const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}`, {
+        const response = await fetch(`/api/thong-bao/${notificationId}`, {
             method: 'DELETE',
             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
         });

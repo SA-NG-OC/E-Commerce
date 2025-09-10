@@ -70,7 +70,7 @@ function getPaymentInfoApi(orderId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/".concat(orderId), {
+                    return [4 /*yield*/, fetch("/api/giao-dich/".concat(orderId), {
                             headers: getAuthHeaders61()
                         })];
                 case 1:
@@ -101,7 +101,7 @@ function getAddressInfoApi(orderId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/".concat(orderId), {
+                    return [4 /*yield*/, fetch("/api/dia-chi/".concat(orderId), {
                             headers: getAuthHeaders61()
                         })];
                 case 1:
@@ -132,7 +132,7 @@ function updatePaymentStatusApi(paymentId, newStatus) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/".concat(paymentId), {
+                    return [4 /*yield*/, fetch("/api/giao-dich/cap-nhat-trang-thai/".concat(paymentId), {
                             method: 'PUT',
                             headers: getAuthHeaders61(),
                             body: JSON.stringify({ trang_thai: newStatus })
@@ -159,7 +159,7 @@ function updateAddressApi(addressId, addressData) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/dia-chi/cap-nhat/".concat(addressId), {
+                    return [4 /*yield*/, fetch("/api/dia-chi/cap-nhat/".concat(addressId), {
                             method: 'PUT',
                             headers: getAuthHeaders61(),
                             body: JSON.stringify(addressData)
@@ -205,7 +205,7 @@ function getAllOrdersApi() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/', {
+                    return [4 /*yield*/, fetch('/api/don-hang/', {
                             headers: getAuthHeaders61()
                         })];
                 case 1:
@@ -491,13 +491,13 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) {
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                         headers: getAuthHeaders61()
                     })];
             case 2:
@@ -506,14 +506,14 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                     localStorage.removeItem('token');
                     sessionStorage.removeItem('token');
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];
             case 3:
                 error_6 = _a.sent();
                 sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = '/FE/HTML/DangNhap.html';
+                window.location.href = '/HTML/DangNhap.html';
                 return [2 /*return*/];
             case 4: return [4 /*yield*/, loadOrdersData()];
             case 5:
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 4, , 5]);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/cap-nhat-trang-thai/".concat(currentEditingOrder), {
+                                    return [4 /*yield*/, fetch("/api/don-hang/cap-nhat-trang-thai/".concat(currentEditingOrder), {
                                             method: 'PUT',
                                             headers: getAuthHeaders61(),
                                             body: JSON.stringify({ trang_thai: newStatus })
@@ -592,7 +592,7 @@ function deleteOrderApi(orderId) {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/".concat(orderId), {
+                case 0: return [4 /*yield*/, fetch("/api/don-hang/".concat(orderId), {
                         headers: getAuthHeaders61(),
                         method: 'DELETE',
                     })];

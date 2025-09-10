@@ -69,7 +69,7 @@ async function renderProducts() {
         }
         grid.style.display = 'none';
 
-        const res = await fetch('http://localhost:3000/api/san-pham/', {
+        const res = await fetch('/api/san-pham/', {
             headers: getAuthHeaders9()
         });
         const rawProducts = await res.json();
@@ -107,7 +107,7 @@ async function renderProducts() {
                     (window as any).smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
                 } else {
                     // Fallback nếu router chưa sẵn sàng
-                    window.location.href = `/FE/HTML/ChiTietSanPham.html?id=${id}`;
+                    window.location.href = `/HTML/ChiTietSanPham.html?id=${id}`;
                 }
             });
         });
@@ -140,12 +140,12 @@ async function initTrangChu() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -153,12 +153,12 @@ async function initTrangChu() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
@@ -183,7 +183,7 @@ if (document.readyState === 'loading') {
 
 //Phần menu
 /*
-fetch('/FE/HTML/NavBar.html')
+fetch('/HTML/NavBar.html')
     .then(res => res.text())
     .then(html => {
         const navbar = document.getElementById('navbar');

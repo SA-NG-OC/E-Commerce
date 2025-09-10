@@ -88,7 +88,7 @@ function createDonHang(nguoiDungId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/tao', {
+                    return [4 /*yield*/, fetch('/api/don-hang/tao', {
                             method: 'POST',
                             headers: getAuthHeaders10(),
                             body: JSON.stringify({
@@ -124,7 +124,7 @@ function addChiTietDonHang(donHangId, bienTheId, soLuong) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/chi-tiet/them', {
+                    return [4 /*yield*/, fetch('/api/don-hang/chi-tiet/them', {
                             method: 'POST',
                             headers: getAuthHeaders10(),
                             body: JSON.stringify({
@@ -156,7 +156,7 @@ function createGiaoDichThanhToan(donHangId_1, phuongThucThanhToan_1) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/giao-dich/', {
+                    return [4 /*yield*/, fetch('/api/giao-dich/', {
                             method: 'POST',
                             headers: getAuthHeaders10(),
                             body: JSON.stringify({
@@ -192,7 +192,7 @@ function createDiaChiGiaoHang(donHangId_1, hoTenNguoiNhan_1, soDienThoai_1, diaC
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/dia-chi/', {
+                    return [4 /*yield*/, fetch('/api/dia-chi/', {
                             method: 'POST',
                             headers: getAuthHeaders10(),
                             body: JSON.stringify({
@@ -231,7 +231,7 @@ function deleteDonHang(donHangId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/don-hang/".concat(donHangId), {
+                    return [4 /*yield*/, fetch("/api/don-hang/".concat(donHangId), {
                             method: 'DELETE',
                             headers: getAuthHeaders10()
                         })];
@@ -254,7 +254,7 @@ function getBienTheById(bienTheId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(bienTheId), {
+                    return [4 /*yield*/, fetch("/api/bien-the/".concat(bienTheId), {
                             method: 'GET',
                             headers: getAuthHeaders10()
                         })];
@@ -291,7 +291,7 @@ function updateBienTheSoLuong(bienTheId, soLuongMoi) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 5, , 6]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(bienTheId), {
+                    return [4 /*yield*/, fetch("/api/bien-the/".concat(bienTheId), {
                             method: 'PUT',
                             headers: getAuthHeaders10(),
                             body: JSON.stringify({
@@ -700,7 +700,7 @@ function loadProductInfo() {
                         soLuongList: soLuongList
                     });
                     promises = bienTheIds.map(function (id, index) {
-                        var url = "http://localhost:3000/api/thanh-toan/".concat(id, "/").concat(soLuongList[index]);
+                        var url = "/api/thanh-toan/".concat(id, "/").concat(soLuongList[index]);
                         console.log("\uD83D\uDCE1 Fetching: ".concat(url));
                         return fetch(url)
                             .then(function (response) {
@@ -986,13 +986,13 @@ function initThanhToan() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -1001,14 +1001,14 @@ function initThanhToan() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_5 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     console.log('🚀 Initializing Thanh Toan...');

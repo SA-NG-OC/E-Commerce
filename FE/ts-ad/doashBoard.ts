@@ -81,7 +81,7 @@ async function initRevenueChart(): Promise<void> {
     const typeSelect = document.getElementById('typeSelect') as HTMLSelectElement;
     const dateFilter = document.getElementById('dateFilter') as HTMLInputElement;
 
-    const res = await fetch('http://localhost:3000/api/giao-dich', {
+    const res = await fetch('/api/giao-dich', {
         headers: getAuthHeaders3()
     });
     if (!res.ok) throw new Error(`Lỗi tải giao dịch: ${res.status}`);
@@ -150,7 +150,7 @@ async function initRevenueChart(): Promise<void> {
 async function initStats(): Promise<void> {
     try {
         // 1️⃣ Lấy số đơn hàng
-        const donHangRes = await fetch('http://localhost:3000/api/don-hang/count',
+        const donHangRes = await fetch('/api/don-hang/count',
             {
                 headers: getAuthHeaders3()
             }
@@ -161,7 +161,7 @@ async function initStats(): Promise<void> {
         // 2️⃣ Lấy số khách hàng (giả sử có endpoint /api/nguoi-dung/count)
         const token = localStorage.getItem('token');
 
-        const khachHangRes = await fetch('http://localhost:3000/api/nguoi-dung/count', {
+        const khachHangRes = await fetch('/api/nguoi-dung/count', {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`   // 👈 bắt buộc để qua authMiddleware
@@ -172,7 +172,7 @@ async function initStats(): Promise<void> {
         document.querySelectorAll('.stat-card .value')[1].textContent = khachHangData.total ?? '0';
 
         // 3️⃣ Lấy số sản phẩm
-        const sanPhamRes = await fetch('http://localhost:3000/api/san-pham/count', {
+        const sanPhamRes = await fetch('/api/san-pham/count', {
             headers: getAuthHeaders3()
         });
         const sanPhamData = await sanPhamRes.json();
@@ -200,7 +200,7 @@ async function initCategoryChart(): Promise<void> {
     if (!ctx) return;
 
     try {
-        const res = await fetch('http://localhost:3000/api/danh-muc', {
+        const res = await fetch('/api/danh-muc', {
             headers: getAuthHeaders3()
         });
         if (!res.ok) throw new Error('Lỗi tải danh mục');
@@ -271,12 +271,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -284,12 +284,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     initStats();

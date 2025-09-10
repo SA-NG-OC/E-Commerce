@@ -59,13 +59,13 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                             token = localStorage.getItem('token') || sessionStorage.getItem('token');
                             if (!token) {
                                 sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                                window.location.href = '/FE/HTML/DangNhap.html';
+                                window.location.href = '/HTML/DangNhap.html';
                                 return [2 /*return*/];
                             }
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                            return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                                     headers: getAuthHeaders2()
                                 })];
                         case 2:
@@ -74,14 +74,14 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                                 localStorage.removeItem('token');
                                 sessionStorage.removeItem('token');
                                 sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                                window.location.href = '/FE/HTML/DangNhap.html';
+                                window.location.href = '/HTML/DangNhap.html';
                                 return [2 /*return*/];
                             }
                             return [3 /*break*/, 4];
                         case 3:
                             error_1 = _a.sent();
                             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                            window.location.href = '/FE/HTML/DangNhap.html';
+                            window.location.href = '/HTML/DangNhap.html';
                             return [2 /*return*/];
                         case 4:
                             this.init_Ad();
@@ -186,7 +186,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_e.label) {
                     case 0:
                         _e.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id), {
+                        return [4 /*yield*/, fetch("/api/san-pham/".concat(id), {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -226,7 +226,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/mau-sac/', {
+                        return [4 /*yield*/, fetch('/api/mau-sac/', {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -255,7 +255,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/kich-co/', {
+                        return [4 /*yield*/, fetch('/api/kich-co/', {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -283,7 +283,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/san-pham/".concat(productId), {
+                        return [4 /*yield*/, fetch("/api/bien-the/san-pham/".concat(productId), {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -316,7 +316,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(productId, "/danh-gia"), {
+                        return [4 /*yield*/, fetch("/api/san-pham/".concat(productId, "/danh-gia"), {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -355,8 +355,8 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                             loadingIndicator.style.display = 'block';
                         }
                         return [4 /*yield*/, Promise.all([
-                                fetch('http://localhost:3000/api/danh-muc'),
-                                fetch('http://localhost:3000/api/thuong-hieu')
+                                fetch('/api/danh-muc'),
+                                fetch('/api/thuong-hieu')
                             ])];
                     case 1:
                         _a = _c.sent(), danhMucsResponse = _a[0], thuongHieusResponse = _a[1];
@@ -608,7 +608,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                             ten_danh_muc: ten_danh_muc,
                             ten_thuong_hieu: ten_thuong_hieu
                         };
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(this.sanPham.id), {
+                        return [4 /*yield*/, fetch("/api/san-pham/".concat(this.sanPham.id), {
                                 method: 'PUT',
                                 headers: getAuthHeaders2(),
                                 body: JSON.stringify(productData)
@@ -652,7 +652,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(this.sanPham.id, "/soft-delete"), {
+                        return [4 /*yield*/, fetch("/api/san-pham/".concat(this.sanPham.id, "/soft-delete"), {
                                 headers: getAuthHeaders2(),
                                 method: 'PATCH'
                             })];
@@ -705,7 +705,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/hinh-anh-sp?duongDan=".concat(encodeURIComponent(duongDan)), {
+                        return [4 /*yield*/, fetch("/api/hinh-anh-sp?duongDan=".concat(encodeURIComponent(duongDan)), {
                                 headers: getAuthHeaders2(),
                                 method: 'DELETE',
                             })];
@@ -740,7 +740,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/mau-sac/".concat(this.sanPhamId), {
+                        return [4 /*yield*/, fetch("/api/mau-sac/".concat(this.sanPhamId), {
                                 headers: getAuthHeaders2()
                             })];
                     case 1:
@@ -893,7 +893,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                     xhr_1.addEventListener('error', function () {
                         throw new Error('Lỗi kết nối mạng');
                     });
-                    xhr_1.open('POST', 'http://localhost:3000/api/hinh-anh-sp/upload');
+                    xhr_1.open('POST', '/api/hinh-anh-sp/upload');
                     xhr_1.send(formData_1);
                 }
                 catch (error) {
@@ -953,7 +953,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                             soKichCo: formData.get('size'),
                             soLuongTonKho: parseInt(formData.get('stock'))
                         };
-                        return [4 /*yield*/, fetch('http://localhost:3000/api/bien-the/', {
+                        return [4 /*yield*/, fetch('/api/bien-the/', {
                                 method: 'POST',
                                 headers: getAuthHeaders2(),
                                 body: JSON.stringify(variantData)
@@ -1087,7 +1087,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(variantId, "/soft-delete"), {
+                        return [4 /*yield*/, fetch("/api/bien-the/".concat(variantId, "/soft-delete"), {
                                 headers: getAuthHeaders2(),
                                 method: 'PATCH'
                             })];
@@ -1166,7 +1166,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 7, , 8]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(variant.id), {
+                        return [4 /*yield*/, fetch("/api/bien-the/".concat(variant.id), {
                                 method: 'PUT',
                                 headers: getAuthHeaders2(),
                                 body: JSON.stringify({
@@ -1240,7 +1240,7 @@ var ChiTietSanPhamManager_Ad = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                        return [4 /*yield*/, fetch("/api/danh-gia/".concat(reviewId), {
                                 headers: getAuthHeaders2(),
                                 method: 'DELETE'
                             })];

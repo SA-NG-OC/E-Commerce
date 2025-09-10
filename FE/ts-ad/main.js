@@ -177,7 +177,7 @@ class HorizontalMenuNavigation {
         try {
             localStorage.removeItem("token");
             localStorage.removeItem("usercontext");
-            window.location.href = "/FE/HTML/DangNhap.html";
+            window.location.href = "/HTML/DangNhap.html";
 
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
@@ -203,7 +203,7 @@ class HorizontalMenuNavigation {
     }
 
     redirectToLogin() {
-        window.location.href = "/FE/HTML/DangNhap.html";
+        window.location.href = "/HTML/DangNhap.html";
     }
 
     // Auto Logout Methods

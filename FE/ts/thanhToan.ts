@@ -104,7 +104,7 @@ function getUserId(): string | null {
 
 async function createDonHang(nguoiDungId: string): Promise<string | null> {
     try {
-        const response = await fetch('http://localhost:3000/api/don-hang/tao', {
+        const response = await fetch('/api/don-hang/tao', {
             method: 'POST',
             headers: getAuthHeaders10(),
             body: JSON.stringify({
@@ -128,7 +128,7 @@ async function createDonHang(nguoiDungId: string): Promise<string | null> {
 
 async function addChiTietDonHang(donHangId: string, bienTheId: string, soLuong: number): Promise<boolean> {
     try {
-        const response = await fetch('http://localhost:3000/api/don-hang/chi-tiet/them', {
+        const response = await fetch('/api/don-hang/chi-tiet/them', {
             method: 'POST',
             headers: getAuthHeaders10(),
             body: JSON.stringify({
@@ -148,7 +148,7 @@ async function addChiTietDonHang(donHangId: string, bienTheId: string, soLuong: 
 
 async function createGiaoDichThanhToan(donHangId: string, phuongThucThanhToan: string, ghiChu: string = ''): Promise<boolean> {
     try {
-        const response = await fetch('http://localhost:3000/api/giao-dich/', {
+        const response = await fetch('/api/giao-dich/', {
             method: 'POST',
             headers: getAuthHeaders10(),
             body: JSON.stringify({
@@ -180,7 +180,7 @@ async function createDiaChiGiaoHang(
     ghiChu: string = ''
 ): Promise<boolean> {
     try {
-        const response = await fetch('http://localhost:3000/api/dia-chi/', {
+        const response = await fetch('/api/dia-chi/', {
             method: 'POST',
             headers: getAuthHeaders10(),
             body: JSON.stringify({
@@ -208,7 +208,7 @@ async function createDiaChiGiaoHang(
 
 async function deleteDonHang(donHangId: string): Promise<boolean> {
     try {
-        const response = await fetch(`http://localhost:3000/api/don-hang/${donHangId}`, {
+        const response = await fetch(`/api/don-hang/${donHangId}`, {
             method: 'DELETE',
             headers: getAuthHeaders10()
         });
@@ -221,7 +221,7 @@ async function deleteDonHang(donHangId: string): Promise<boolean> {
 
 async function getBienTheById(bienTheId: string): Promise<any | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/bien-the/${bienTheId}`, {
+        const response = await fetch(`/api/bien-the/${bienTheId}`, {
             method: 'GET',
             headers: getAuthHeaders10()
         });
@@ -247,7 +247,7 @@ async function getBienTheById(bienTheId: string): Promise<any | null> {
 
 async function updateBienTheSoLuong(bienTheId: string, soLuongMoi: number): Promise<boolean> {
     try {
-        const response = await fetch(`http://localhost:3000/api/bien-the/${bienTheId}`, {
+        const response = await fetch(`/api/bien-the/${bienTheId}`, {
             method: 'PUT',
             headers: getAuthHeaders10(),
             body: JSON.stringify({
@@ -629,7 +629,7 @@ async function loadProductInfo(): Promise<void> {
         });
 
         const promises = bienTheIds.map((id, index) => {
-            const url = `http://localhost:3000/api/thanh-toan/${id}/${soLuongList[index]}`;
+            const url = `/api/thanh-toan/${id}/${soLuongList[index]}`;
             console.log(`📡 Fetching: ${url}`);
             return fetch(url)
                 .then(response => {
@@ -937,12 +937,12 @@ async function initThanhToan() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -950,12 +950,12 @@ async function initThanhToan() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('🚀 Initializing Thanh Toan...');

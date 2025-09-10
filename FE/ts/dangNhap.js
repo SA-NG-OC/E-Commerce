@@ -72,7 +72,7 @@ if (showPasswordCheckbox && passwordInput) {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/login', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/login', {
                             method: 'POST',
                             headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: email, password: password })
@@ -95,10 +95,10 @@ if (showPasswordCheckbox && passwordInput) {
                         else {
                             role = data.user._role || data.user.role;
                             if (role === "Khách hàng") {
-                                window.location.href = '/FE/HTML/Menu.html';
+                                window.location.href = '/HTML/Menu.html';
                             }
                             else {
-                                window.location.href = '/FE/HTML-AD/Index.html';
+                                window.location.href = '/HTML-AD/Index.html';
                             }
                         }
                     }
@@ -211,7 +211,7 @@ function handleEmailSubmit(e) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/send-otp', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/forgot-password/send-otp', {
                             method: 'POST',
                             headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: email })
@@ -256,7 +256,7 @@ function handleOTPSubmit(e) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/verify-otp', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/forgot-password/verify-otp', {
                             method: 'POST',
                             headers: getAuthHeaders0(),
                             body: JSON.stringify({ email: userEmail, otp: otp })
@@ -311,7 +311,7 @@ function handlePasswordSubmit(e) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/forgot-password/reset-password', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/forgot-password/reset-password', {
                             method: 'POST',
                             headers: getAuthHeaders0(),
                             body: JSON.stringify({

@@ -101,7 +101,7 @@ function initRevenueChart() {
                         return [2 /*return*/];
                     typeSelect = document.getElementById('typeSelect');
                     dateFilter = document.getElementById('dateFilter');
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/giao-dich', {
+                    return [4 /*yield*/, fetch('/api/giao-dich', {
                             headers: getAuthHeaders3()
                         })];
                 case 1:
@@ -175,7 +175,7 @@ function initStats() {
             switch (_d.label) {
                 case 0:
                     _d.trys.push([0, 7, , 8]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/don-hang/count', {
+                    return [4 /*yield*/, fetch('/api/don-hang/count', {
                             headers: getAuthHeaders3()
                         })];
                 case 1:
@@ -185,7 +185,7 @@ function initStats() {
                     donHangData = _d.sent();
                     document.querySelectorAll('.stat-card .value')[0].textContent = (_a = donHangData.total) !== null && _a !== void 0 ? _a : '0';
                     token = localStorage.getItem('token');
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/count', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/count', {
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Authorization': "Bearer ".concat(token) // 👈 bắt buộc để qua authMiddleware
@@ -197,7 +197,7 @@ function initStats() {
                 case 4:
                     khachHangData = _d.sent();
                     document.querySelectorAll('.stat-card .value')[1].textContent = (_b = khachHangData.total) !== null && _b !== void 0 ? _b : '0';
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/count', {
+                    return [4 /*yield*/, fetch('/api/san-pham/count', {
                             headers: getAuthHeaders3()
                         })];
                 case 5:
@@ -238,7 +238,7 @@ function initCategoryChart() {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                    return [4 /*yield*/, fetch('/api/danh-muc', {
                             headers: getAuthHeaders3()
                         })];
                 case 2:
@@ -314,13 +314,13 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) {
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 _d.label = 1;
             case 1:
                 _d.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                         headers: { Authorization: "Bearer ".concat(token) }
                     })];
             case 2:
@@ -329,14 +329,14 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                     localStorage.removeItem('token');
                     sessionStorage.removeItem('token');
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];
             case 3:
                 error_3 = _d.sent();
                 sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = '/FE/HTML/DangNhap.html';
+                window.location.href = '/HTML/DangNhap.html';
                 return [2 /*return*/];
             case 4:
                 initStats();

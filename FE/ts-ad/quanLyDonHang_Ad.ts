@@ -72,7 +72,7 @@ let currentEditingOrder: string | null = null;
 // API functions mới
 async function getPaymentInfoApi(orderId: string): Promise<PaymentInfo | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/giao-dich/${orderId}`,
+        const response = await fetch(`/api/giao-dich/${orderId}`,
             {
                 headers: getAuthHeaders61()
             }
@@ -93,7 +93,7 @@ async function getPaymentInfoApi(orderId: string): Promise<PaymentInfo | null> {
 
 async function getAddressInfoApi(orderId: string): Promise<AddressInfo | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/dia-chi/${orderId}`, {
+        const response = await fetch(`/api/dia-chi/${orderId}`, {
             headers: getAuthHeaders61()
         });
         if (!response.ok) {
@@ -112,7 +112,7 @@ async function getAddressInfoApi(orderId: string): Promise<AddressInfo | null> {
 
 async function updatePaymentStatusApi(paymentId: string, newStatus: string): Promise<boolean> {
     try {
-        const response = await fetch(`http://localhost:3000/api/giao-dich/cap-nhat-trang-thai/${paymentId}`, {
+        const response = await fetch(`/api/giao-dich/cap-nhat-trang-thai/${paymentId}`, {
             method: 'PUT',
             headers: getAuthHeaders61(),
             body: JSON.stringify({ trang_thai: newStatus })
@@ -128,7 +128,7 @@ async function updatePaymentStatusApi(paymentId: string, newStatus: string): Pro
 
 async function updateAddressApi(addressId: string, addressData: Partial<AddressInfo>): Promise<boolean> {
     try {
-        const response = await fetch(`http://localhost:3000/api/dia-chi/cap-nhat/${addressId}`, {
+        const response = await fetch(`/api/dia-chi/cap-nhat/${addressId}`, {
             method: 'PUT',
             headers: getAuthHeaders61(),
             body: JSON.stringify(addressData)
@@ -165,7 +165,7 @@ function getPaymentMethodText(method: string): string {
 
 async function getAllOrdersApi(): Promise<Order[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/don-hang/', {
+        const response = await fetch('/api/don-hang/', {
             headers: getAuthHeaders61()
         });
         if (!response.ok) {
@@ -573,12 +573,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: getAuthHeaders61()
         });
 
@@ -586,12 +586,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     orders = await loadOrdersData();
@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const newStatus = (document.getElementById('new-status') as HTMLSelectElement).value;
 
             try {
-                const response = await fetch(`http://localhost:3000/api/don-hang/cap-nhat-trang-thai/${currentEditingOrder}`, {
+                const response = await fetch(`/api/don-hang/cap-nhat-trang-thai/${currentEditingOrder}`, {
                     method: 'PUT',
                     headers: getAuthHeaders61(),
                     body: JSON.stringify({ trang_thai: newStatus })
@@ -656,7 +656,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 //Xóa đơn hàng 
 async function deleteOrderApi(orderId: string): Promise<void> {
-    const response = await fetch(`http://localhost:3000/api/don-hang/${orderId}`, {
+    const response = await fetch(`/api/don-hang/${orderId}`, {
         headers: getAuthHeaders61(),
         method: 'DELETE',
     });

@@ -51,7 +51,7 @@ function fetchData() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 5, , 6]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                    return [4 /*yield*/, fetch('/api/danh-muc', {
                             headers: getAuthHeaders5()
                         })];
                 case 1:
@@ -68,7 +68,7 @@ function fetchData() {
                             ten_san_pham: sp._ten_san_pham
                         }); })
                     }); });
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                    return [4 /*yield*/, fetch('/api/thuong-hieu', {
                             headers: getAuthHeaders5()
                         })];
                 case 3:
@@ -105,7 +105,7 @@ function loadProductOptions() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/id', {
+                    return [4 /*yield*/, fetch('/api/san-pham/id', {
                             headers: getAuthHeaders5()
                         })];
                 case 1:
@@ -223,7 +223,7 @@ window.deleteCategory = function (id) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 7, , 8]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
+                    return [4 /*yield*/, fetch("/api/danh-muc/".concat(id), {
                             headers: getAuthHeaders5(),
                             method: 'DELETE',
                         })];
@@ -264,7 +264,7 @@ window.deleteBrand = function (id) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 7, , 8]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
+                    return [4 /*yield*/, fetch("/api/thuong-hieu/".concat(id), {
                             headers: getAuthHeaders5(),
                             method: 'DELETE',
                         })];
@@ -303,13 +303,13 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 token = localStorage.getItem('token') || sessionStorage.getItem('token');
                 if (!token) {
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                         headers: { Authorization: "Bearer ".concat(token) }
                     })];
             case 2:
@@ -318,14 +318,14 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                     localStorage.removeItem('token');
                     sessionStorage.removeItem('token');
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];
             case 3:
                 error_4 = _a.sent();
                 sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = '/FE/HTML/DangNhap.html';
+                window.location.href = '/HTML/DangNhap.html';
                 return [2 /*return*/];
             case 4:
                 fetchData(); // Load từ API thay vì dữ liệu mẫu
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 7, , 8]);
-                                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                                    return [4 /*yield*/, fetch('/api/danh-muc', {
                                             method: 'POST',
                                             headers: getAuthHeaders5(),
                                             body: JSON.stringify({ icon: icon, ten_danh_muc: name })
@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 5, , 6]);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/danh-muc/".concat(id), {
+                                    return [4 /*yield*/, fetch("/api/danh-muc/".concat(id), {
                                             method: 'PUT',
                                             headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_danh_muc: name, icon: icon }),
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 7, , 8]);
-                                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                                    return [4 /*yield*/, fetch('/api/thuong-hieu', {
                                             method: 'POST',
                                             headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_thuong_hieu: name })
@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                     _a.label = 1;
                                 case 1:
                                     _a.trys.push([1, 4, , 5]);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/thuong-hieu/".concat(id), {
+                                    return [4 /*yield*/, fetch("/api/thuong-hieu/".concat(id), {
                                             method: 'PUT',
                                             headers: getAuthHeaders5(),
                                             body: JSON.stringify({ ten_thuong_hieu: name })
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                 case 1:
                                     _a.trys.push([1, 8, , 9]);
                                     if (!(parentType === 'category')) return [3 /*break*/, 4];
-                                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-danh-muc', {
+                                    return [4 /*yield*/, fetch('/api/san-pham/update-danh-muc', {
                                             method: 'PUT',
                                             headers: getAuthHeaders5(),
                                             body: JSON.stringify({ sanPhamId: id, danhMucId: parentId })
@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                                 case 3:
                                     _a.sent();
                                     return [3 /*break*/, 7];
-                                case 4: return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/update-thuong-hieu', {
+                                case 4: return [4 /*yield*/, fetch('/api/san-pham/update-thuong-hieu', {
                                         method: 'PUT',
                                         headers: getAuthHeaders5(),
                                         body: JSON.stringify({ sanPhamId: id, thuongHieuId: parentId })

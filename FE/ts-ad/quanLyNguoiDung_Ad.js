@@ -67,13 +67,13 @@ function checkAuth() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/, false];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -82,14 +82,14 @@ function checkAuth() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/, false];
                     }
                     return [2 /*return*/, true];
                 case 3:
                     error_1 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/, false];
                 case 4: return [2 /*return*/];
             }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () { return __awaiter(_th
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 5, , 6]);
-                return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                return [4 /*yield*/, fetch('/api/nguoi-dung/', {
                         headers: getAuthHeaders()
                     })];
             case 3:
@@ -151,7 +151,7 @@ function fetchAndRenderUsers() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/', {
                             headers: getAuthHeaders()
                         })];
                 case 1:
@@ -290,7 +290,7 @@ function deleteUser(id) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 5, , 6]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/".concat(id), {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/".concat(id), {
                             method: 'DELETE',
                             headers: getAuthHeaders()
                         })];
@@ -354,7 +354,7 @@ function handleFormSubmit(e) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 5, , 6]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/update', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/update', {
                             method: 'PUT',
                             headers: getAuthHeaders(),
                             body: JSON.stringify(payload)
@@ -379,7 +379,7 @@ function handleFormSubmit(e) {
                 case 6: return [3 /*break*/, 11];
                 case 7:
                     _a.trys.push([7, 10, , 11]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/create', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/create', {
                             method: 'POST',
                             headers: getAuthHeaders(),
                             body: JSON.stringify(formData)

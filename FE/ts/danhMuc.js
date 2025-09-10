@@ -61,7 +61,7 @@ var categoriesView;
 var productsView;
 var searchInput;
 var loadingContainer;
-function getAuthHeaders4() {
+function getAuthHeaders11() {
     var token = localStorage.getItem('token') || sessionStorage.getItem('token');
     return {
         'Content-Type': 'application/json',
@@ -97,8 +97,8 @@ function loadDanhMucs() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc/', {
-                            headers: getAuthHeaders4()
+                    return [4 /*yield*/, fetch('/api/danh-muc/', {
+                            headers: getAuthHeaders11()
                         })];
                 case 1:
                     response = _a.sent();
@@ -130,8 +130,8 @@ function loadThuongHieus() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu/', {
-                            headers: getAuthHeaders4()
+                    return [4 /*yield*/, fetch('/api/thuong-hieu/', {
+                            headers: getAuthHeaders11()
                         })];
                 case 1:
                     response = _a.sent();
@@ -164,9 +164,9 @@ function loadProductsByFilter() {
                     _a.trys.push([0, 3, , 4]);
                     danhMucId = currentCategory && currentCategory !== 'all' ? currentCategory : 'all';
                     thuongHieuId = currentBrandFilter && currentBrandFilter !== 'all' ? currentBrandFilter : 'all';
-                    url = "http://localhost:3000/api/san-pham/filter/".concat(danhMucId, "/").concat(thuongHieuId);
+                    url = "/api/san-pham/filter/".concat(danhMucId, "/").concat(thuongHieuId);
                     return [4 /*yield*/, fetch(url, {
-                            headers: getAuthHeaders4()
+                            headers: getAuthHeaders11()
                         })];
                 case 1:
                     response = _a.sent();
@@ -393,7 +393,7 @@ function renderProducts2() {
                                     window.smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
                                 }
                                 else {
-                                    window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                                    window.location.href = "/HTML/ChiTietSanPham.html?id=".concat(id);
                                 }
                             });
                         });
@@ -513,13 +513,13 @@ function initDanhMuc() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -528,14 +528,14 @@ function initDanhMuc() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_6 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     console.log('Initializing Danh Muc...');

@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         logoutBtn.addEventListener("click", () => {
             localStorage.removeItem("token");
             localStorage.removeItem("usercontext");
-            window.location.href = "/FE/HTML/DangNhap.html";
+            window.location.href = "/HTML/DangNhap.html";
         });
     }
 
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = document.getElementById("main-content");
 
     function loadPage(page: string): void {
-        fetch(`/FE/HTML/${page}`)
+        fetch(`/HTML/${page}`)
             .then((res) => {
                 if (!res.ok) throw new Error("Lỗi tải trang");
                 return res.text();

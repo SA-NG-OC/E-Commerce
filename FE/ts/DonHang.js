@@ -153,7 +153,7 @@ function setupProductClickEvents() {
                 }
                 else {
                     // Fallback nếu router chưa sẵn sàng
-                    window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                    window.location.href = "/HTML/ChiTietSanPham.html?id=".concat(id);
                 }
             }
         });
@@ -165,7 +165,7 @@ function loadDonHangData() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    API_BASE_URL = 'http://localhost:3000/api';
+                    API_BASE_URL = '/api';
                     loadingContainer = document.getElementById('loadingContainer');
                     ordersContainer = document.getElementById('orders-container');
                     console.log('Starting to load order data...');
@@ -259,7 +259,7 @@ function huyDonHang(orderId) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    API_BASE_URL = 'http://localhost:3000/api';
+                    API_BASE_URL = '/api';
                     currentUserId = getId();
                     if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?'))
                         return [2 /*return*/];
@@ -302,7 +302,7 @@ function theoDoiDonHang(orderId) {
         window.smoothRouter.navigateTo('TheoDoiDonHang.html', { id: orderId });
     }
     else {
-        window.location.href = "/FE/HTML/TheoDoiDonHang.html?id=".concat(orderId);
+        window.location.href = "/HTML/TheoDoiDonHang.html?id=".concat(orderId);
     }
 }
 function lienHeHoTro(orderId) {
@@ -310,7 +310,7 @@ function lienHeHoTro(orderId) {
         window.smoothRouter.navigateTo('HoTro.html', { orderId: orderId });
     }
     else {
-        window.location.href = "/FE/HTML/HoTro.html?orderId=".concat(orderId);
+        window.location.href = "/HTML/HoTro.html?orderId=".concat(orderId);
     }
 }
 function danhGiaSanPham(orderId) {
@@ -318,18 +318,18 @@ function danhGiaSanPham(orderId) {
         window.smoothRouter.navigateTo('DanhGia.html', { orderId: orderId });
     }
     else {
-        window.location.href = "/FE/HTML/DanhGia.html?orderId=".concat(orderId);
+        window.location.href = "/HTML/DanhGia.html?orderId=".concat(orderId);
     }
 }
 function muaLai(bienTheIds, soLuongList) {
-    window.location.href = "/FE/HTML/ThanhToan.html?bien_the_id=".concat(bienTheIds, "&so_luong=").concat(soLuongList);
+    window.location.href = "/HTML/ThanhToan.html?bien_the_id=".concat(bienTheIds, "&so_luong=").concat(soLuongList);
 }
 function tiepTucMuaSam() {
     if (window.smoothRouter) {
         window.smoothRouter.navigateTo('TrangChu.html');
     }
     else {
-        window.location.href = '/FE/HTML/TrangChu.html';
+        window.location.href = '/HTML/TrangChu.html';
     }
 }
 function setupEventListeners2() {
@@ -375,13 +375,13 @@ function initDonHang() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -390,14 +390,14 @@ function initDonHang() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_3 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     console.log('Initializing DonHang...');

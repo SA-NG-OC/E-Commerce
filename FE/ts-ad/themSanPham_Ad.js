@@ -49,7 +49,7 @@ function getAllDanhMucAd() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/danh-muc', {
+                    return [4 /*yield*/, fetch('/api/danh-muc', {
                             method: 'GET',
                             headers: getAuthHeaders6()
                         })];
@@ -83,7 +83,7 @@ function getAllThuongHieuAd() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thuong-hieu', {
+                    return [4 /*yield*/, fetch('/api/thuong-hieu', {
                             method: 'GET',
                             headers: getAuthHeaders6()
                         })];
@@ -128,7 +128,7 @@ function createProductAd(product) {
                         ten_danh_muc: getSelectedTextAd(danhMucSelect), // Truyền tên danh mục
                         ten_thuong_hieu: getSelectedTextAd(thuongHieuSelect) // Truyền tên thương hiệu
                     };
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham', {
+                    return [4 /*yield*/, fetch('/api/san-pham', {
                             method: 'POST',
                             headers: getAuthHeaders6(),
                             body: JSON.stringify(apiData)
@@ -364,7 +364,7 @@ function getProductIdByCode(maSanPham) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham?ma_san_pham=".concat(maSanPham), {
+                    return [4 /*yield*/, fetch("/api/san-pham?ma_san_pham=".concat(maSanPham), {
                             method: 'GET',
                             headers: getAuthHeaders6()
                         })];
@@ -426,17 +426,17 @@ function handleSubmitAd(e) {
                                 console.log('ID sản phẩm mới:', productId_1);
                                 if (productId_1) {
                                     // Chuyển hướng đến trang chi tiết với ID sản phẩm
-                                    window.location.href = "/FE/HTML-AD/ChiTietSanPham_Ad.html?id=".concat(productId_1);
+                                    window.location.href = "/HTML-AD/ChiTietSanPham_Ad.html?id=".concat(productId_1);
                                 }
                                 else {
                                     // Fallback: chuyển hướng với mã sản phẩm
-                                    window.location.href = "/FE/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=".concat(encodeURIComponent(productData.ma_san_pham));
+                                    window.location.href = "/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=".concat(encodeURIComponent(productData.ma_san_pham));
                                 }
                             }
                             catch (error) {
                                 console.error('Lỗi khi chuyển hướng:', error);
                                 // Vẫn chuyển hướng với mã sản phẩm nếu có lỗi
-                                window.location.href = "/FE/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=".concat(encodeURIComponent(productData.ma_san_pham));
+                                window.location.href = "/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=".concat(encodeURIComponent(productData.ma_san_pham));
                             }
                             return [2 /*return*/];
                         });
@@ -490,13 +490,13 @@ function initProductFormAd() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -505,14 +505,14 @@ function initProductFormAd() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_7 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4: return [4 /*yield*/, loadDataAd()];
                 case 5:

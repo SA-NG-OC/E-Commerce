@@ -87,7 +87,7 @@ function displaySearchResults(products: SanPham[]) {
         grid.querySelectorAll('.product-card').forEach(card => {
             card.addEventListener('click', function () {
                 const id = card.getAttribute('data-id');
-                window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?id=${id}`;
+                window.location.href = `/HTML-AD/ChiTietSanPham_Ad.html?id=${id}`;
             });
         });
     }
@@ -181,7 +181,7 @@ async function renderProductsAd() {
         }
         grid.style.display = 'none';
 
-        const res = await fetch('http://localhost:3000/api/san-pham/', {
+        const res = await fetch('/api/san-pham/', {
             headers: getAuthHeaders4()
         });
         const rawProducts = await res.json();
@@ -216,7 +216,7 @@ async function renderProductsAd() {
         grid.querySelectorAll('.product-card').forEach(card => {
             card.addEventListener('click', function () {
                 const id = card.getAttribute('data-id');
-                window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?id=${id}`;
+                window.location.href = `/HTML-AD/ChiTietSanPham_Ad.html?id=${id}`;
             });
         });
 
@@ -249,12 +249,12 @@ async function initTrangChuAd() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -262,12 +262,12 @@ async function initTrangChuAd() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('Initializing Trang Chu...');

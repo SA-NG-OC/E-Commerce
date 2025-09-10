@@ -119,7 +119,7 @@ class NotificationManager {
 
             console.log('🔌 Connecting to Socket.IO...');
 
-            this.socket = io('http://localhost:3000', {
+            this.socket = io('', {
                 transports: ['websocket', 'polling'],
                 timeout: 20000,
                 forceNew: true
@@ -284,7 +284,7 @@ class NotificationManager {
         console.log('📥 Loading notifications for user:', this.userId);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/thong-bao/${this.userId}`, {
+            const response = await fetch(`/api/thong-bao/${this.userId}`, {
                 method: 'GET',
                 headers: getAuthHeaders7()
             });
@@ -391,7 +391,7 @@ class NotificationManager {
         console.log('📖 Marking as read:', notificationId);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}/mark-read`, {
+            const response = await fetch(`/api/thong-bao/${notificationId}/mark-read`, {
                 method: 'POST',
                 headers: getAuthHeaders7()
             });
@@ -416,7 +416,7 @@ class NotificationManager {
         console.log('🗑️ Deleting notification:', notificationId);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/thong-bao/${notificationId}`, {
+            const response = await fetch(`/api/thong-bao/${notificationId}`, {
                 headers: getAuthHeaders7(),
                 method: 'DELETE'
             });
@@ -438,7 +438,7 @@ class NotificationManager {
         console.log('📖 Marking all as read for user:', this.userId);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/thong-bao/mark-all-read/${this.userId}`, {
+            const response = await fetch(`/api/thong-bao/mark-all-read/${this.userId}`, {
                 method: 'POST',
                 headers: getAuthHeaders7()
             });
@@ -613,7 +613,7 @@ class AdminNavigation {
 
     async loadAllProducts() {
         try {
-            const response = await fetch('http://localhost:3000/api/san-pham/',
+            const response = await fetch('/api/san-pham/',
                 {
                     header: getAuthHeaders7()
                 }
@@ -1080,23 +1080,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
 
     if (!token) {
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
         if (!res.ok) {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
@@ -1140,7 +1140,7 @@ if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("usercontext");
-        window.location.href = "/FE/HTML/DangNhap.html";
+        window.location.href = "/HTML/DangNhap.html";
     });
 }
 

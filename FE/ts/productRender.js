@@ -77,7 +77,7 @@ function renderProducts() {
                         loadingContainer.style.display = 'flex';
                     }
                     grid.style.display = 'none';
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/san-pham/', {
+                    return [4 /*yield*/, fetch('/api/san-pham/', {
                             headers: getAuthHeaders9()
                         })];
                 case 2:
@@ -118,7 +118,7 @@ function renderProducts() {
                             }
                             else {
                                 // Fallback nếu router chưa sẵn sàng
-                                window.location.href = "/FE/HTML/ChiTietSanPham.html?id=".concat(id);
+                                window.location.href = "/HTML/ChiTietSanPham.html?id=".concat(id);
                             }
                         });
                     });
@@ -154,13 +154,13 @@ function initTrangChu() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -169,14 +169,14 @@ function initTrangChu() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_2 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     // Đã đăng nhập, tiếp tục render products
@@ -201,7 +201,7 @@ else {
 }
 //Phần menu
 /*
-fetch('/FE/HTML/NavBar.html')
+fetch('/HTML/NavBar.html')
     .then(res => res.text())
     .then(html => {
         const navbar = document.getElementById('navbar');

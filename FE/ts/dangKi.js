@@ -1,4 +1,4 @@
-const { get } = require("http");
+
 
 // Dữ liệu địa chỉ Việt Nam
 const vietnamLocations = {
@@ -232,7 +232,7 @@ async function handleRegistration() {
         };
 
         // Gửi request đăng ký
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
+        const response = await fetch('/api/nguoi-dung/create', {
             method: 'POST',
             headers: getAuthHeaders(),
             body: JSON.stringify(registerData)

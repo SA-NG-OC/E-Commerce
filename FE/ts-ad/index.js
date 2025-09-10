@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         logoutBtn.addEventListener("click", function () {
             localStorage.removeItem("token");
             localStorage.removeItem("usercontext");
-            window.location.href = "/FE/HTML/DangNhap.html";
+            window.location.href = "/HTML/DangNhap.html";
         });
     }
     // Ẩn menu khi click ra ngoài
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var navItems = document.querySelectorAll(".nav-item");
     var content = document.getElementById("main-content");
     function loadPage(page) {
-        fetch("/FE/HTML/".concat(page))
+        fetch("/HTML/".concat(page))
             .then(function (res) {
             if (!res.ok)
                 throw new Error("Lỗi tải trang");

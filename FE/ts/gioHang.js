@@ -104,7 +104,7 @@ function removeItemFromCart(gioHangId, bienTheId) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(gioHangId, "/bien-the/").concat(bienTheId), {
+                    return [4 /*yield*/, fetch("/api/gio-hang/".concat(gioHangId, "/bien-the/").concat(bienTheId), {
                             headers: getAuthHeaders60(),
                             method: 'DELETE'
                         })];
@@ -192,7 +192,7 @@ function checkout() {
                     }
                     else {
                         // Fallback: chuyển hướng trực tiếp với URL parameters
-                        window.location.href = "/FE/HTML/ThanhToan.html?".concat(urlParams);
+                        window.location.href = "/HTML/ThanhToan.html?".concat(urlParams);
                     }
                     return [3 /*break*/, 4];
                 case 3:
@@ -235,7 +235,7 @@ function saveQuantityChanges() {
                                     originalItem = currentCartData._san_pham.find(function (sp) { return sp.id_bien_the === bienTheId; });
                                     originalQuantity = originalItem ? parseInt(originalItem.so_luong) : 0;
                                     if (!(soLuong !== originalQuantity)) return [3 /*break*/, 2];
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
+                                    return [4 /*yield*/, fetch("/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
                                             method: 'PUT',
                                             headers: getAuthHeaders60(),
                                             body: JSON.stringify({ so_luong: soLuong })
@@ -307,7 +307,7 @@ function loadGioHang() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(userId), {
+                    return [4 /*yield*/, fetch("/api/gio-hang/".concat(userId), {
                             headers: getAuthHeaders60()
                         })];
                 case 2:
@@ -386,7 +386,7 @@ function renderCart(gioHang) {
                             quantityInput = item.querySelector('.quantity-input');
                             soLuong = quantityInput ? parseInt(quantityInput.value) : 1;
                             if (!bienTheId) return [3 /*break*/, 3];
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
+                            return [4 /*yield*/, fetch("/api/gio-hang/".concat(cartId, "/bien-the/").concat(bienTheId), {
                                     method: 'PUT',
                                     headers: getAuthHeaders60(),
                                     body: JSON.stringify({ so_luong: soLuong })
@@ -483,13 +483,13 @@ function initGioHang() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -498,14 +498,14 @@ function initGioHang() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_4 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     console.log('Initializing Gio Hang...');

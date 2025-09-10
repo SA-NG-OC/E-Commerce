@@ -45,7 +45,7 @@ let productsView: HTMLElement;
 let searchInput: HTMLInputElement;
 let loadingContainer: HTMLElement;
 
-function getAuthHeaders4() {
+function getAuthHeaders11() {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     return {
         'Content-Type': 'application/json',
@@ -84,9 +84,9 @@ function showLoading(show: boolean): void {
 // API functions
 async function loadDanhMucs(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/danh-muc/',
+        const response = await fetch('/api/danh-muc/',
             {
-                headers: getAuthHeaders4()
+                headers: getAuthHeaders11()
             }
         );
         const rawData = await response.json();
@@ -109,9 +109,9 @@ async function loadDanhMucs(): Promise<void> {
 
 async function loadThuongHieus(): Promise<void> {
     try {
-        const response = await fetch('http://localhost:3000/api/thuong-hieu/',
+        const response = await fetch('/api/thuong-hieu/',
             {
-                headers: getAuthHeaders4()
+                headers: getAuthHeaders11()
             }
         );
         const rawData = await response.json();
@@ -136,11 +136,11 @@ async function loadProductsByFilter(): Promise<SanPham[]> {
         let danhMucId = currentCategory && currentCategory !== 'all' ? currentCategory : 'all';
         let thuongHieuId = currentBrandFilter && currentBrandFilter !== 'all' ? currentBrandFilter : 'all';
 
-        let url = `http://localhost:3000/api/san-pham/filter/${danhMucId}/${thuongHieuId}`;
+        let url = `/api/san-pham/filter/${danhMucId}/${thuongHieuId}`;
 
         const response = await fetch(url,
             {
-                headers: getAuthHeaders4()
+                headers: getAuthHeaders11()
             }
         );
         const rawProducts = await response.json();
@@ -393,7 +393,7 @@ async function renderProducts2(): Promise<void> {
                     if ((window as any).smoothRouter) {
                         (window as any).smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
                     } else {
-                        window.location.href = `/FE/HTML/ChiTietSanPham.html?id=${id}`;
+                        window.location.href = `/HTML/ChiTietSanPham.html?id=${id}`;
                     }
                 });
             });
@@ -496,12 +496,12 @@ async function initDanhMuc(): Promise<void> {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -509,12 +509,12 @@ async function initDanhMuc(): Promise<void> {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('Initializing Danh Muc...');

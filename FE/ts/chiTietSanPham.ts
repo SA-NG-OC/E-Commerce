@@ -108,7 +108,7 @@ async function addToCart(): Promise<void> {
 
     try {
         // 1. Lấy biến thể sản phẩm từ API
-        const res = await fetch(`http://localhost:3000/api/bien-the/${selectedColor.id}/${selectedSize.id}/${sanPhamId}`, {
+        const res = await fetch(`/api/bien-the/${selectedColor.id}/${selectedSize.id}/${sanPhamId}`, {
             headers: getAuthHeaders20()
         });
         if (!res.ok) {
@@ -127,7 +127,7 @@ async function addToCart(): Promise<void> {
         }
 
         // 2. Gọi API thêm vào giỏ hàng
-        const response = await fetch("http://localhost:3000/api/gio-hang/them", {
+        const response = await fetch("/api/gio-hang/them", {
             method: "POST",
             headers: getAuthHeaders20(),
             body: JSON.stringify({
@@ -196,7 +196,7 @@ function buyNow(): void {
     } else {
         // Fallback: dùng URL query string
         const query = new URLSearchParams(params as any).toString();
-        window.location.href = `/FE/HTML/ThanhToan.html?${query}`;
+        window.location.href = `/HTML/ThanhToan.html?${query}`;
     }
 }
 
@@ -275,7 +275,7 @@ function getSanPhamIdFromUrl(): string | null {
 
 async function fetchSanPhamById(id: string): Promise<SanPham | null> {
     try {
-        const res = await fetch(`http://localhost:3000/api/san-pham/${id}`,
+        const res = await fetch(`/api/san-pham/${id}`,
             {
                 headers: getAuthHeaders20()
             }
@@ -310,7 +310,7 @@ async function fetchBienTheBySanPhamId(selectedColorId: string, selectedSizeId: 
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/bien-the/${selectedColorId}/${selectedSizeId}/${sanPhamId}`,
+        const response = await fetch(`/api/bien-the/${selectedColorId}/${selectedSizeId}/${sanPhamId}`,
             {
                 headers: getAuthHeaders20()
             }
@@ -409,7 +409,7 @@ async function renderBienTheInfo(selectedColorId: string, selectedSizeId: string
 async function fetchMauSac(): Promise<MauSacModel[]> {
     try {
         const sanPhamId: string | null = getSanPhamIdFromUrl();
-        const res = await fetch(`http://localhost:3000/api/mau-sac/${sanPhamId}`, {
+        const res = await fetch(`/api/mau-sac/${sanPhamId}`, {
             headers: getAuthHeaders20()
         });
         if (!res.ok) return [];
@@ -428,7 +428,7 @@ async function fetchMauSac(): Promise<MauSacModel[]> {
 async function fetchKichCo(): Promise<KichCoModel[]> {
     try {
         const sanPhamId: string | null = getSanPhamIdFromUrl();
-        const res = await fetch(`http://localhost:3000/api/kich-co/${sanPhamId}`,
+        const res = await fetch(`/api/kich-co/${sanPhamId}`,
             {
                 headers: getAuthHeaders20()
             }
@@ -609,7 +609,7 @@ function updateSelectionInfo() {
 //Review//
 async function fetchDanhGiaBySanPhamId(id: string): Promise<DanhGiaSPModel[]> {
     try {
-        const res = await fetch(`http://localhost:3000/api/san-pham/${id}/danh-gia`,
+        const res = await fetch(`/api/san-pham/${id}/danh-gia`,
             {
                 headers: getAuthHeaders20()
             }
@@ -775,7 +775,7 @@ function showCommentDialog(reviewId: string, currentContent: string, currentRati
         }
 
         try {
-            const res = await fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
+            const res = await fetch(`/api/danh-gia/${reviewId}`, {
                 method: 'PUT',
                 headers: getAuthHeaders20(),
                 body: JSON.stringify({
@@ -801,7 +801,7 @@ function showCommentDialog(reviewId: string, currentContent: string, currentRati
     deleteBtn?.addEventListener('click', async function () {
         if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
             try {
-                const res = await fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
+                const res = await fetch(`/api/danh-gia/${reviewId}`, {
                     headers: getAuthHeaders20(),
                     method: 'DELETE'
                 });
@@ -1038,7 +1038,7 @@ function initReviewForm() {
             const reviewContent = (document.getElementById('reviewContent') as HTMLTextAreaElement).value;
 
             try {
-                const res = await fetch(`http://localhost:3000/api/san-pham/${sanPhamId}/danh-gia`, {
+                const res = await fetch(`/api/san-pham/${sanPhamId}/danh-gia`, {
                     method: 'POST',
                     headers: getAuthHeaders20(),
                     body: JSON.stringify({
@@ -1073,12 +1073,12 @@ async function initChiTietSanPham() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -1086,12 +1086,12 @@ async function initChiTietSanPham() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('initChiTietSanPham called');
@@ -1115,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load NavBar nếu cần
         /*const navbar = document.getElementById('navbar');
         if (navbar && !navbar.innerHTML.trim()) {
-            fetch('/FE/HTML/NavBar.html')
+            fetch('/HTML/NavBar.html')
                 .then(res => res.text())
                 .then(html => {
                     navbar.innerHTML = html;

@@ -57,12 +57,12 @@ class ChiTietSanPhamManager_Ad {
 
                 if (!token) {
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return;
                 }
 
                 try {
-                    const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    const res = await fetch("/api/nguoi-dung/me", {
                         headers: getAuthHeaders2()
                     });
 
@@ -70,12 +70,12 @@ class ChiTietSanPhamManager_Ad {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return;
                     }
                 } catch (error) {
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return;
                 }
                 this.init_Ad();
@@ -148,7 +148,7 @@ class ChiTietSanPhamManager_Ad {
 
     private async fetchSanPhamById_Ad(id: string): Promise<SanPham_Ad | null> {
         try {
-            const res = await fetch(`http://localhost:3000/api/san-pham/${id}`, {
+            const res = await fetch(`/api/san-pham/${id}`, {
                 headers: getAuthHeaders2()
             });
             if (!res.ok) return null;
@@ -175,7 +175,7 @@ class ChiTietSanPhamManager_Ad {
     // Hàm lấy danh sách màu sắc từ API
     private async fetchColors_Ad(): Promise<any[]> {
         try {
-            const response = await fetch('http://localhost:3000/api/mau-sac/',
+            const response = await fetch('/api/mau-sac/',
                 {
                     headers: getAuthHeaders2()
                 }
@@ -194,7 +194,7 @@ class ChiTietSanPhamManager_Ad {
     // Hàm lấy danh sách kích cỡ từ API
     private async fetchSizes_Ad(): Promise<any[]> {
         try {
-            const response = await fetch('http://localhost:3000/api/kich-co/', {
+            const response = await fetch('/api/kich-co/', {
                 headers: getAuthHeaders2()
             });
             if (!response.ok) {
@@ -210,7 +210,7 @@ class ChiTietSanPhamManager_Ad {
 
     private async fetchBienTheByProductId_Ad(productId: string): Promise<BienThe_Ad[]> {
         try {
-            const res = await fetch(`http://localhost:3000/api/bien-the/san-pham/${productId}`, {
+            const res = await fetch(`/api/bien-the/san-pham/${productId}`, {
                 headers: getAuthHeaders2()
             });
             if (!res.ok) return [];
@@ -230,7 +230,7 @@ class ChiTietSanPhamManager_Ad {
 
     private async fetchDanhGiaByProductId_Ad(productId: string): Promise<DanhGia_Ad[]> {
         try {
-            const res = await fetch(`http://localhost:3000/api/san-pham/${productId}/danh-gia`, {
+            const res = await fetch(`/api/san-pham/${productId}/danh-gia`, {
                 headers: getAuthHeaders2()
             });
             if (!res.ok) return [];
@@ -259,8 +259,8 @@ class ChiTietSanPhamManager_Ad {
 
             // Load danh mục
             const [danhMucsResponse, thuongHieusResponse] = await Promise.all([
-                fetch('http://localhost:3000/api/danh-muc'),
-                fetch('http://localhost:3000/api/thuong-hieu')
+                fetch('/api/danh-muc'),
+                fetch('/api/thuong-hieu')
             ]);
 
             if (!danhMucsResponse.ok || !thuongHieusResponse.ok) {
@@ -553,7 +553,7 @@ class ChiTietSanPhamManager_Ad {
                 ten_thuong_hieu
             };
 
-            const res = await fetch(`http://localhost:3000/api/san-pham/${this.sanPham.id}`, {
+            const res = await fetch(`/api/san-pham/${this.sanPham.id}`, {
                 method: 'PUT',
                 headers: getAuthHeaders2(),
                 body: JSON.stringify(productData)
@@ -584,7 +584,7 @@ class ChiTietSanPhamManager_Ad {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/san-pham/${this.sanPham.id}/soft-delete`, {
+            const res = await fetch(`/api/san-pham/${this.sanPham.id}/soft-delete`, {
                 headers: getAuthHeaders2(),
                 method: 'PATCH'
             });
@@ -627,7 +627,7 @@ class ChiTietSanPhamManager_Ad {
         const duongDan = imgElement.src;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/hinh-anh-sp?duongDan=${encodeURIComponent(duongDan)}`, {
+            const response = await fetch(`/api/hinh-anh-sp?duongDan=${encodeURIComponent(duongDan)}`, {
                 headers: getAuthHeaders2(),
                 method: 'DELETE',
             });
@@ -652,7 +652,7 @@ class ChiTietSanPhamManager_Ad {
     // Hàm load danh sách màu sắc (gọi trong init_Ad)
     private async loadMauSacListByProductId_Ad(): Promise<void> {
         try {
-            const response = await fetch(`http://localhost:3000/api/mau-sac/${this.sanPhamId}`, {
+            const response = await fetch(`/api/mau-sac/${this.sanPhamId}`, {
                 headers: getAuthHeaders2()
             });
             if (response.ok) {
@@ -925,7 +925,7 @@ class ChiTietSanPhamManager_Ad {
                 throw new Error('Lỗi kết nối mạng');
             });
 
-            xhr.open('POST', 'http://localhost:3000/api/hinh-anh-sp/upload');
+            xhr.open('POST', '/api/hinh-anh-sp/upload');
             xhr.send(formData);
 
         } catch (error) {
@@ -1033,7 +1033,7 @@ class ChiTietSanPhamManager_Ad {
                 soLuongTonKho: parseInt(formData.get('stock') as string)
             };
 
-            const response = await fetch('http://localhost:3000/api/bien-the/', {
+            const response = await fetch('/api/bien-the/', {
                 method: 'POST',
                 headers: getAuthHeaders2(),
                 body: JSON.stringify(variantData)
@@ -1150,7 +1150,7 @@ class ChiTietSanPhamManager_Ad {
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/bien-the/${variantId}/soft-delete`, {
+                const response = await fetch(`/api/bien-the/${variantId}/soft-delete`, {
                     headers: getAuthHeaders2(),
                     method: 'PATCH'
                 });
@@ -1224,7 +1224,7 @@ class ChiTietSanPhamManager_Ad {
 
             for (const variant of changedVariants) {
                 try {
-                    const response = await fetch(`http://localhost:3000/api/bien-the/${variant.id}`, {
+                    const response = await fetch(`/api/bien-the/${variant.id}`, {
                         method: 'PUT',
                         headers: getAuthHeaders2(),
                         body: JSON.stringify({
@@ -1286,7 +1286,7 @@ class ChiTietSanPhamManager_Ad {
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/danh-gia/${reviewId}`, {
+                const response = await fetch(`/api/danh-gia/${reviewId}`, {
                     headers: getAuthHeaders2(),
                     method: 'DELETE'
                 });

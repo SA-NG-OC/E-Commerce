@@ -70,7 +70,7 @@ function removeItem(button: HTMLElement) {
 
 async function removeItemFromCart(gioHangId: string, bienTheId: string) {
     try {
-        const response = await fetch(`http://localhost:3000/api/gio-hang/${gioHangId}/bien-the/${bienTheId}`, {
+        const response = await fetch(`/api/gio-hang/${gioHangId}/bien-the/${bienTheId}`, {
             headers: getAuthHeaders60(),
             method: 'DELETE'
         });
@@ -161,7 +161,7 @@ async function checkout() {
             });
         } else {
             // Fallback: chuyển hướng trực tiếp với URL parameters
-            window.location.href = `/FE/HTML/ThanhToan.html?${urlParams}`;
+            window.location.href = `/HTML/ThanhToan.html?${urlParams}`;
         }
 
     } catch (error) {
@@ -201,7 +201,7 @@ async function saveQuantityChanges(): Promise<void> {
 
         // Chỉ cập nhật nếu số lượng thay đổi
         if (soLuong !== originalQuantity) {
-            const response = await fetch(`http://localhost:3000/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
+            const response = await fetch(`/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
                 method: 'PUT',
                 headers: getAuthHeaders60(),
                 body: JSON.stringify({ so_luong: soLuong })
@@ -258,7 +258,7 @@ async function loadGioHang() {
 
     // Gọi API lấy giỏ hàng
     try {
-        const res = await fetch(`http://localhost:3000/api/gio-hang/${userId}`, {
+        const res = await fetch(`/api/gio-hang/${userId}`, {
             headers: getAuthHeaders60()
         });
         console.log('User ID:', userId);
@@ -399,7 +399,7 @@ function renderCart(gioHang: any) {
                     const soLuong = quantityInput ? parseInt(quantityInput.value) : 1;
 
                     if (bienTheId) {
-                        const response = await fetch(`http://localhost:3000/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
+                        const response = await fetch(`/api/gio-hang/${cartId}/bien-the/${bienTheId}`, {
                             method: 'PUT',
                             headers: getAuthHeaders60(),
                             body: JSON.stringify({ so_luong: soLuong })
@@ -490,12 +490,12 @@ async function initGioHang() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -503,12 +503,12 @@ async function initGioHang() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('Initializing Gio Hang...');

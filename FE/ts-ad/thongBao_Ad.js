@@ -67,13 +67,13 @@ function checkAuth_Ad() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/, false];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -82,14 +82,14 @@ function checkAuth_Ad() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/, false];
                     }
                     return [2 /*return*/, true];
                 case 3:
                     error_1 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/, false];
                 case 4: return [2 /*return*/];
             }
@@ -132,7 +132,7 @@ function initializeSocket() {
             return;
         }
         console.log('🔌 Initializing Socket.IO connection...');
-        socket = window.io('http://localhost:3000', {
+        socket = window.io('', {
             transports: ['websocket', 'polling'],
             timeout: 20000,
             forceNew: true
@@ -256,7 +256,7 @@ function loadUsers() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/nguoi-dung/', {
+                    return [4 /*yield*/, fetch('/api/nguoi-dung/', {
                             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
                         })];
                 case 1:
@@ -383,7 +383,7 @@ function loadUserNotifications(userId) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/thong-bao/".concat(userId), {
+                    return [4 /*yield*/, fetch("/api/thong-bao/".concat(userId), {
                             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
                         })];
                 case 2:
@@ -479,7 +479,7 @@ function sendNotification() {
                 case 1:
                     _a.trys.push([1, 6, 7, 8]);
                     console.log('📤 Sending notification to user:', selectedUserId);
-                    return [4 /*yield*/, fetch('http://localhost:3000/api/thong-bao', {
+                    return [4 /*yield*/, fetch('/api/thong-bao', {
                             method: 'POST',
                             headers: getAuthHeaders_Ad(), // ✅ Thêm auth headers
                             body: JSON.stringify({
@@ -543,7 +543,7 @@ function deleteNotification(notificationId) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
                     console.log('🗑️ Deleting notification:', notificationId);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/thong-bao/".concat(notificationId), {
+                    return [4 /*yield*/, fetch("/api/thong-bao/".concat(notificationId), {
                             method: 'DELETE',
                             headers: getAuthHeaders_Ad() // ✅ Thêm auth headers
                         })];

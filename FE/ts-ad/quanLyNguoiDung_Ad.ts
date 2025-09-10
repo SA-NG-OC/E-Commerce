@@ -32,12 +32,12 @@ async function checkAuth() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return false;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -45,13 +45,13 @@ async function checkAuth() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return false;
         }
         return true;
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return false;
     }
 }
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!isAuth) return;
 
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+        const response = await fetch('/api/nguoi-dung/', {
             headers: getAuthHeaders()
         });
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchAndRenderUsers() {
     try {
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/', {
+        const response = await fetch('/api/nguoi-dung/', {
             headers: getAuthHeaders()
         });
 
@@ -250,7 +250,7 @@ function editUser(id: string) {
 async function deleteUser(id: string) {
     if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
         try {
-            const response = await fetch(`http://localhost:3000/api/nguoi-dung/${id}`, {
+            const response = await fetch(`/api/nguoi-dung/${id}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
@@ -305,7 +305,7 @@ async function handleFormSubmit(e: Event) {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/nguoi-dung/update', {
+            const response = await fetch('/api/nguoi-dung/update', {
                 method: 'PUT',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(payload)
@@ -323,7 +323,7 @@ async function handleFormSubmit(e: Event) {
         }
     } else {
         try {
-            const response = await fetch('http://localhost:3000/api/nguoi-dung/create', {
+            const response = await fetch('/api/nguoi-dung/create', {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify(formData)

@@ -51,12 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -64,12 +64,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     loadUserData();
@@ -229,7 +229,7 @@ async function updateProfile(): Promise<void> {
             updateData.mat_khau = data.new_password;
         }
 
-        const response = await fetch('http://localhost:3000/api/nguoi-dung/update', {
+        const response = await fetch('/api/nguoi-dung/update', {
             method: 'PUT',
             headers: getAuthHeaders8(),
             body: JSON.stringify(updateData)

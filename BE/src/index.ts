@@ -52,6 +52,15 @@ io.on('connection', (socket) => {
     });
 });
 
+// Serve toàn bộ FE (HTML, CSS, JS, assets)
+app.use(express.static(path.join(__dirname, "../../FE")));
+
+// Route mặc định mở file DangNhap.html
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../FE/HTML/DangNhap.html"));
+});
+
+
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

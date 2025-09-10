@@ -189,7 +189,7 @@ function setupProductClickEvents(): void {
                     (window as any).smoothRouter.navigateTo('ChiTietSanPham.html', { id: id });
                 } else {
                     // Fallback nếu router chưa sẵn sàng
-                    window.location.href = `/FE/HTML/ChiTietSanPham.html?id=${id}`;
+                    window.location.href = `/HTML/ChiTietSanPham.html?id=${id}`;
                 }
             }
         });
@@ -197,7 +197,7 @@ function setupProductClickEvents(): void {
 }
 
 async function loadDonHangData(): Promise<void> {
-    const API_BASE_URL = 'http://localhost:3000/api';
+    const API_BASE_URL = '/api';
     const loadingContainer = document.getElementById('loadingContainer');
     const ordersContainer = document.getElementById('orders-container');
 
@@ -288,7 +288,7 @@ function renderOrders(orders: DonHangData[]): void {
 }
 
 async function huyDonHang(orderId: string): Promise<void> {
-    const API_BASE_URL = 'http://localhost:3000/api';
+    const API_BASE_URL = '/api';
     const currentUserId = getId();
 
     if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
@@ -322,7 +322,7 @@ function theoDoiDonHang(orderId: string) {
     if ((window as any).smoothRouter) {
         (window as any).smoothRouter.navigateTo('TheoDoiDonHang.html', { id: orderId });
     } else {
-        window.location.href = `/FE/HTML/TheoDoiDonHang.html?id=${orderId}`;
+        window.location.href = `/HTML/TheoDoiDonHang.html?id=${orderId}`;
     }
 }
 
@@ -330,7 +330,7 @@ function lienHeHoTro(orderId: string) {
     if ((window as any).smoothRouter) {
         (window as any).smoothRouter.navigateTo('HoTro.html', { orderId });
     } else {
-        window.location.href = `/FE/HTML/HoTro.html?orderId=${orderId}`;
+        window.location.href = `/HTML/HoTro.html?orderId=${orderId}`;
     }
 }
 
@@ -338,19 +338,19 @@ function danhGiaSanPham(orderId: string) {
     if ((window as any).smoothRouter) {
         (window as any).smoothRouter.navigateTo('DanhGia.html', { orderId });
     } else {
-        window.location.href = `/FE/HTML/DanhGia.html?orderId=${orderId}`;
+        window.location.href = `/HTML/DanhGia.html?orderId=${orderId}`;
     }
 }
 
 function muaLai(bienTheIds: string, soLuongList: string) {
-    window.location.href = `/FE/HTML/ThanhToan.html?bien_the_id=${bienTheIds}&so_luong=${soLuongList}`;
+    window.location.href = `/HTML/ThanhToan.html?bien_the_id=${bienTheIds}&so_luong=${soLuongList}`;
 }
 
 function tiepTucMuaSam() {
     if ((window as any).smoothRouter) {
         (window as any).smoothRouter.navigateTo('TrangChu.html');
     } else {
-        window.location.href = '/FE/HTML/TrangChu.html';
+        window.location.href = '/HTML/TrangChu.html';
     }
 }
 
@@ -397,12 +397,12 @@ async function initDonHang() {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -410,12 +410,12 @@ async function initDonHang() {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     console.log('Initializing DonHang...');

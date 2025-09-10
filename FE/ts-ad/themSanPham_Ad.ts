@@ -33,7 +33,7 @@ function getAuthHeaders6() {
 // API Functions
 async function getAllDanhMucAd(): Promise<DanhMuc[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/danh-muc', {
+        const response = await fetch('/api/danh-muc', {
             method: 'GET',
             headers: getAuthHeaders6()
         });
@@ -56,7 +56,7 @@ async function getAllDanhMucAd(): Promise<DanhMuc[]> {
 
 async function getAllThuongHieuAd(): Promise<ThuongHieu[]> {
     try {
-        const response = await fetch('http://localhost:3000/api/thuong-hieu', {
+        const response = await fetch('/api/thuong-hieu', {
             method: 'GET',
             headers: getAuthHeaders6()
         });
@@ -93,7 +93,7 @@ async function createProductAd(product: SanPham2): Promise<string | null> {
             ten_thuong_hieu: getSelectedTextAd(thuongHieuSelect) // Truyền tên thương hiệu
         };
 
-        const response = await fetch('http://localhost:3000/api/san-pham', {
+        const response = await fetch('/api/san-pham', {
             method: 'POST',
             headers: getAuthHeaders6(),
             body: JSON.stringify(apiData)
@@ -338,7 +338,7 @@ async function loadDataAd(): Promise<void> {
 // Hàm lấy ID sản phẩm từ mã sản phẩm (nếu cần)
 async function getProductIdByCode(maSanPham: string): Promise<string | null> {
     try {
-        const response = await fetch(`http://localhost:3000/api/san-pham?ma_san_pham=${maSanPham}`, {
+        const response = await fetch(`/api/san-pham?ma_san_pham=${maSanPham}`, {
             method: 'GET',
             headers: getAuthHeaders6()
         });
@@ -391,15 +391,15 @@ async function handleSubmitAd(e: Event): Promise<void> {
                 console.log('ID sản phẩm mới:', productId);
                 if (productId) {
                     // Chuyển hướng đến trang chi tiết với ID sản phẩm
-                    window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?id=${productId}`;
+                    window.location.href = `/HTML-AD/ChiTietSanPham_Ad.html?id=${productId}`;
                 } else {
                     // Fallback: chuyển hướng với mã sản phẩm
-                    window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=${encodeURIComponent(productData.ma_san_pham)}`;
+                    window.location.href = `/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=${encodeURIComponent(productData.ma_san_pham)}`;
                 }
             } catch (error) {
                 console.error('Lỗi khi chuyển hướng:', error);
                 // Vẫn chuyển hướng với mã sản phẩm nếu có lỗi
-                window.location.href = `/FE/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=${encodeURIComponent(productData.ma_san_pham)}`;
+                window.location.href = `/HTML-AD/ChiTietSanPham_Ad.html?ma_san_pham=${encodeURIComponent(productData.ma_san_pham)}`;
             }
         }, 100);
 
@@ -449,12 +449,12 @@ async function initProductFormAd(): Promise<void> {
 
     if (!token) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/api/nguoi-dung/me", {
+        const res = await fetch("/api/nguoi-dung/me", {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -462,12 +462,12 @@ async function initProductFormAd(): Promise<void> {
             localStorage.removeItem('token');
             sessionStorage.removeItem('token');
             sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-            window.location.href = '/FE/HTML/DangNhap.html';
+            window.location.href = '/HTML/DangNhap.html';
             return;
         }
     } catch (error) {
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        window.location.href = '/FE/HTML/DangNhap.html';
+        window.location.href = '/HTML/DangNhap.html';
         return;
     }
     await loadDataAd();

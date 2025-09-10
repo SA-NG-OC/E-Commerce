@@ -89,7 +89,7 @@ function addToCart() {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 5, , 6]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColor.id, "/").concat(selectedSize.id, "/").concat(sanPhamId), {
+                    return [4 /*yield*/, fetch("/api/bien-the/".concat(selectedColor.id, "/").concat(selectedSize.id, "/").concat(sanPhamId), {
                             headers: getAuthHeaders20()
                         })];
                 case 2:
@@ -109,7 +109,7 @@ function addToCart() {
                         renderBienTheInfo(selectedColor.id, selectedSize.id);
                         return [2 /*return*/];
                     }
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/gio-hang/them", {
+                    return [4 /*yield*/, fetch("/api/gio-hang/them", {
                             method: "POST",
                             headers: getAuthHeaders20(),
                             body: JSON.stringify({
@@ -173,7 +173,7 @@ function buyNow() {
     else {
         // Fallback: dùng URL query string
         var query = new URLSearchParams(params).toString();
-        window.location.href = "/FE/HTML/ThanhToan.html?".concat(query);
+        window.location.href = "/HTML/ThanhToan.html?".concat(query);
     }
 }
 // Function xử lý quantity increase
@@ -242,7 +242,7 @@ function fetchSanPhamById(id) {
             switch (_e.label) {
                 case 0:
                     _e.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id), {
+                    return [4 /*yield*/, fetch("/api/san-pham/".concat(id), {
                             headers: getAuthHeaders20()
                         })];
                 case 1:
@@ -289,7 +289,7 @@ function fetchBienTheBySanPhamId(selectedColorId, selectedSizeId) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/bien-the/".concat(selectedColorId, "/").concat(selectedSizeId, "/").concat(sanPhamId), {
+                    return [4 /*yield*/, fetch("/api/bien-the/".concat(selectedColorId, "/").concat(selectedSizeId, "/").concat(sanPhamId), {
                             headers: getAuthHeaders20()
                         })];
                 case 2:
@@ -396,7 +396,7 @@ function fetchMauSac() {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
                     sanPhamId = getSanPhamIdFromUrl();
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/mau-sac/".concat(sanPhamId), {
+                    return [4 /*yield*/, fetch("/api/mau-sac/".concat(sanPhamId), {
                             headers: getAuthHeaders20()
                         })];
                 case 1:
@@ -428,7 +428,7 @@ function fetchKichCo() {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
                     sanPhamId = getSanPhamIdFromUrl();
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/kich-co/".concat(sanPhamId), {
+                    return [4 /*yield*/, fetch("/api/kich-co/".concat(sanPhamId), {
                             headers: getAuthHeaders20()
                         })];
                 case 1:
@@ -608,7 +608,7 @@ function fetchDanhGiaBySanPhamId(id) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(id, "/danh-gia"), {
+                    return [4 /*yield*/, fetch("/api/san-pham/".concat(id, "/danh-gia"), {
                             headers: getAuthHeaders20()
                         })];
                 case 1:
@@ -738,7 +738,7 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                        return [4 /*yield*/, fetch("/api/danh-gia/".concat(reviewId), {
                                 method: 'PUT',
                                 headers: getAuthHeaders20(),
                                 body: JSON.stringify({
@@ -779,7 +779,7 @@ function showCommentDialog(reviewId, currentContent, currentRating) {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/danh-gia/".concat(reviewId), {
+                        return [4 /*yield*/, fetch("/api/danh-gia/".concat(reviewId), {
                                 headers: getAuthHeaders20(),
                                 method: 'DELETE'
                             })];
@@ -1007,7 +1007,7 @@ function initReviewForm() {
                             _b.label = 1;
                         case 1:
                             _b.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/san-pham/".concat(sanPhamId, "/danh-gia"), {
+                            return [4 /*yield*/, fetch("/api/san-pham/".concat(sanPhamId, "/danh-gia"), {
                                     method: 'POST',
                                     headers: getAuthHeaders20(),
                                     body: JSON.stringify({
@@ -1053,13 +1053,13 @@ function initChiTietSanPham() {
                     token = localStorage.getItem('token') || sessionStorage.getItem('token');
                     if (!token) {
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/nguoi-dung/me", {
+                    return [4 /*yield*/, fetch("/api/nguoi-dung/me", {
                             headers: { Authorization: "Bearer ".concat(token) }
                         })];
                 case 2:
@@ -1068,14 +1068,14 @@ function initChiTietSanPham() {
                         localStorage.removeItem('token');
                         sessionStorage.removeItem('token');
                         sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                        window.location.href = '/FE/HTML/DangNhap.html';
+                        window.location.href = '/HTML/DangNhap.html';
                         return [2 /*return*/];
                     }
                     return [3 /*break*/, 4];
                 case 3:
                     error_2 = _a.sent();
                     sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-                    window.location.href = '/FE/HTML/DangNhap.html';
+                    window.location.href = '/HTML/DangNhap.html';
                     return [2 /*return*/];
                 case 4:
                     console.log('initChiTietSanPham called');
@@ -1100,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Load NavBar nếu cần
         /*const navbar = document.getElementById('navbar');
         if (navbar && !navbar.innerHTML.trim()) {
-            fetch('/FE/HTML/NavBar.html')
+            fetch('/HTML/NavBar.html')
                 .then(res => res.text())
                 .then(html => {
                     navbar.innerHTML = html;
