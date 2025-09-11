@@ -22,6 +22,8 @@ export class NguoiDungController {
             }
         } catch (error) {
             res.status(500).json({ message: 'Lỗi server' });
+            console.log("📩 Request body:", req.body);
+            console.error("❌ Lỗi resetPassword:", error);
         }
     }
 
@@ -64,9 +66,6 @@ export class NguoiDungController {
             }
         } catch (error) {
             res.status(500).json({ message: 'Lỗi server' });
-            console.log("📩 Request body:", req.body);
-            console.error("❌ Lỗi resetPassword:", error);
-
         }
     }
 
