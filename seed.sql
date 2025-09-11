@@ -173,6 +173,14 @@ CREATE TABLE dia_chi_giao_hang (
     tinh_thanh VARCHAR(100),
     ghi_chu TEXT
 );
+
+CREATE TABLE password_reset_otp (
+    email VARCHAR(255) PRIMARY KEY,   -- dùng email làm khóa chính (unique)
+    otp VARCHAR(6) NOT NULL,          -- mã OTP (6 số)
+    expires_at TIMESTAMP NOT NULL,    -- thời gian hết hạn
+    created_at TIMESTAMP DEFAULT NOW() -- log thời gian tạo
+);
+
 -- ========================
 -- KHÓA NGOẠI
 -- ========================
