@@ -63,7 +63,7 @@ export class NguoiDungController {
                 res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn' });
             }
         } catch (error) {
-            res.status(500).json({ message: 'Lỗi server' });
+            res.status(500).json({ message: 'Lỗi server', error: `${error}` });
         }
     }
 
