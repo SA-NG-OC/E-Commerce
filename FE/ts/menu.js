@@ -814,7 +814,7 @@ class AdminNavigation {
 
     navigateToProductDetail(productId) {
         // Navigate to product detail page with ID parameter
-        const detailPage = `chiTietSanPham.html?id=${productId}`;
+        const detailPage = `ChiTietSanPham.html?id=${productId}`;
 
         // Update active state (remove active from all menu items since this is a search result)
         this.menuLinks.forEach(link => {
