@@ -350,3 +350,11 @@ function closeForgotPasswordModal() {
     currentStep = 1;
     userEmail = '';
 }
+// ts/dangNhap.ts
+var dangKiLink = document.getElementById("dangKiLink");
+if (dangKiLink) {
+    dangKiLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "/HTML/DangKi.html";
+    });
+}
