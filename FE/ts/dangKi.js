@@ -193,7 +193,7 @@ function setupFormSubmission() {
 async function handleRegistration() {
     // Validate toàn bộ form trước khi submit
     if (!validateForm()) {
-        showAlert('Vui lòng kiểm tra lại thông tin đã nhập', 'error');
+        alert('Vui lòng kiểm tra lại thông tin');
         return;
     }
 
@@ -241,7 +241,7 @@ async function handleRegistration() {
         const result = await response.json();
 
         if (response.ok) {
-            showAlert('Đăng ký thành công! Chuyển hướng đến trang đăng nhập...', 'success');
+            alert('Đăng kí thành công');
 
             // Reset form
             document.getElementById('registerForm').reset();
@@ -252,12 +252,12 @@ async function handleRegistration() {
                 window.location.href = 'DangNhap.html';
             }, 500);
         } else {
-            showAlert(result.message || 'Có lỗi xảy ra khi đăng ký!', 'error');
+            alert('Có lỗi xảy ra khi đăng kí');
         }
 
     } catch (error) {
         console.error('Lỗi đăng ký:', error);
-        showAlert('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+        alert('Có lỗi xảy ra vui lòng thử lại');
     } finally {
         // Ẩn loading
         submitBtn.disabled = false;
@@ -304,27 +304,4 @@ function validateForm() {
     }
 
     return isValid;
-}
-
-// Hiển thị thông báo
-function showAlert(message, type) {
-    const alertId = type === 'success' ? 'successAlert' : 'errorAlert';
-    const alertElement = document.getElementById(alertId);
-
-    // Ẩn alert khác
-    document.getElementById('successAlert').style.display = 'none';
-    document.getElementById('errorAlert').style.display = 'none';
-
-    alertElement.textContent = message;
-    alertElement.style.display = 'block';
-
-    // Scroll đến alert
-    alertElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Tự động ẩn sau 5 giây (trừ success message)
-    if (type !== 'success') {
-        setTimeout(() => {
-            alertElement.style.display = 'none';
-        }, 5000);
-    }
 }
