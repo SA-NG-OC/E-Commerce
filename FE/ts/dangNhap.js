@@ -65,8 +65,10 @@ if (showPasswordCheckbox && passwordInput) {
                     if (errorDiv)
                         errorDiv.textContent = '';
                     if (!email || !password) {
-                        if (errorDiv)
+                        if (errorDiv) {
                             errorDiv.textContent = 'Vui lòng điền đầy đủ thông tin!';
+                            errorDiv.style.display = 'block';
+                        }
                         return [2 /*return*/];
                     }
                     _b.label = 1;
@@ -87,30 +89,27 @@ if (showPasswordCheckbox && passwordInput) {
                         localStorage.setItem('usercontext', JSON.stringify(data.user));
                         redirectPath = sessionStorage.getItem('redirectAfterLogin') ||
                             sessionStorage.getItem('adminRedirectAfterLogin');
-                        if (redirectPath) {
-                            sessionStorage.removeItem('redirectAfterLogin');
-                            sessionStorage.removeItem('adminRedirectAfterLogin');
-                            window.location.href = redirectPath;
+                        role = data.user._role || data.user.role;
+                        if (role === "Khách hàng") {
+                            window.location.href = '/HTML/Menu.html';
                         }
                         else {
-                            role = data.user._role || data.user.role;
-                            if (role === "Khách hàng") {
-                                window.location.href = '/HTML/Menu.html';
-                            }
-                            else {
-                                window.location.href = '/HTML-AD/Index.html';
-                            }
+                            window.location.href = '/HTML-AD/Index.html';
                         }
                     }
                     else {
-                        if (errorDiv)
-                            errorDiv.textContent = data.message || 'Đăng nhập thất bại';
+                        if (errorDiv) {
+                            errorDiv.textContent = data.message || 'Mật khẩu hoặc email không hợp lệ';
+                            errorDiv.style.display = 'block';
+                        }
                     }
                     return [3 /*break*/, 5];
                 case 4:
                     _a = _b.sent();
-                    if (errorDiv)
+                    if (errorDiv) {
                         errorDiv.textContent = 'Lỗi kết nối máy chủ';
+                        errorDiv.style.display = 'block';
+                    }
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }
@@ -349,12 +348,4 @@ function closeForgotPasswordModal() {
     }
     currentStep = 1;
     userEmail = '';
-}
-// ts/dangNhap.ts
-var dangKiLink = document.getElementById("dangKiLink");
-if (dangKiLink) {
-    dangKiLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.location.href = "/HTML/DangKi.html";
-    });
 }

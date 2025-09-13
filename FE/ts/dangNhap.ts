@@ -28,7 +28,10 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
     if (errorDiv) errorDiv.textContent = '';
 
     if (!email || !password) {
-        if (errorDiv) errorDiv.textContent = 'Vui lòng điền đầy đủ thông tin!';
+        if (errorDiv) {
+            errorDiv.textContent = 'Vui lòng điền đầy đủ thông tin!';
+            errorDiv.style.display = 'block';
+        }
         return;
     }
 
@@ -39,6 +42,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
             body: JSON.stringify({ email, password })
         });
 
+
         const data = await res.json();
 
         if (res.ok) {
@@ -48,23 +52,24 @@ document.getElementById('loginForm')?.addEventListener('submit', async function 
             const redirectPath = sessionStorage.getItem('redirectAfterLogin') ||
                 sessionStorage.getItem('adminRedirectAfterLogin');
 
-            if (redirectPath) {
-                sessionStorage.removeItem('redirectAfterLogin');
-                sessionStorage.removeItem('adminRedirectAfterLogin');
-                window.location.href = redirectPath;
+            const role = data.user._role || data.user.role;
+            if (role === "Khách hàng") {
+                window.location.href = '/HTML/Menu.html';
             } else {
-                const role = data.user._role || data.user.role;
-                if (role === "Khách hàng") {
-                    window.location.href = '/HTML/Menu.html';
-                } else {
-                    window.location.href = '/HTML-AD/Index.html';
-                }
+                window.location.href = '/HTML-AD/Index.html';
             }
         } else {
-            if (errorDiv) errorDiv.textContent = data.message || 'Đăng nhập thất bại';
+            if (errorDiv) {
+                errorDiv.textContent = data.message || 'Mật khẩu hoặc email không hợp lệ';
+                errorDiv.style.display = 'block';
+            }
+
         }
     } catch {
-        if (errorDiv) errorDiv.textContent = 'Lỗi kết nối máy chủ';
+        if (errorDiv) {
+            errorDiv.textContent = 'Lỗi kết nối máy chủ';
+            errorDiv.style.display = 'block';
+        }
     }
 });
 
